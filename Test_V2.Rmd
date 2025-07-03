@@ -19,7 +19,13 @@ library(readxl)
 
 ## 0.1 Load data:
 
+The permutation takes to long to allow for re-computing the code each time, so load it:
 ```{r}
+load("DataSaveSSSDiagn.RData")
+```
+
+
+```{r eval=FALSE, include=FALSE}
 ds_syn <- read_excel("raw_synaesthetes_consistency_anon.xlsx")
 ds_syn$group <- "Syn"
 ds_ctl <- read_excel("raw_controls_consistency_anon.xlsx")
@@ -33,7 +39,7 @@ ds_Q_ctl$group <- "ctl"
 
 ## 0.2 Merge data:
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 ds <- merge(ds_syn,ds_ctl, all = TRUE)
 ds_Q <- merge(ds_Q_syn,ds_Q_ctl, all = TRUE)
 
@@ -41,7 +47,7 @@ rm(ds_syn,ds_ctl,ds_Q_syn,ds_Q_ctl)
 ```
 
 ## 0.3 Wrangle dataset
-```{r}
+```{r eval=FALSE, include=FALSE}
 IDnr = 4
 ds$ID <- ds$session_id
 ds_Q$ID <- ds_Q$session_id
@@ -82,7 +88,7 @@ ds <- ds %>%
 
 ## 0.4 Filter ID's
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 
 
 # Match ID's across datasets:
@@ -103,12 +109,25 @@ ds_Q <- ds_Q %>%
 ```
 
 
+## 0.4 Standardize/scale coordinates
+
+```{r}
+ds <- ds %>%
+  group_by(ID, Cond) %>%
+  mutate(x_zs = scale(x)) %>%
+  mutate(y_zs = scale(y))
+
+ds <- ds %>% 
+  group_by(ID, Cond, stimulus) %>%
+  mutate(X_mean_zs = mean(x_zs), Y_mean_zs = mean(y_zs)) 
+```
+
 # 1. Consistency:
 
 Calculating consistency  Each stimulus is represented by three xy coordinates - (x1, y1), (x2, y2), (x3, y3) - from the three  repetitions. For each stimulus, the area of the triangle bounded by the coordinates is calculated as follows:  
 $Area = (x1y2 + x2y3 + x3y1 – x1y3 – x2y1 – x3y2) / 2$
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 library(dplyr)
 
 # Define area calculation function
@@ -134,7 +153,7 @@ Mean area = $(Summed area / 29) * 100 / Screen area $
 Where: $Screen area = Xpixels * Ypixels$
 
 Note: 29 since 29 stimuli
-```{r}
+```{r eval=FALSE, include=FALSE}
 # Manually adjust:
 
 ds$height[ds$ID == 29324] <- 1080
@@ -173,7 +192,7 @@ ID_widthKO <- ds %>%
 ```
 
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 ds$Screen_area <- ds$width*ds$height
 
 ds <- ds %>%  
@@ -198,7 +217,7 @@ $Z = [(observed consistency) – (mean consistency of permuted data)] / (SD of p
 
 Code retrieved from OSF (adapted here):
 
-```{r}
+```{r eval=FALSE, include=FALSE}
   
 ### Create a simulated distribution of consistency.  Note that each time this is run it will give a slightly different answer due to the randomisation
 
@@ -263,7 +282,7 @@ As in Ward:
 
 "*A participant who produced a horizontal  straight-line form would have a very low standard deviation in the y-coordinates but a high standard deviation  in x-coordinates, and a participant with a vertical line would have the reverse profile. A participant with a  circular spatial form would be high on both. A participant who clicks randomly around the screen would also  be high on both x and y standard deviation, but would fail the consistency tests (the triangles would be large).*"
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 # Rescale x & y mcoordinates depending on screen size:
 ds$xSc <- ds$x/ds$width
 ds$ySc <- ds$y/ds$height
@@ -386,6 +405,7 @@ Ideally we should compute the number of crossings across the repetitions, in add
 To do:
 - Maybe the easier would be to have the average number of crossing per segment.
 
+IMPORTANT: data frame needs to be informed of stimulus order to make sense!
 
 ```{r}
 ds <- ds %>%
@@ -394,6 +414,10 @@ ds <- ds %>%
   
 # Number of crossings per condition and repetition
 ds <- ds %>% 
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
+  ungroup() %>%
   group_by(ID, Cond,repetition) %>%
   mutate(nLineCross = (count_self_intersections(x,y, verbose = FALSE)))
 
@@ -407,35 +431,19 @@ ds <- ds %>%
   mutate(totLineCross = mean(meanLineCross))
 ```
 
-This plot exites me the most, indicates that those who self report synesthesia seem to have less line crossings than non synesthetes. Also indicates that most do not have line crossings. 
+## 4.1. Example of failure:
 
-```{r}
-
-ggplot(ds, aes(x = totLineCross, group = SynQuest, fill = SynQuest)) +
-    geom_density(alpha = 0.5)
-
-```
 
 
 # 4.1. Line crossings
-Let's say 0.2 as threshold. This means that each segment crosses on average 0.2 times.
+Let's say 0.2 as threshold. This means that each segment crosses on average 0.05 times.
 
 ```{r}
-ds$SynLine <- ds$totLineCross < 0.2
+ds$SynLine <- ds$totLineCross <= 0.05
 ```
 
 
 
-```{r}
-# Eventually export:
-
-write.csv(observed_consistency, file = "ExportedCsv/observed_consistency.csv")
-
-write.csv(ds %>%
-            group_by(ID) %>%
-            filter(row_number()==1) %>%
-            select(ID,group, triangle_area, Consistency,totLineCross,SynQuest,SynCons,SynSD,SynPermzs, SynLine),file = "ExportedCsv/SynCat.csv")
-```
 
 
 # 5. Classifications:
@@ -487,6 +495,28 @@ ds$SynPermzs <- ds$ID %in% ID_SynPermzs
 
 ```
 
+## 5.5 Plot desities 
+
+This plot exites me the most, indicates that those who self report synesthesia seem to have less line crossings than non synesthetes. Also indicates that most do not have line crossings. 
+
+```{r}
+
+ggplot(ds, aes(x = totLineCross, group = SynQuest, fill = SynQuest)) +
+    geom_density(alpha = 0.5)
+
+```
+
+
+```{r}
+# Eventually export:
+
+write.csv(observed_consistency, file = "ExportedCsv/observed_consistency.csv")
+
+write.csv(ds %>%
+            group_by(ID) %>%
+            filter(row_number()==1) %>%
+            select(ID,group, triangle_area, Consistency,totLineCross,SynQuest,SynCons,SynSD,SynPermzs, SynLine),file = "ExportedCsv/SynCat.csv")
+```
 
 # 6.Figure Mega plot 
 
@@ -530,18 +560,19 @@ for(i in 1:(round(length(IDlist)/(N_rows*N_cols)*3)+1)){
 
 ## 6.1. ID issues:
 
-Maybe could automathize by pulling the inconsistent but with few line crossings. 
+Maybe could automatize by pulling the inconsistent but with few line crossings. 
 
 ```{r}
 InconsbutLine_ID <- unique(ds$ID[!ds$SynCons & ds$SynLine])
 ```
 
 ### Inconsitent ID's that pass line criteria:
-- 29489:
-Look at this, I would say this is indeed synesthesia:
+
 ```{r}
+IDnr = 2
+
 ds %>%
-    filter(ID %in% 29489) %>%
+    filter(ID %in% InconsbutLine_ID[IDnr]) %>%
     group_by(stimulus) %>%
     arrange(stimulus) %>%
     arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% 
@@ -553,24 +584,22 @@ ds %>%
     geom_point(aes(x = 5 -0.5, y = 5, color =SynPermzs), size = 0.5) +
     geom_point(aes(x = 5 + 0.2, y = 5, color =SynLine), size = 0.5) + # SynLine is developed later in the code.
     geom_polygon(alpha = 0.4) +
-    geom_text(aes(x = X_mean_zs+0.1, y = Y_mean_zs+0.1), colour = "black", size = 0.5) +
-    geom_path(aes(x = X_mean_zs, y = Y_mean_zs, group = 1)) +
+    geom_text(aes(x = x_zs+0.1, y = y_zs+0.1), colour = "black", size = 0.5) +
+    geom_path(aes(x = x_zs, y = y_zs, group = 1)) +
     facet_wrap( ~ ID+ Cond + repetition)  +
     theme_minimal()
+
+ds %>%
+    filter(ID %in% InconsbutLine_ID[IDnr]) %>%
+    group_by(Cond, repetition) %>%
+    filter(row_number()==1) %>%
+    select(triangle_area,nLineCross,totLineCross)
 ```
 
-- 32074 has a lot of ine crossings!
-- 40867 passes altough higlhy inconsistent
-- 44296
-- 46320
-- 48114 
-- 49369
-- 49483
-- 63127
 
 ```{r}
 ds %>%
-  filter(ID %in% InconsbutLine_ID[1:5]) %>%
+  filter(ID %in% InconsbutLine_ID[10:20]) %>%
   group_by(stimulus) %>%
   arrange(stimulus) %>%
   arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
@@ -583,7 +612,7 @@ ds %>%
   geom_polygon(alpha = 0.4) +
   geom_text(aes(x = X_mean_zs+0.1, y = Y_mean_zs+0.1), colour = "black", size = 0.5) +
   geom_path(aes(x = X_mean_zs, y = Y_mean_zs, group = 1)) +
-  facet_wrap( ~ ID+ Cond)  +
+  facet_wrap(ID ~ Cond)  +
   theme_minimal()
 ```
 
@@ -632,6 +661,7 @@ ds %>%
     filter(ID  %in% ID_here) %>%
     group_by(Cond) %>%
     summarize(Mx = mean(x_zs), My = mean(y_zs), nStim =length(stimulus)) 
+
   
 ds %>% 
     filter(ID  %in% ID_here) %>%
