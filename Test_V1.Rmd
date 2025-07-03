@@ -1,0 +1,1896 @@
+---
+title: "Test_V2"
+output: html_document
+date: "2025-06-13"
+---
+
+From: https://osf.io/p5xsd/files/osfstorage
+
+
+# 0. Load and prepare data
+
+```{r}
+library(readr)
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+library(readxl)
+```
+
+## 0.1 Load data:
+
+```{r}
+ds_syn <- read_excel("raw_synaesthetes_consistency_anon.xlsx")
+ds_syn$group <- "Syn"
+ds_ctl <- read_excel("raw_controls_consistency_anon.xlsx")
+ds_ctl$group <- "Ctl"
+
+ds_Q_syn <- read_excel("raw_synaesthetes_questionnaire_anon.xlsx")
+ds_Q_syn$group <- "Syn"
+ds_Q_ctl <- read_excel("raw_controls_questionnaire_anon.xlsx")
+ds_Q_ctl$group <- "ctl"
+```
+
+## 0.2 Merge data:
+
+```{r}
+ds <- merge(ds_syn,ds_ctl, all = TRUE)
+ds_Q <- merge(ds_Q_syn,ds_Q_ctl, all = TRUE)
+
+rm(ds_syn,ds_ctl,ds_Q_syn,ds_Q_ctl)
+```
+
+## 0.3 Wrangle dataset
+```{r}
+IDnr = 4
+ds$ID <- ds$session_id
+ds_Q$ID <- ds_Q$session_id
+IDlist <- unique(ds$ID)
+
+# Add Condition, i.e. stim type:
+ds$Cond <- NaN
+ds$Cond[ds$stimulus %in% c("1","2","3","4","5","6","7","8","9","0")] <- "number"
+ds$Cond[ds$stimulus %in% c("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday")] <- "weekday"
+ds$Cond[ds$stimulus %in% c("January", "February", "March", "April", "May","June","July","August","September","October","November","December")] <- "month"
+
+# Remove if not 3 repetitions per stimuli:
+ds <- ds %>% 
+    group_by(ID,stimulus) %>% 
+    mutate(Nrep = length(stimulus))
+
+ds <- ds %>%
+  filter(Nrep == 3)
+
+# Add stimulus repetition number
+ds <- ds %>%
+  group_by(ID, stimulus) %>%
+  arrange(ID, stimulus, .by_group = TRUE) %>%
+  mutate(repetition = row_number()) %>%
+  ungroup()
+
+# Sanity Check (should be empty)
+# tmp <- ds %>% filter(repetition > 3)
+
+# Compute mean x,y:
+
+ds <- ds %>% 
+  group_by(ID, Cond, stimulus) %>%
+  mutate(X_mean = mean(x), Y_mean = mean(y)) 
+
+```
+
+
+## 0.4 Filter ID's
+
+```{r}
+
+
+# Match ID's across datasets:
+ID_ds   <- unique(ds$ID)
+ID_ds_Q <- unique(ds_Q$ID)
+
+ds <- ds %>%
+    filter(ID %in% ID_ds[ID_ds %in% ID_ds_Q]) %>%
+    filter(ID %in% ID_ds_Q[ID_ds_Q %in% ID_ds])
+
+ds_Q <- ds_Q %>% 
+    filter(ID %in% ID_ds[ID_ds %in% ID_ds_Q]) %>%
+    filter(ID %in% ID_ds_Q[ID_ds_Q %in% ID_ds])
+
+# Sanity Check:
+# sum(ID_ds == ID_ds_Q) == length(unique(ds$ID))
+# sum(ID_ds == ID_ds_Q) == length(unique(ds_Q$ID))
+```
+# 1. Explore Questionnaire
+
+## 1.1 Explore specific type of SSS (i.e. number, height, ect.)
+```{r}
+library(ggalluvial)
+
+sortedFreq <- ds_Q %>%
+  select(ID,`Q2_numbers (1=present, 0=absent)`,
+         `Q2_days  (1=present, 0=absent)`,
+         `Q2_months  (1=present, 0=absent)`,
+         `Q2_years (1=present, 0=absent)`,
+         `Q2_years (1=present, 0=absent)`,
+         `Q2_letters (1=present, 0=absent)`,
+         `Q2_temperature (1=present, 0=absent)`,
+         `Q2_height (1=present, 0=absent)`,
+         `Q2_weight (1=present, 0=absent)`) %>%
+  summarise(across(starts_with("Q"), ~ mean(.x == 1))) %>%
+  pivot_longer(cols = everything(), names_to = "question", values_to = "n_ones") %>%
+  arrange(desc(n_ones))  # or arrange(n_ones) for most 0s
+
+
+ds_Q %>%
+    select(ID,`Q2_numbers (1=present, 0=absent)`,`Q2_days  (1=present, 0=absent)`,
+           `Q2_months  (1=present, 0=absent)`,
+           `Q2_years (1=present, 0=absent)`,
+           `Q2_years (1=present, 0=absent)`,
+           `Q2_letters (1=present, 0=absent)`,
+           `Q2_temperature (1=present, 0=absent)`,
+           `Q2_height (1=present, 0=absent)`,
+           `Q2_weight (1=present, 0=absent)`) %>%
+    pivot_longer(cols = starts_with("Q"), names_to = "question", values_to = "response") %>%
+    mutate(question = factor(question, levels = sortedFreq$question))  %>%
+    ggplot(aes(x = question, stratum = response, alluvium = ID, fill = response)) +
+    geom_flow(stat = "alluvium", lode.guidance = "forward", alpha = 0.5) +
+    geom_stratum(alpha = 0.8) +
+    labs(title = "Response Patterns Across Questions",
+         x = "Question",
+         y = "Number of Respondents") +
+    theme(legend.position = "none")
+```
+
+## 1.2 Where are they experienced?
+
+```{r}
+ds_Q %>%
+    ggplot(aes( x = `Q3 Where do you tend to routinely experience these sequences? (1= in the space outside my body; 2= on an imagined space that has no real location; 3= inside my body; 4= this doesn't apply to me!)`))+
+    geom_histogram(bins = 4) +
+  ggtitle("(1= in the space outside my body; 2= on an imagined space that has no real location; 3= inside my body; 4= this doesn't apply to me!)")
+```
+
+
+## 1.3 Explore charachteristics:
+
+```{r}
+
+sortedFreq <- ds_Q %>%
+  select(ID,starts_with("Q4")) %>%
+  summarise(across(starts_with("Q"), ~ mean(.x == 1))) %>%
+  pivot_longer(cols = everything(), names_to = "question", values_to = "n_ones") %>%
+  arrange(desc(n_ones))  # or arrange(n_ones) for most 0s
+
+
+ds_Q %>%
+    select(ID,starts_with("Q4")) %>%
+    pivot_longer(cols = starts_with("Q"), names_to = "question", values_to = "response") %>%
+    mutate(question = factor(question, levels = sortedFreq$question))  %>%
+    ggplot(aes(x = question, stratum = response, alluvium = ID, fill = response)) +
+    geom_flow(stat = "alluvium", lode.guidance = "forward", alpha = 0.5) +
+    geom_stratum(alpha = 0.8) +
+    labs(title = "Response Patterns Across Questions",
+         x = "Question",
+         y = "Number of Respondents") +
+    theme(legend.position = "none")
+```
+
+
+## 1.4 Explore after experiment questions
+
+```{r}
+
+sortedFreq <- ds_Q %>%
+  select(ID,
+         `Q5 Before doing this experiment, I always thought about NUMBERS as existing in a particular spatial sequence (1= strongly agree; 5= strongly disagree)`,
+         `Q6 Before doing this experiment, I always thought about DAYS OF THE WEEK as existing in a particular spatial sequence (1= strongly agree; 5= strongly disagree)`,
+         `Q7 Before doing this experiment, I always thought about MONTHS OF THE YEAR as existing in a particular spatial sequence (1= strongly agree; 5= strongly disagree)`,
+         `Q8 I use this way of thinking about spatial sequences in my everyday life (1= strongly agree; 2= strongly disagree)`,
+         `Q9 When doing the experiment, I didn't have any strong intuition as to where to put the NUMBERS (1= strongly agree; 5= strongly disagree)`,
+         `Q10 When doing the experiment, I didn't have any strong intuition as to where to put the DAYS OF THE WEEK (1= strongly agree; 5= strongly disagree)`,
+         `Q11 When doing the experiment, I didn't have any strong intuition as to where to put the MONTHS OF THE YEAR (1= strongly agree; 5= strongly disagree)`,
+         `Q12 This experiment didn't really make much sense to me (1= strongly agree, 5= strongly disagree)`) %>%
+  summarise(across(starts_with("Q"), ~ mean(.x == 1))) %>%
+  pivot_longer(cols = everything(), names_to = "question", values_to = "n_ones") %>%
+  arrange(desc(n_ones))  # or arrange(n_ones) for most 0s
+
+
+ds_Q %>%
+     select(ID,
+         `Q5 Before doing this experiment, I always thought about NUMBERS as existing in a particular spatial sequence (1= strongly agree; 5= strongly disagree)`,
+         `Q6 Before doing this experiment, I always thought about DAYS OF THE WEEK as existing in a particular spatial sequence (1= strongly agree; 5= strongly disagree)`,
+         `Q7 Before doing this experiment, I always thought about MONTHS OF THE YEAR as existing in a particular spatial sequence (1= strongly agree; 5= strongly disagree)`,
+         `Q8 I use this way of thinking about spatial sequences in my everyday life (1= strongly agree; 2= strongly disagree)`,
+         `Q9 When doing the experiment, I didn't have any strong intuition as to where to put the NUMBERS (1= strongly agree; 5= strongly disagree)`,
+         `Q10 When doing the experiment, I didn't have any strong intuition as to where to put the DAYS OF THE WEEK (1= strongly agree; 5= strongly disagree)`,
+         `Q11 When doing the experiment, I didn't have any strong intuition as to where to put the MONTHS OF THE YEAR (1= strongly agree; 5= strongly disagree)`,
+         `Q12 This experiment didn't really make much sense to me (1= strongly agree, 5= strongly disagree)`) %>%
+    pivot_longer(cols = starts_with("Q"), names_to = "question", values_to = "response") %>%
+    mutate(question = factor(question, levels = sortedFreq$question))  %>%
+    ggplot(aes(x = question, stratum = response, alluvium = ID, fill = response)) +
+    geom_flow(stat = "alluvium", lode.guidance = "forward", alpha = 0.5) +
+    geom_stratum(alpha = 0.8) +
+    labs(title = "Response Patterns Across Questions",
+         x = "Question",
+         y = "Number of Respondents") +
+    theme(legend.position = "none")
+```
+
+
+Re-check questionnaire score
+
+```{r}
+# ds_Q <- ds_Q %>%
+#   select(starts_with("Q")) %>%
+#   mutate(questionnaire_score2 = 
+#            `Q1 . Some people routinely think about sequences as arranged in a particular spatial configuration (as in the examples below), do you think this might apply to you? (1=strongly agree, 5= strongly disagree)` +
+#            `Q5 Before doing this experiment, I always thought about NUMBERS as existing in a particular spatial sequence (1= strongly agree; 5= strongly disagree)` +
+#            `Q6 Before doing this experiment, I always thought about DAYS OF THE WEEK as existing in a particular spatial sequence (1= strongly agree; 5= strongly disagree)` +
+#            `Q7 Before doing this experiment, I always thought about MONTHS OF THE YEAR as existing in a particular spatial sequence (1= strongly agree; 5= strongly disagree)`+
+#            `Q8 I use this way of thinking about spatial sequences in my everyday life (1= strongly agree; 2= strongly disagree)` +
+#            (6-`Q9 When doing the experiment, I didn't have any strong intuition as to where to put the NUMBERS (1= strongly agree; 5= strongly disagree)`) +
+#            (6-`Q10 When doing the experiment, I didn't have any strong intuition as to where to put the DAYS OF THE WEEK (1= strongly agree; 5= strongly disagree)`) +
+#            (6-`Q11 When doing the experiment, I didn't have any strong intuition as to where to put the MONTHS OF THE YEAR (1= strongly agree; 5= strongly disagree)`) +
+#            (6- `Q12 This experiment didn't really make much sense to me (1= strongly agree, 5= strongly disagree)`)
+#           )
+```
+
+## 1.5 Male to female ratio
+
+There are many women (i.e. psychology students?). The F/M ratio ssems to be quite the same among syn & controls.
+```{r}
+ds_Q %>%
+  group_by(group,gender) %>%
+  summarize(length(unique(ID)))
+```
+
+
+# 2. Questionnaire consistency densities:
+
+Consistency vs z-score
+```{r}
+ds_Q %>%
+  ggplot( aes(x=`z-score`, group = group, fill = group)) +
+    geom_density(alpha=0.8)
+
+ds_Q %>%
+  ggplot( aes(x=consistency, group = group, fill = group)) +
+    geom_density(alpha=0.8)
+```
+
+Seems that questionnaire is highly sensible, if comparing score of 45 (maximal) to the other, the consistency seems to drop by a lot!
+Ok, but they are only 7.
+```{r}
+# Based on questionnaire response:
+
+ds_Q %>%
+  ggplot( aes(x=consistency, group = as.factor(`questionnaire score`), fill = as.factor(`questionnaire score`))) +
+    geom_density(alpha=0.8)
+
+ds_Q %>%
+  filter(`questionnaire score` == 45) %>%
+  ggplot( aes(x=consistency, group = as.factor(`questionnaire score`), fill = as.factor(`questionnaire score`))) +
+    geom_density(alpha=0.8)
+
+ds_Q %>%
+  filter(`questionnaire score` <= 44) %>%
+  ggplot( aes(x=consistency, group = as.factor(`questionnaire score`), fill = as.factor(`questionnaire score`))) +
+    geom_density(alpha=0.8)
+```
+
+
+```{r}
+ds_Q %>%
+    filter(`questionnaire score` <= 44) %>%
+    ggplot( aes(x=consistency, group = as.factor(`questionnaire score`), fill = as.factor(`questionnaire score`))) +
+    geom_density(alpha=0.8) +
+    facet_grid(~ `Q4_3D (1=present, 0=absent)`)
+
+ds_Q %>%
+    ggplot( aes(x=consistency, group = as.factor(`Q4_3D (1=present, 0=absent)`), fill = as.factor(`Q4_3D (1=present, 0=absent)`))) +
+    geom_density(alpha=0.8)
+```
+
+
+
+# 3. Consistency:
+
+Calculating consistency  Each stimulus is represented by three xy coordinates - (x1, y1), (x2, y2), (x3, y3) - from the three  repetitions. For each stimulus, the area of the triangle bounded by the coordinates is calculated as follows:  
+$Area = (x1y2 + x2y3 + x3y1 – x1y3 – x2y1 – x3y2) / 2$
+
+```{r}
+library(dplyr)
+
+# Define area calculation function
+triangle_area <- function(x, y) {
+  if(length(x) != 3 | length(y) != 3) return(NA)
+  area <- abs(
+    x[1]*y[2] + x[2]*y[3] + x[3]*y[1] -
+    x[1]*y[3] - x[2]*y[1] - x[3]*y[2]
+  ) / 2
+  return(area)
+}
+
+# Apply per group
+ds <- ds %>%
+    group_by(ID, stimulus) %>%
+    mutate(triangle_area = triangle_area(x, y))
+
+```
+
+
+The mean area is calculated by adding together the area for each stimulus and dividing by 29. This unit is  transformed into a percentage area taking into account the different pixel resolution of each participant.  
+Mean area = $(Summed area / 29) * 100 / Screen area $
+Where: $Screen area = Xpixels * Ypixels$
+
+Note: 29 since 29 stimuli
+```{r}
+# Manually adjust:
+
+ds$height[ds$ID == 29324] <- 1080
+ds$width[ds$ID == 32190 ] <- 1440
+
+# This ID has weird changing screen settings, consider exclusion:
+ds$width[ds$ID == 33168 ]  <- 308
+ds$height[ds$ID == 33168 ] <- 149
+
+ds$width[ds$ID == 35556 ] <- 1439
+ds$height[ds$ID == 35556 ] <- 734
+
+ds$width[ds$ID == 48114 ]  <- 1593
+ds$height[ds$ID == 48114 ] <- 671
+
+ds$width[ds$ID == 59854] <- 1366
+ds$height[ds$ID == 59854] <- 663
+
+ds$width[ds$ID == 63127] <- 1920
+ds$height[ds$ID == 63127] <- 880
+
+# Should be empty:
+ID_heigthKO <- ds %>%
+  group_by(ID) %>%
+  mutate(nhig = length(unique(height))) %>%
+  filter(nhig != 1) %>%
+  filter(row_number()==1) %>%
+  pull(ID)
+
+ID_widthKO <- ds %>%
+  group_by(ID) %>%
+  mutate(nwid = length(unique(width))) %>%
+  filter(nwid != 1) %>%
+  filter(row_number()==1) %>%
+  pull(ID)
+```
+
+
+```{r}
+ds$Screen_area <- ds$width*ds$height
+
+ds <- ds %>%  
+  group_by(ID,repetition) %>%
+  mutate(Consistency = ((sum(triangle_area)/29)*100)/Screen_area)
+
+
+# Sanity Check:
+# ds %>%
+#   filter(ID == 46603) %>%
+#   pull(Consistency)
+
+# Should be 0.14498267124883
+```
+
+## 3.2. Permuted consistency
+
+*Calculating chance levels of consistency  To create permuted datasets for each participant: the 87 xy coordinates are randomly shuffled so they  are no longer linked to the original data labels (“Monday”, “5”, “April”, etc.). The mean area of the triangles  based on the shuffled coordinates is computed (as described above), and the whole process is repeated  1000 times to obtain a subject-specific distribution of chance levels of consistency. A z-score is calculated  comparing the observed consistency against the mean and SD of the permuted data: *
+$Z = [(observed consistency) – (mean consistency of permuted data)] / (SD of permuted data)$
+
+Code retrieved from OSF (adapted here):
+
+```{r}
+  
+### Create a simulated distribution of consistency.  Note that each time this is run it will give a slightly different answer due to the randomisation
+
+IDlist <- unique(ds$ID)
+
+simulated_consistency <- data.frame() 
+observed_consistency <- data.frame() 
+
+for(ID_n in 1:length(IDlist)) {
+  print(ID_n)
+  ds_ID <- ds %>%
+    filter(ID == IDlist[ID_n])
+  
+  observed_consistency[ID_n,1] <- unique(ds_ID$ID)
+  observed_consistency[ID_n,2] <- unique(ds_ID$Consistency)
+  
+  ### calculate the x and y standard deviations (no longer used, but calculated by Ward et al. 2018); Note the syntoolkit software calculated population SD (using N) but R will use sample SD (using N-1).  The values returned are very similar.
+  
+  observed_consistency[ID_n,3] <- unique(sd (ds_ID$x) / ds_ID$width)
+  observed_consistency[ID_n,4] <- unique(sd (ds_ID$y) / ds_ID$height)
+
+  
+  for (N_shuffle in 1:1000) {
+    
+    ## shuffle the data
+    
+    shuffled <- ds_ID[sample(nrow(ds_ID)),]
+    shuffled$rep2 <- rep(1:29,3)
+    
+    # shuffled %>% 
+    #   group_by(ID, stimulus) %>%
+    #   mutate(triangle_area = triangle_area(x, y))
+    ### calculate the fake consistency
+    
+    area = 0
+    
+    Stim_list <- unique(ds_ID$stimulus)
+    
+    shuffled <- shuffled %>%
+      group_by(rep2) %>%
+      mutate(area = triangle_area(x, y))
+    
+    # # /3, since 3 repetitions
+    # for (fakSti_n in 1:(length(Stim_list)) {
+    #   
+    #   # #  calculate area of triangle
+    #   # 
+    #   # Ax = shuffled$x[x*3 -2]
+    #   # Ay = shuffled$y[x*3 -2]
+    #   # Bx = shuffled$x[x*3 -1]
+    #   # By = shuffled$y[x*3 -1]
+    #   # Cx = shuffled$x[x*3]
+    #   # Cy = shuffled$y[x*3]
+    #   # 
+    #   # area = area + abs(Ax*(By-Cy) + Bx*(Cy-Ay) + Cx*(Ay-By))/2
+    #   
+    #   shuffled %>%
+    #     filter(stimulus == Stim_list[fakSti_n])  %>%
+    #     area = triangle_area(x, y)
+    # }
+    
+    
+    simulated_consistency[N_shuffle,1] = unique((sum(shuffled$area)/29) * 100 / (shuffled$width * shuffled$height))
+    
+  }
+  
+  ## calculate the p-value and z-score of the observed consistency
+  observed_consistency[ID_n,5] <- mean(simulated_consistency[,1])
+  observed_consistency[ID_n,6] <- sd(simulated_consistency[,1])
+  observed_consistency[ID_n,7] <- (observed_consistency[ID_n,2] - observed_consistency[ID_n,5]) /   observed_consistency[ID_n,6]
+  
+  
+}
+
+
+colnames(observed_consistency) <- c('participant', 'consistency', 'x-sd', 'y-sd', 'mean_simulation', 'SD_simulation', 'z-score')
+
+```
+
+
+## 3.1 Is there a more consistent category?
+
+Remember: smaller consistency = better consistency (i.e. smaller area).
+```{r}
+
+ds <- ds %>%  
+    group_by(ID,repetition,Cond) %>%
+    mutate(ConsistencyPerCond = ((sum(triangle_area)/29)*100)/Screen_area)
+
+
+ds %>% 
+     group_by(group,Cond) %>%
+     summarize(meanCons = mean(ConsistencyPerCond))
+```
+
+```{r}
+ds %>%
+    ggplot(aes(x = ConsistencyPerCond, group = group, fill = group)) +
+    geom_density(alpha=0.8) +
+    facet_grid(~ Cond) + 
+    scale_x_continuous(limits = c(0,0.1))
+```
+
+
+
+# 4. SD as in Ward
+
+As in Ward:
+
+"*Specifically, the standard deviation of the x-coordinates and/or  the standard deviation of the y-coordinates (measured across all trials) should exceed a proposed value of  0.075 for a normalized screen with width and height of 1 unit.*"
+
+"*A participant who produced a horizontal  straight-line form would have a very low standard deviation in the y-coordinates but a high standard deviation  in x-coordinates, and a participant with a vertical line would have the reverse profile. A participant with a  circular spatial form would be high on both. A participant who clicks randomly around the screen would also  be high on both x and y standard deviation, but would fail the consistency tests (the triangles would be large).*"
+
+```{r}
+# Rescale x & y mcoordinates depending on screen size:
+ds$xSc <- ds$x/ds$width
+ds$ySc <- ds$y/ds$height
+
+# Compute the SD across all trials (per ID):
+ds <- ds %>% 
+  ungroup() %>%
+  group_by(ID) %>%
+  mutate(SD_IDx = sd(xSc)) %>%
+  mutate(SD_IDy = sd(ySc)) 
+  
+ds %>%  filter(ID == 28301) %>%
+  filter(row_number()==1) %>%
+  pull(SD_IDy)
+
+ds_Q %>%
+  filter(ID == 28301) %>%
+  pull(y_sd)
+
+
+# Compare full lists:
+sd_ds <- ds %>%  group_by(ID) %>%
+    filter(row_number()==1) %>%
+    select(SD_IDy,ID)
+
+sd_dsQ <- ds_Q %>%  group_by(ID)  %>%
+  select(y_sd,ID)
+
+merge_sd <- merge(sd_ds,sd_dsQ, by = "ID")
+
+ggplot(aes(x = SD_IDy, y = y_sd), data = merge_sd)  +
+    geom_line()
+    # geom_text(aes(label = ID))
+
+# I think we can live with this degree of error (i.e. max 0.002)
+boxplot(merge_sd$SD_IDy -merge_sd$y_sd)
+
+```
+
+
+# 5. Figure for forms:
+
+## 5.0 Standardize coordinates
+
+```{r}
+ds <- ds %>%
+  group_by(ID, Cond) %>%
+  mutate(x_zs = scale(x)) %>%
+  mutate(y_zs = scale(y))
+
+ds <- ds %>% 
+  group_by(ID, Cond, stimulus) %>%
+  mutate(X_mean_zs = mean(x_zs), Y_mean_zs = mean(y_zs)) 
+```
+
+## 5.1 Number:
+
+Visualize all number forms (saves on multiple pdf's)
+```{r eval=FALSE, include=FALSE}
+
+# Multiple pages
+library(ggforce)
+
+# Set the number of rows & columns per pages
+N_rows = 5
+N_cols = 8
+
+for(i in 1:(round(length(IDlist)/(N_rows*N_cols))+1)){
+  
+  ds %>% 
+     filter(group == "Syn") %>%
+    filter(Cond == "number") %>%
+    group_by(stimulus) %>%
+    arrange(stimulus) %>%
+    ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+    geom_polygon() +
+    geom_text(aes(x = X_mean, y = Y_mean, fill = "black"), colour = "black", size = 2) +
+    geom_path(aes(x = X_mean, y = Y_mean, group = 1)) +
+    facet_wrap_paginate(~ ID, ncol = N_cols, nrow = N_rows, page = i)  +
+    theme_minimal()
+  ggsave(paste0("Figures/Syn_numbers_p",i,".pdf"))
+}
+
+
+for(i in 1:(round(length(IDlist)/(N_rows*N_cols))+1)){
+  
+  ds %>% 
+    filter(group == "Ctl") %>%
+    filter(Cond == "number") %>%
+    group_by(stimulus) %>%
+    arrange(stimulus) %>%
+    ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+    geom_polygon() +
+    geom_text(aes(x = X_mean, y = Y_mean, fill = "black"), colour = "black", size = 2) +
+    geom_path(aes(x = X_mean, y = Y_mean, group = 1)) +
+    facet_wrap_paginate(~ ID, ncol = N_cols, nrow = N_rows, page = i)  +
+    theme_minimal()
+  ggsave(paste0("Figures/Ctl_numbers_p",i,".pdf"))
+}
+```
+ 
+IDnr 29436 seems to map RTL
+
+```{r}
+ds %>% 
+    filter(ID == 29436) %>%
+    filter(Cond == "number") %>%
+    group_by(stimulus) %>%
+    arrange(stimulus) %>%
+    ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+    geom_polygon() +
+    geom_text(aes(x = X_mean, y = Y_mean, fill = "black"), colour = "black") +
+    geom_path(aes(x = X_mean, y = Y_mean, group = 1)) +
+    theme_minimal() +
+    annotate("text", x = 700, y = 480, label = "Consistency = 0.03589296") 
+
+# ggsave("number.svg", width = 50, height = 25, units = "cm", device = "svg")
+```
+
+### 5.1.2 Extremly consistent examples:
+
+See for example ID:
+- 33168
+Also months are left to right!
+```{r}
+ds %>% 
+  filter(Consistency == 0) %>%
+  filter(group == "Syn") %>%
+  filter(Cond == "number") %>%
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+  geom_polygon() +
+  geom_text(aes(x = X_mean, y = Y_mean, fill = "black"), colour = "black") +
+  geom_path(aes(x = X_mean, y = Y_mean, group = 1)) +
+  facet_wrap(~ID) +
+  theme_minimal()
+
+```
+
+
+## 5.2 Weekdays:
+
+```{r eval=FALSE, include=FALSE}
+
+# Multiple pages
+library(ggforce)
+
+# Set the number of rows & columns per pages
+N_rows = 5
+N_cols = 8
+
+ds$stimShort <- substr(ds$stimulus,start = 1, stop = 2)
+
+for(i in 1:(round(length(IDlist)/(N_rows*N_cols))+1)){
+  
+  ds %>% 
+    filter(group == "Syn") %>%
+    filter(Cond == "weekday") %>%
+    group_by(stimulus) %>%
+    arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>%    ggplot(aes(x = x_zs, y = y_zs, group = stimShort, label = stimShort, fill = stimShort)) +
+    geom_polygon() +
+    geom_text(aes(x = X_mean_zs, y = Y_mean_zs, fill = "black"), colour = "black", size = 2) +
+    geom_path(aes(x = X_mean_zs, y = Y_mean_zs, group = 1)) +
+    facet_wrap_paginate(~ ID, ncol = N_cols, nrow = N_rows, page = i)  +
+    theme_minimal()
+  ggsave(paste0("Figures/Syn_weekday_zs_p",i,".pdf"))
+}
+
+
+for(i in 1:(round(length(IDlist)/(N_rows*N_cols))+1)){
+  
+  ds %>% 
+    filter(group == "Ctl") %>%
+    filter(Cond == "weekday") %>%
+    group_by(stimulus) %>%
+     arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>%
+    ggplot(aes(x = x_zs, y = y_zs, group = stimShort, label = stimShort, fill = stimShort)) +
+    geom_polygon() +
+    geom_text(aes(x = X_mean_zs, y = Y_mean_zs, fill = "black"), colour = "black", size = 2) +
+    geom_path(aes(x = X_mean_zs, y = Y_mean_zs, group = 1)) +
+    facet_wrap_paginate(~ ID, ncol = N_cols, nrow = N_rows, page = i)  +
+    theme_minimal()
+  ggsave(paste0("Figures/Ctl_weekday_zs_p",i,".pdf"))
+}
+
+# ds %>% 
+#     filter(ID == 29436) %>%
+#     filter(Cond == "weekday") %>%
+#     group_by(stimulus) %>%
+#     arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>%
+#     ggplot(aes(x = x, y = y, group = stimulus, label = stimulus, fill = stimulus)) +
+#     geom_polygon() +
+#     geom_text(aes(x = X_mean, y = Y_mean, fill = "black"), colour = "black", size = 2) +
+#     geom_path(aes(x = X_mean, y = Y_mean,group = 1)) +
+#     # facet_wrap(~ID)  +
+#     theme_minimal()
+# 
+# # ggsave("weekdays.svg", width = 50, height = 25, units = "cm", device = "svg")
+```
+
+### 5.1.2 Extremly consistent examples:
+
+```{r}
+ds %>% 
+  filter(Consistency == 0) %>%
+  filter(Cond == "weekday") %>%
+  group_by(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>%
+  ggplot(aes(x = x, y = y, group = stimulus, label = stimulus, fill = stimulus)) +
+  geom_polygon() +
+  geom_text(aes(x = X_mean, y = Y_mean, fill = "black"), colour = "black", size = 2) +
+  geom_path(aes(x = X_mean, y = Y_mean,group = 1)) +
+  facet_wrap(~ID)  +
+  theme_minimal()
+
+```
+
+## 5.3 Months
+
+```{r eval=FALSE, include=FALSE}
+
+# Multiple pages
+library(ggforce)
+
+# Set the number of rows & columns per pages
+N_rows = 5
+N_cols = 8
+
+ds$stimShort <- substr(ds$stimulus,start = 1, stop = 2)
+
+for(i in 1:(round(length(IDlist)/(N_rows*N_cols))+1)){
+  
+  ds %>% 
+    filter(group == "Syn") %>%
+    filter(Cond == "month") %>%
+    group_by(stimulus) %>%
+    arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>% 
+    ggplot(aes(x = x_zs, y = y_zs, group = stimShort, label = stimShort, fill = stimShort)) +
+    geom_polygon() +
+    geom_text(aes(x = X_mean_zs, y = Y_mean_zs, fill = "black"), colour = "black", size = 2) +
+    geom_path(aes(x = X_mean_zs, y = Y_mean_zs, group = 1)) +
+    facet_wrap_paginate(~ ID, ncol = N_cols, nrow = N_rows, page = i)  +
+    theme_minimal()
+  ggsave(paste0("Figures/Syn_month_zs_p",i,".pdf"))
+}
+
+
+for(i in 1:(round(length(IDlist)/(N_rows*N_cols))+1)){
+  
+  ds %>% 
+    filter(group == "Ctl") %>%
+    filter(Cond == "month") %>%
+    group_by(stimulus) %>%
+    arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
+    ggplot(aes(x = x_zs, y = y_zs, group = stimShort, label = stimShort, fill = stimShort)) +
+    geom_polygon() +
+    geom_text(aes(x = X_mean_zs, y = Y_mean_zs, fill = "black"), colour = "black", size = 2) +
+    geom_path(aes(x = X_mean_zs, y = Y_mean_zs, group = 1)) +
+    facet_wrap_paginate(~ ID, ncol = N_cols, nrow = N_rows, page = i)  +
+    theme_minimal()
+  ggsave(paste0("Figures/Ctl_month_zs_p",i,".pdf"))
+}
+
+```
+
+
+
+### 5.1.2 Extremly consistent examples:
+
+```{r}
+ds %>% 
+  # filter(group == "Syn") %>%
+  filter(Consistency == 0) %>%
+  filter(Cond == "month") %>%
+  group_by(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
+  ggplot(aes(x = x, y = y, group = stimulus, label = stimulus, fill = stimulus)) +
+  geom_polygon() +
+  geom_text(aes(x = X_mean, y = Y_mean, fill = "black"), colour = "black", size = 2) +
+  geom_path(aes(x = X_mean, y = Y_mean,group = 1)) +
+  facet_wrap(~ID) +
+  theme_minimal()
+
+```
+
+# 6. Figure Consistency
+
+```{r}
+ds %>%  
+    filter(repetition == 1) %>%
+    ggplot(aes(x = Consistency, group = group, fill = group)) +
+    geom_density(alpha = 0.5) +
+    xlim(0,0.5)
+```
+
+
+# 7. Classifications:
+
+## 7.1. Questionnaire based
+
+see ´SynQuest´
+
+```{r}
+ds_Q$QuestCriteria <- ds_Q$`questionnaire score` <= 19
+sum(ds_Q$QuestCriteria)
+sum(!ds_Q$QuestCriteria)
+
+ID_SynQuest <- ds_Q$ID[ds_Q$QuestCriteria]
+ds$SynQuest <- ds$ID %in% ID_SynQuest
+```
+
+## 7.2. Consistency
+
+see ´SynCons´
+
+```{r}
+ds$SynCons <- ds$Consistency <= .203
+```
+
+## 7.3. SD
+
+```{r}
+IDSynSD <- observed_consistency$participant[observed_consistency$`x-sd` >= .075 | observed_consistency$`y-sd` >= .075]
+
+ds$SynSD<- ds$ID %in% IDSynSD
+```
+
+
+## 7.4. Permuted z-score
+
+see ´SynPermzs´
+
+Note this might vary due to the randomisation process involved in the permutation. Some sd are 0, leadiong to NaN in the z score. The two additional lines are to take this into account. 
+```{r}
+ID_SynPermzs <- unique(observed_consistency$participant[abs(observed_consistency$`z-score`) >= 2])
+ID_SynPermzs <- c(ID_SynPermzs,observed_consistency$participant[is.nan(observed_consistency$`z-score`)])
+ID_SynPermzs <- ID_SynPermzs[!is.na(ID_SynPermzs)]
+
+ds$SynPermzs <- ds$ID %in% ID_SynPermzs
+
+```
+
+## 7.5 Combine Criteria
+
+```{r}
+ds$SynQXCons   <- ds$SynQuest | ds$SynCons
+ds$SynQXPermzs <- ds$SynQuest | ds$SynPermzs
+
+ID_SynWard2018 <- ds %>%
+  filter(SynQuest) %>%
+  filter(SynCons)  %>%
+  filter(SynSD) %>%
+  group_by(ID) %>%
+  filter(row_number() == 1) %>%
+  select(ID)
+
+
+ID_SynRothen <- ds %>%
+  filter(SynQuest) %>%
+  filter(SynPermzs) %>%
+  group_by(ID) %>%
+  filter(row_number() == 1) %>%
+  select(ID)
+
+```
+
+
+```{r}
+ds_Q %>%
+  ggplot(aes(x = `questionnaire score`, group = SynWard2018, fill = SynWard2018)) +
+  geom_density(alpha=0.8)
+
+ds_Q %>%
+  ggplot(aes(x = `questionnaire score`, group = SynRothen, fill = SynRothen)) +
+  geom_density(alpha=0.8)
+```
+
+```{r}
+ds %>%
+    ggplot(aes(x = ConsistencyPerCond, group = SynWard2018, fill = SynWard2018)) +
+    geom_density(alpha=0.8) +
+    facet_grid(~ Cond) + 
+    scale_x_continuous(limits = c(0,0.1))
+
+ds %>%
+    ggplot(aes(x = ConsistencyPerCond, group = SynRothen, fill = SynRothen)) +
+    geom_density(alpha=0.8) +
+    facet_grid(~ Cond) + 
+    scale_x_continuous(limits = c(0,0.1))
+
+```
+
+
+Okey this could be done more elegantly, but here I reproduce Figure 6:
+
+```{r}
+ID_SynQuest <- ds %>%
+  group_by(ID) %>%
+  filter(row_number() == 1) %>%
+  select(ID,SynQuest, SynQXPermzs)
+
+observed_consistency %>%  
+    ggplot(aes(x = consistency)) +
+    geom_density(aes(group = ID_SynQuest$SynQuest,fill = ID_SynQuest$SynQuest), alpha = 0.5) 
+
+observed_consistency %>%  
+    ggplot(aes(x = `z-score`)) +
+    geom_density(aes(group = ID_SynQuest$SynQuest,fill = ID_SynQuest$SynQuest), alpha = 0.5) 
+
+```
+
+## 7.6. Consistent non synesthetes
+
+In the non self reported synesthetes, there still seem to be some consistent (i.e. the first bump in the reddish filled density). 
+
+For me later: I did not go eleganty here, don't know why cant filter z-score properly. 
+```{r}
+
+observed_consistency$`z-score` - as.double(observed_consistency$`z-score`)
+observed_consistency$abszs <- abs(observed_consistency$`z-score`)
+
+Cons_ctl <- observed_consistency %>%
+    filter(!ID_SynQuest$SynQuest) %>%
+    filter(abszs > 5) %>% 
+    pull(participant)
+
+# The consistent controls: 
+ds %>%  
+  filter(repetition == 1) %>%
+  filter(ID %in% Cons_ctl) %>%
+  ggplot(aes(x = Consistency)) +
+  geom_density(alpha = 0.5)  +
+  xlim(0,0.5)
+
+tmp <- ds_Q %>% 
+    filter(ID %in% Cons_ctl)
+
+
+ds %>% 
+  filter(ID %in% Cons_ctl) %>%
+  filter(Cond =="number") %>%
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+  geom_polygon() +
+  geom_text(aes(x = X_mean, y = Y_mean, fill = "black"), colour = "black", size = 2) +
+  geom_path(aes(x = X_mean, y = Y_mean, group = 1)) +
+  facet_wrap(~ ID)  +
+  theme_minimal()
+```
+
+# 8. Figure all
+
+I want to plot all the ID's forms with on top 4 dots. The dots can be red or green. Each dot corresponds to one of these criteria:
+- Questionnaire     `SynQuest`
+- Consistency       `SynCons`
+- SD                `SynSD`
+- Permuted z-score  `SynPermzs`
+
+```{r}
+
+# Multiple pages
+library(ggforce)
+
+
+# Set the number of rows & columns per pages
+N_rows = 5
+N_cols = 9
+
+for(i in 1:(round(length(IDlist)/(N_rows*N_cols)*3)+1)){
+  
+ ds %>% 
+    # filter(ID  %in% c(28779,29027,29043)) %>%
+    group_by(stimulus) %>%
+    arrange(stimulus) %>%
+    arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
+    ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+    geom_point(aes(x = 5 -2, y = 5, color =SynQuest), size = 0.5) + 
+    geom_point(aes(x = 5 -1.5, y = 5, color =SynCons), size = 0.5) + 
+    geom_point(aes(x = 5 -1., y = 5, color =SynSD), size = 0.5) +
+    geom_point(aes(x = 5 -0.5, y = 5, color =SynPermzs), size = 0.5) +
+    geom_point(aes(x = 5 + 0.2, y = 5, color =SynLine), size = 0.5) + # SynLine is developed later in the code.
+    geom_polygon(alpha = 0.4) +
+    geom_text(aes(x = X_mean_zs+0.1, y = Y_mean_zs+0.1), colour = "black", size = 0.5) +
+    geom_path(aes(x = X_mean_zs, y = Y_mean_zs, group = 1)) +
+    facet_wrap_paginate( ~ ID+ Cond, ncol = N_cols, nrow = N_rows, page = i)  +
+    theme_minimal()
+    ggsave(paste0("Figures/Syn_Categories",i,".pdf"),width = N_cols*2, height = N_rows*2)
+}
+
+
+# Diagnostic tables and figures per ID:
+
+## Response level
+ds %>% 
+    filter(ID  %in% c(29027)) %>%
+    group_by(Cond) %>%
+    summarize(Mx = mean(x_zs), My = mean(y_zs), SDx = sd(x_zs), SDy = sd(y_zs), nStim =length(stimulus)) 
+  
+ds %>% 
+    filter(ID  %in% c(29027)) %>%
+    group_by(Cond) %>%
+    summarize(Mx = mean(x), My = mean(y), SDx = sd(x), SDy = sd(y), nStim =length(stimulus)) 
+
+
+### Most detailed possible, stimulus level:
+
+ds %>% 
+    filter(ID  %in% c(29027)) %>%
+    group_by(Cond, stimulus) %>%
+    summarize(Mx = mean(x), My = mean(y), SDx = sd(x), SDy = sd(y), nStim =length(stimulus)) 
+
+## Hardware level:
+ds %>% 
+    filter(ID  %in% c(29027)) %>%
+    group_by(Cond) %>%
+    summarize(Mwidth = mean(width), Mheight = mean(height)) 
+
+# Illustrations
+
+# Apply per group
+ds %>%
+  filter(ID  %in% c(29027)) %>%
+  group_by(ID, stimulus) %>%
+  mutate(triangle_area = triangle_area(x, y))
+
+```
+
+
+Conclusions:
+from ID 29027: if one of the stimulus is responded at exactly the same location 3 times leads to a triangle area of 0 and consistency of 0. In that case SD and permzs are invalid. This is a problem
+
+# 7. Number form classifications
+
+I would like to be able to flag the ones that points in the middle, i.e. ID 29027
+```{r}
+
+ID29027 <- ds %>% 
+    filter(ID == 29027) %>%
+    group_by(stimulus) %>%
+    arrange(stimulus) 
+
+ID29027 %>%
+  ggplot(aes(x = x, y = y, group = stimulus, label = stimulus, fill = stimulus)) +
+  geom_polygon() +
+  geom_text(aes(x = X_mean, y = Y_mean, fill = "black"), colour = "black") +
+  geom_path(aes(x = X_mean, y = Y_mean, group = 1)) +
+  facet_grid( ~ Cond) +
+  theme_minimal() 
+```
+
+
+### 7.1 Exclude ID 33168
+
+What did ID *33168* ?
+What is this screen size?
+`r unique(ds %>% filter(ID == 33168) %>% pull(width))`
+So the screen size for this ID changes(d) after the 20th trial. From 1090X530 to 309X149.
+
+```{r}
+# First for screen size
+ds$x_scScreen <- ds$x/ds$Screen_area
+ds$y_scScreen <- ds$y/ds$Screen_area
+
+ds$X_mean_scScreen <- ds$X_mean/ds$Screen_area
+ds$Y_mean_scScreen <- ds$Y_mean/ds$Screen_area
+
+ds %>%
+  filter(group == "Syn") %>%
+  filter(ID != 33168) %>%
+  filter(Cond == "number") %>%
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  ggplot(aes(x = X_mean_scScreen, y = Y_mean_scScreen, group = stimulus, label = stimulus, colour =  stimulus)) +
+  geom_point(size = 0.1) +
+  geom_path(aes(group = 1), alpha = 0.6) +
+  scale_color_brewer(palette="RdBu") +
+  facet_wrap(~ID) +
+  theme_void()
+
+
+```
+
+Well 29027 still seems odding out. Maybe should scale for x and y max of each condition.
+
+## 7.2 zscore per IDXCond
+
+```{r}
+
+
+ds %>%
+  filter(group == "Syn") %>%
+  filter(ID != 33168) %>%
+  filter(Cond == "number") %>%
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  ggplot(aes(x = X_mean_zs, y = Y_mean_zs, group = stimulus, label = stimulus, colour =  stimulus)) +
+  geom_path(aes(group = 1), alpha = 0.6) +
+  scale_color_brewer(palette="RdBu") +
+  facet_wrap(~ID) +
+  theme_void()
+
+ggsave("Figures/numbers_zs.pdf")
+```
+
+```{r}
+ds %>% 
+    filter(Cond == "number") %>%
+    group_by(stimulus) %>%
+    arrange(stimulus) %>%
+    ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+    geom_polygon() +
+    geom_text(aes(x = X_mean_zs, y = Y_mean_zs, fill = "black"), colour = "black", size = 2) +
+    geom_path(aes(x = X_mean_zs, y = Y_mean_zs,group = 1)) +
+    facet_wrap(~ID)  +
+    theme_minimal()
+```
+
+
+```{r eval=FALSE, include=FALSE}
+# Multiple pages
+library(ggforce)
+
+# Set the number of rows & columns per pages
+N_rows = 5
+N_cols = 8
+
+for(i in 1:(round(length(IDlist)/(N_rows*N_cols))+1)){
+  ds %>% 
+    filter(Cond == "number") %>%
+    filter(group =="Syn") %>%
+    group_by(stimulus) %>%
+    arrange(stimulus) %>%
+    ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+    geom_polygon() +
+    geom_text(aes(x = X_mean_zs, y = Y_mean_zs, fill = "black"), colour = "black", size = 2) +
+    geom_path(aes(x = X_mean_zs, y = Y_mean_zs,group = 1)) +
+    facet_wrap_paginate(~ ID, ncol = N_cols, nrow = N_rows, page = i)  +
+    theme_minimal()
+  ggsave(paste0("Figures/Syn_numbers_zs_p",i,".pdf"))
+}
+
+for(i in 1:(round(length(IDlist)/(N_rows*N_cols))+1)){
+  ds %>% 
+    filter(Cond == "number") %>%
+    filter(group =="Ctl") %>%
+    group_by(stimulus) %>%
+    arrange(stimulus) %>%
+    ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+    geom_polygon() +
+    geom_text(aes(x = X_mean_zs, y = Y_mean_zs, fill = "black"), colour = "black", size = 2) +
+    geom_path(aes(x = X_mean_zs, y = Y_mean_zs,group = 1)) +
+    facet_wrap_paginate(~ ID, ncol = N_cols, nrow = N_rows, page = i)  +
+    theme_minimal()
+  ggsave(paste0("Figures/Ctl_numbers_zs_p",i,".pdf"))
+}
+
+```
+
+
+
+
+## 7.3 Test pipe:
+```{r}
+# ds %>% 
+#   filter(ID %in% c(29027,28301)) %>%
+#   group_by(ID, Cond) %>%
+#   mutate(x_scale = scale(x/Screen_area)) %>%
+#   mutate(y_scale = scale(y/Screen_area)) %>%
+#   group_by(ID, Cond, stimulus) %>%
+#   mutate(X_mean_scale = mean(x_scale), Y_mean_scale = mean(y_scale))%>%
+#   arrange(stimulus) %>%
+#   ggplot(aes(x = x_scale, y = y_scale, group = stimulus, label = stimulus, fill = stimulus)) +
+#   geom_polygon() +
+#   geom_text(aes(x = X_mean_scale, y = Y_mean_scale, fill = "black"), colour = "black") +
+#   geom_path(aes(x = X_mean_scale, y = Y_mean_scale, group = 1)) +
+#   facet_grid( ID ~ Cond) +
+#   theme_minimal()
+```
+
+
+
+# 8. Forms and angles
+
+The idea is that I can compute the angle between each sequential stimulus spatial location. I.e. for 2, I use 1,2,3 mean x and mean y. Treat them as vector and compute the angle. Then I average all the angles per Cond X ID. The idea is that a circular pattern should have similar non 0 angles. While lines should have a 0 angles. 
+
+OK in short, the issue using angles is that one very ottuse angle will bias the angle's average.
+
+```{r}
+ds$angle <- NaN
+
+signed_angle <- function(A, B, C) {
+  # Vectors BA and BC
+  BA <- A - B
+  BC <- C - B
+  
+  # Compute angle using atan2 of cross and dot products
+  cross_product <- BA[1] * BC[2] - BA[2] * BC[1]  # 2D cross product
+  dot_product <- sum(BA * BC)
+  
+  angle_rad <- atan2(cross_product, dot_product)
+  angle_deg <- angle_rad * (180 / pi)
+  
+  return(angle_deg)  # Can be negative or positive
+}
+
+
+ds <- ds %>%
+  group_by(ID,Cond) %>%
+  filter(repetition == 1) %>%
+  mutate(x_lead = lead(X_mean),
+         y_lead = lead(Y_mean),
+         x_lag = lag(X_mean),
+         y_lag = lag(Y_mean) ) 
+
+ds <- ds %>%
+  group_by(ID,Cond,stimulus) %>%
+  filter(repetition == 1) %>%
+  mutate(angle = signed_angle(c(x_lag,y_lag),c(X_mean,Y_mean),c(x_lead,y_lead)))
+
+
+ds_angles<- ds %>% 
+    filter(repetition == 1) %>%
+    filter(!is.na(angle))
+```
+
+
+```{r}
+ds_angles$angle_sign <- sign(ds_angles$angle)
+
+tmp = ds_angles %>%
+    filter(Cond == "number") %>%
+    group_by(ID,Cond) %>%
+    mutate(nPos = sum(angle_sign))
+
+hist(tmp$nPos)
+
+tmp %>%
+    filter(nPos > 5 | nPos < -5) %>%
+    ggplot(aes(x = X_mean_zs, y = Y_mean_zs)) +
+    geom_path() +
+    facet_wrap(~ ID)
+
+```
+
+
+```{r}
+ds_angles <- ds_angles %>%
+  group_by(ID,Cond) %>%
+  mutate(sum_anglesign = sum(sign(angle_sign)))
+
+ds_angles %>%
+  filter(sum_anglesign > 9)
+```
+
+
+
+```{r}
+ds_angles <- ds_angles %>% 
+  group_by(ID,Cond, group) %>%
+  mutate(M_angle = mean(angle))
+
+ds_angles %>%
+    ggplot(aes(x = angle, group = Cond)) +
+    geom_histogram() +
+    facet_grid(~Cond)
+
+hist(ds_angles$angle)
+hist(ds_angles$M_angle)
+```
+
+
+```{r}
+ds$signed_angle
+
+```
+
+# 10. line crossing. PROMISING!
+
+An idea I have is to look into the lines and order of the forms. I would exclude when lines crosses. (since we expect forms the lines crossing means no form is formed). Needs refinement.
+```{r}
+
+
+# 
+# # Helper: Orientation of ordered triplet (p, q, r)
+# orientation <- function(p, q, r) {
+#   val <- (q[2] - p[2]) * (r[1] - q[1]) - (q[1] - p[1]) * (r[2] - q[2])
+#   if (is.na(val)) return(NA)
+#   if (val == 0) return(0)          # colinear
+#   if (val > 0) return(1) else return(2)  # clockwise or counterclockwise
+# }
+# 
+# # Helper: Check if q lies on segment pr
+# on_segment <- function(p, q, r) {
+#   if (is.na(any(c(p, q, r)))) return(FALSE)
+#   q[1] <= max(p[1], r[1]) && q[1] >= min(p[1], r[1]) &&
+#     q[2] <= max(p[2], r[2]) && q[2] >= min(p[2], r[2])
+# }
+# 
+# # Main: Do segments p1-p2 and p3-p4 intersect?
+# segments_intersect <- function(p1, p2, p3, p4) {
+#   o1 <- orientation(p1, p2, p3)
+#   o2 <- orientation(p1, p2, p4)
+#   o3 <- orientation(p3, p4, p1)
+#   o4 <- orientation(p3, p4, p2)
+# 
+#   # Skip if any orientations failed
+#   if (any(is.na(c(o1, o2, o3, o4)))) return(FALSE)
+# 
+#   # General case
+#   if (o1 != o2 && o3 != o4) return(TRUE)
+# 
+#   # Special colinear cases
+#   if (o1 == 0 && on_segment(p1, p3, p2)) return(TRUE)
+#   if (o2 == 0 && on_segment(p1, p4, p2)) return(TRUE)
+#   if (o3 == 0 && on_segment(p3, p1, p4)) return(TRUE)
+#   if (o4 == 0 && on_segment(p3, p2, p4)) return(TRUE)
+# 
+#   return(FALSE)
+# }
+# 
+# # Loop over all pairs of non-adjacent segments
+# n <- length(x)
+# crosses <- FALSE
+# 
+# for (i in 1:(n - 2)) {
+#   for (j in (i + 2):(n - 1)) {
+#     # Skip adjacent segments (they share a point)
+#     if (j == i + 1) next
+# 
+#     p1 <- c(x[i], y[i])
+#     p2 <- c(x[i + 1], y[i + 1])
+#     p3 <- c(x[j], y[j])
+#     p4 <- c(x[j + 1], y[j + 1])
+# 
+#     if (segments_intersect(p1, p2, p3, p4)) {
+#       cat(sprintf("Segments (%d-%d) and (%d-%d) intersect\n", i, i+1, j, j+1))
+#       crosses <- TRUE
+#     }
+#   }
+# }
+# 
+# if (!crosses) {
+#   cat("No intersections found.\n")
+# }
+
+##
+
+count_self_intersections <- function(x, y, verbose = TRUE) {
+  n <- length(x)
+  if (n < 4) {
+    if (verbose) cat("Need at least 4 points to check for self-intersection.\n")
+    return(0)
+  }
+
+  # Orientation function
+  orientation <- function(p, q, r) {
+    val <- (q[2] - p[2]) * (r[1] - q[1]) - (q[1] - p[1]) * (r[2] - q[2])
+    if (is.na(val)) return(NA)
+    if (val == 0) return(0)
+    if (val > 0) return(1) else return(2)
+  }
+
+  # Check if q lies on segment pr
+  on_segment <- function(p, q, r) {
+    if (any(is.na(c(p, q, r)))) return(FALSE)
+    q[1] <= max(p[1], r[1]) && q[1] >= min(p[1], r[1]) &&
+      q[2] <= max(p[2], r[2]) && q[2] >= min(p[2], r[2])
+  }
+
+  # Main intersection check
+  segments_intersect <- function(p1, p2, p3, p4) {
+    o1 <- orientation(p1, p2, p3)
+    o2 <- orientation(p1, p2, p4)
+    o3 <- orientation(p3, p4, p1)
+    o4 <- orientation(p3, p4, p2)
+
+    if (any(is.na(c(o1, o2, o3, o4)))) return(FALSE)
+
+    # General case
+    if (o1 != o2 && o3 != o4) return(TRUE)
+
+    # Special colinear cases
+    if (o1 == 0 && on_segment(p1, p3, p2)) return(TRUE)
+    if (o2 == 0 && on_segment(p1, p4, p2)) return(TRUE)
+    if (o3 == 0 && on_segment(p3, p1, p4)) return(TRUE)
+    if (o4 == 0 && on_segment(p3, p2, p4)) return(TRUE)
+
+    return(FALSE)
+  }
+
+  count <- 0
+  for (i in 1:(n - 2)) {
+    for (j in (i + 2):(n - 1)) {
+      if (j == i + 1) next  # skip adjacent segments
+
+      p1 <- c(x[i], y[i])
+      p2 <- c(x[i + 1], y[i + 1])
+      p3 <- c(x[j], y[j])
+      p4 <- c(x[j + 1], y[j + 1])
+
+      if (segments_intersect(p1, p2, p3, p4)) {
+        count <- count + 1
+        if (verbose) {
+          cat(sprintf("Intersection #%d: segments (%d-%d) and (%d-%d)\n", count, i, i+1, j, j+1))
+        }
+      }
+    }
+  }
+
+  if (verbose) cat("Total crossings:", count, "\n")
+  return(count)
+}
+
+# Test:
+
+
+# # Replace these with your actual coordinates
+# x <- c(1, 2, 3, 2, 1, 3, 1, 2, 3)
+# y <- c(0, 1, 2, 5, 4, 8, 3, 2, 4)
+# 
+# tmp2 <- 1:9
+# tmp2 <- as.data.frame(tmp2)
+# tmp2$x <- x
+# tmp2$y <- y
+# 
+# ggplot(data = tmp2, aes(x = x, y = y, label = tmp2)) +
+#   geom_path() +
+#   geom_text()
+# 
+# count_self_intersections(tmp2$x,tmp2$y, verbose = FALSE)
+# 
+# ds %>% 
+#   filter(Cond == "number") %>%
+#   filter(ID == "28301")%>%
+#   mutate(nLineCross = count_self_intersections(x,y), verbose = FALSE) %>%
+#   arrange(stimulus) %>%
+#   ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+#   geom_polygon() +
+#   geom_text(aes(x = X_mean_zs, y = Y_mean_zs, fill = "black"), colour = "black", size = 2) +
+#   geom_path(aes(x = X_mean_zs, y = Y_mean_zs,group = 1)) +
+#   facet_wrap_paginate(~ ID, ncol = N_cols, nrow = N_rows, page = i)  +
+#   theme_minimal()
+
+```
+
+```{r}
+
+ds <- ds %>% 
+  group_by(ID, Cond,repetition) %>%
+  mutate(nLineCross = count_self_intersections(x,y, verbose = FALSE))
+# Since there are different number of line crossing per conditions, I need to sum them across ID:
+ds <- ds %>%
+  group_by(ID) %>%
+  mutate(totLineCross = sum(nLineCross))
+
+ggplot(ds, aes(x = totLineCross, group = SynQuest, fill = SynQuest)) +
+    geom_density(alpha = 0.5)
+
+ds$SynLine <- ds$totLineCross <= 500
+
+# Export
+
+ds %>%
+  group_by(ID) %>%
+   filter(row_number()==1) %>%
+  select(ID,group, triangle_area, consistency,)
+
+```
+
+```{r}
+ write.csv(observed_consistency, file = "ExportedCsv/observed_consistency.csv")
+
+write.csv(ds %>%
+    group_by(ID) %>%
+    filter(row_number()==1) %>%
+    select(ID,group, triangle_area, Consistency,totLineCross,SynQuest,SynCons,SynSD,SynPermzs, SynLine),file = "ExportedCsv/SynCat.csv")
+```
+
+
+# Clustering/classifying
+
+# V5 concave hull
+
+
+Example
+```{r eval=FALSE, include=FALSE}
+library(concaveman)
+library(pracma)
+
+ID28301conv = concaveman(as.matrix(cbind(ID28301$X_mean, ID28301$Y_mean)))
+ID28301conv = concaveman(as.matrix(cbind(ID28301$x_zs, ID28301$y_zs)),concavity = 1, length_threshold = 1)
+
+ggplot(aes(x = V1, y = V2), data = ID28301conv) +
+    geom_polygon() +
+    geom_text(aes(x = x_zs, y = y_zs, label = stimulus), data = ID28301)
+
+polyarea(ID28301conv[,2],ID28301conv[,1])
+
+sd(ID28301conv[,2])
+sd(ID28301conv[,1])
+```
+
+Ok from here we could extract the convex area, SD, max, min. But what would it bring to shape classification?
+Small area could be: (a) very consistent or (b) clicks in the middle. 
+
+Generalize
+```{r eval=FALSE, include=FALSE}
+
+Conds = c("number","weekday","month")
+ConcList <- c()
+
+IDlist <- unique(ds$ID)
+
+for (IDnr in 1:length((IDlist))) {
+    for (Cond_i in 1:3) {
+      dsIDCond <- ds %>% 
+        filter(ID == IDlist[IDnr]) %>% 
+        filter(Cond == Conds[Cond_i])
+    
+      if (is.nan(dsIDCond$x_zs[1])) {
+        tmp <- c(NaN,NaN)
+        tmp <- as.data.frame(tmp)
+        tmp$ID = IDlist[IDnr]
+        tmp$Cond = Conds[Cond_i]
+      }
+    tmp = concaveman(as.matrix(cbind(dsIDCond$x_zs, dsIDCond$y_zs)),concavity = 1, length_threshold = 1)
+    tmp <- as.data.frame(tmp)
+    tmp$ID = IDlist[IDnr]
+    tmp$Cond = Conds[Cond_i]
+    
+    ConcList = rbind(ConcList,tmp)
+     
+  }
+}
+
+
+
+```
+
+# V4 LM
+
+What if I used linear models, at least to detect lines
+
+```{r}
+library(afex)
+
+lmer(x_zs ~ y_zs + (1|ID),ds)
+```
+
+
+# V3 Angles
+
+```{r}
+tmp <- ds %>% 
+    filter(ID == 29207) %>%
+    filter(Cond == "number") %>%
+    select(ID,x,y, X_mean,Y_mean, repetition,stimulus)
+
+tmp <- tmp %>%
+  filter(repetition == 1)
+
+ggplot(tmp, aes(x = x, y = y,label = stimulus)) +
+    geom_path() +
+    geom_text()
+  
+
+tmp = tmp %>%
+  mutate(angle = round(atan2(x,y)*180/pi))
+
+
+ggplot(tmp, aes(x = x, y = y,label = stimulus)) +
+    geom_path() +
+    geom_text(aes(label = angle))
+
+# Define points A, B, and C
+
+for(start_p in 1:8){
+  
+  A <- c(tmp$x[start_p], tmp$y[start_p])
+  B <- c(tmp$x[start_p+1], tmp$y[start_p+1])
+  C <- c(tmp$x[start_p+2], tmp$y[start_p+2])
+  
+  # Vectors BA and BC
+  BA <- A - B
+  BC <- C - B
+  
+  cross_product <- BA[1] * BC[2] - BA[2] * BC[1]  # 2D cross product
+  dot_product <- sum(BA * BC)
+  
+  angle_rad <- atan2(cross_product, dot_product)
+  angle_deg <- angle_rad * (180 / pi)
+  
+  print(angle_deg)
+}
+
+
+signed_angle <- function(A, B, C) {
+  # Vectors BA and BC
+  BA <- A - B
+  BC <- C - B
+  
+  # Compute angle using atan2 of cross and dot products
+  cross_product <- BA[1] * BC[2] - BA[2] * BC[1]  # 2D cross product
+  dot_product <- sum(BA * BC)
+  
+  angle_rad <- atan2(cross_product, dot_product)
+  angle_deg <- angle_rad * (180 / pi)
+  
+  return(angle_deg)  # Can be negative or positive
+}
+
+```
+
+
+## 3 D plot:
+
+```{r}
+library(plotly)
+
+
+# Helper: Sort triangle vertices consistently using angles from centroid
+sort_triangle <- function(tri_df) {
+  tri <- as.matrix(tri_df[, c("x", "y")])
+  center <- colMeans(tri)
+  angles <- atan2(tri[,2] - center[2], tri[,1] - center[1])
+  tri[order(angles), , drop = FALSE]
+}
+
+# Sort triangles and add z = stimulus level
+triangles <- lapply(split(tmp, tmp$stimulus), function(tri_df) {
+  sorted_tri <- sort_triangle(tri_df)
+  z <- rep(tri_df$stimulus[1], 3)
+  data.frame(x = sorted_tri[,1], y = sorted_tri[,2], z = z)
+})
+
+# Initialize plotly object
+p <- plot_ly(type = "scatter3d", mode = "lines")
+
+
+# Add triangles and connecting lines
+for (i in seq_along(triangles)) {
+  tri <- triangles[[i]]
+  
+  # Close the triangle by adding the first point again
+  tri_closed <- rbind(tri, tri[1,])
+  
+  # Add triangle
+  p <- add_trace(p,
+                 x = tri_closed$x,
+                 y = tri_closed$y,
+                 z = tri_closed$z,
+                 mode = "lines",
+                 type = "scatter3d",
+                 line = list(color = "blue"),
+                 showlegend = FALSE)
+}
+
+p
+```
+
+
+```{r}
+# Add triangles and connecting lines
+for (i in seq_along(triangles)) {
+  tri <- triangles[[i]]
+  
+  # Close the triangle by repeating the first point
+  tri_closed <- rbind(tri, tri[1,])
+  
+  # Draw triangle
+  p <- add_trace(p,
+                 x = tri_closed$x,
+                 y = tri_closed$y,
+                 z = tri_closed$z,
+                 mode = "lines",
+                 type = "scatter3d",
+                 line = list(color = "blue"),
+                 showlegend = FALSE)
+  
+  # Draw connections between matching vertices of successive triangles
+  if (i < length(triangles)) {
+    tri_next <- triangles[[i + 1]]
+    for (v in 1:3) {
+      p <- add_trace(p,
+                     x = c(tri[v, "x"], tri_next[v, "x"]),
+                     y = c(tri[v, "y"], tri_next[v, "y"]),
+                     z = c(tri[v, "z"], tri_next[v, "z"]),
+                     mode = "lines",
+                     type = "scatter3d",
+                     line = list(color = "gray", dash = "dash"),
+                     showlegend = FALSE)
+    }
+  }
+}
+
+p
+```
+
+
+```{r}
+# 
+# # Collect all vertices and face indices
+# vertices <- do.call(rbind, triangles)
+# faces <- list()
+# colors <- rep(NA, 0)
+# 
+# for (i in 1:(length(triangles) - 1)) {
+#   offset1 <- (i - 1) * 3
+#   offset2 <- i * 3
+#   # Make 3 quads between each pair of triangles, split each quad into 2 triangles
+#   face_pairs <- list(
+#     c(0, 1, 4), c(0, 4, 3),
+#     c(1, 2, 5), c(1, 5, 4),
+#     c(2, 0, 3), c(2, 3, 5)
+#   )
+#   for (f in face_pairs) {
+#     faces[[length(faces)+1]] <- c(f[1], f[2], f[3]) + offset1 + 1
+#     colors <- c(colors, i)  # assign a color per face group
+#   }
+# }
+# 
+# # Convert faces to matrix format
+# face_matrix <- do.call(rbind, faces)
+# 
+# # Create plot with mesh3d
+# plot_ly() %>%
+#   add_trace(
+#     type = "mesh3d",
+#     x = vertices$x,
+#     y = vertices$y,
+#     z = vertices$z,
+#     i = face_matrix[,1] - 1,  # plotly uses 0-based indices
+#     j = face_matrix[,2] - 1,
+#     k = face_matrix[,3] - 1,
+#     facecolor = ~colors,      # use stimuli index as color
+#     intensity = colors,
+#   
+#     showscale = TRUE,
+#     opacity = 0.8
+#   )
+
+
+```
+
+
+
+```{r}
+
+features <- ds %>%
+  group_by(ID,Cond) %>%
+  summarise(mean_x = mean(X_mean),
+    mean_y = mean(Y_mean),
+    sd_x = sd(X_mean),
+    sd_y = sd(Y_mean),
+    total_length = sum(sqrt(diff(X_mean)^2 + diff(Y_mean)^2)),
+    range_x = max(X_mean) - min(X_mean),
+    range_y = max(Y_mean) - min(Y_mean))
+
+```
+
+# V2 Test PCA classifier
+
+```{r eval=FALSE, include=FALSE}
+ds_num <- ds %>%
+  filter(Cond == "number")
+
+# Compute centroids and SD per number per participant
+consistency_summary <- ds_num %>%
+  group_by(ID, stimulus) %>%
+  summarise(
+    mean_x = mean(x),
+    mean_y = mean(y),
+    sd_x = sd(x),
+    sd_y = sd(y),
+    consistency = sqrt(sd_x^2 + sd_y^2),
+    .groups = 'drop'
+  )
+
+```
+
+```{r eval=FALSE, include=FALSE}
+
+
+# Get mean points for each number
+centroid_data <- ds %>%
+  group_by(ID, stimulus) %>%
+  summarise(mean_x = mean(x), mean_y = mean(y), .groups = 'drop')
+
+# Run PCA per participant
+pca_results <- centroid_data %>%
+  group_by(ID) %>%
+  summarise(
+    pc_ratio = {
+      pca <- prcomp(cbind(mean_x, mean_y))
+      pca$sdev[1] / sum(pca$sdev)
+    }
+  )
+
+```
+
+
+
+```{r eval=FALSE, include=FALSE}
+
+# Compute centroids and SD per number per participant
+consistency_summary <- ds %>%
+  group_by(participant, number) %>%
+  summarise(
+    mean_x = mean(x),
+    mean_y = mean(y),
+    sd_x = sd(x),
+    sd_y = sd(y),
+    consistency = sqrt(sd_x^2 + sd_y^2),
+    .groups = 'drop'
+  )
+
+```
+
+
+# V1 Test DTW classifier
+
+
+```{r eval=FALSE, include=FALSE}
+
+features <- ds %>%
+  group_by(ID,Cond) %>%
+  summarise(mean_x = mean(X_mean),
+    mean_y = mean(Y_mean),
+    sd_x = sd(X_mean),
+    sd_y = sd(Y_mean),
+    total_length = sum(sqrt(diff(X_mean)^2 + diff(Y_mean)^2)),
+    range_x = max(X_mean) - min(X_mean),
+    range_y = max(Y_mean) - min(Y_mean))
+
+```
+
+```{r eval=FALSE, include=FALSE}
+# Normalize
+features_scaled <- as.data.frame(scale(features[,3:9]))
+
+# K-means (choose k via elbow method or silhouette)
+set.seed(42)
+kmeans_res <- kmeans(features_scaled, centers = 3)
+features$cluster <- kmeans_res$cluster
+
+```
+
+
+```{r eval=FALSE, include=FALSE}
+ds <- ds %>%
+  left_join(features %>% select(ID, cluster), by = "ID")
+```
+
+
+```{r eval=FALSE, include=FALSE}
+ds %>% 
+  filter(ID == IDlist[1:10]) %>%
+  filter(Cond == "month") %>%
+  group_by(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
+  ggplot(aes(x = X_mean, y = Y_mean, group = stimulus, label = stimulus,  color = as.factor(cluster))) +
+  geom_text(aes(x = X_mean, y = Y_mean, fill = "black"), colour = "black", size = 2) +
+  geom_path(aes(group = 1)) +
+  facet_wrap(~ID) +
+  theme_minimal()
+
+```
+
+
+
+```{r eval=FALSE, include=FALSE}
+library(dtwclust)
+
+# Assume each participant’s path is a sequence of x-y pairs
+ds_split <- split(ds[, c("X_mean", "Y_mean")], ds$ID)
+
+# Convert to time series matrix
+series_list <- lapply(ds_split, function(sub) as.matrix(sub))
+
+# Cluster with DTW
+clust <- tsclust(series_list, type = "partitional", k = 3, distance = "dtw")
+
+# Get cluster assignments
+features$cluster <- clust@cluster
+
+```
+
+
+
+
