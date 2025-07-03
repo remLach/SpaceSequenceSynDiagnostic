@@ -552,6 +552,7 @@ for(i in 1:(round(length(IDlist)/(N_rows*N_cols)*3)+1)){
     geom_polygon(alpha = 0.4) +
     geom_text(aes(x = X_mean_zs+0.1, y = Y_mean_zs+0.1), colour = "black", size = 0.5) +
     geom_path(aes(x = X_mean_zs, y = Y_mean_zs, group = 1)) +
+    geom_path(aes(x = x_zs, y = y_zs, group = repetition), alpha = 0.2) +
     facet_wrap_paginate( ~ ID+ Cond, ncol = N_cols, nrow = N_rows, page = i)  +
     theme_minimal()
     ggsave(paste0("Figures/Syn_Categories",i,".pdf"),width = N_cols*2, height = N_rows*2)
