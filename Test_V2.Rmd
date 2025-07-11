@@ -433,11 +433,39 @@ ds <- ds %>%
   mutate(totLineCross = mean(meanLineCross))
 ```
 
+## 4.1 Random walk
 
+There are thee way of dealing with repetitions:
+- compute separately the line crossing across repetitions
+- compute the line crossing as if we had a very long line (i.e. 1_1 -> 2_1 -> 3_1 -> 4_1, ... 7_3 -> 8_3 -> 9_3) (_x = repetition).
+- do a random walk across repetitions. (But I don't know if it makes any sense practically).
 
+```{r}
+ds <- ds %>%
+  group_by(ID, Cond,repetition) %>%
+  mutate(nSegments = length(stimulus)-1)
+  
+# Number of crossings per condition and repetition
+ds <- ds %>% 
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
+  ungroup() %>%
+  # group_by(ID, Cond,repetition) %>%
+  group_by(ID, Cond) %>% # This should ignore the repetitions. So it should become a very long line including all repetitions, which might catch some consistency.
+  mutate(nLineCross = (count_self_intersections(x,y, verbose = FALSE)))
 
+ds <- ds %>% 
+  group_by(ID, Cond) %>%
+  mutate(meanLineCross = nLineCross/(3*nSegments))
 
-# 4.1. Line crossings
+# Average per ID, use the number of segment rather than the number of stimuli
+ds <- ds %>%
+  group_by(ID) %>%
+  mutate(totLineCross = mean(meanLineCross))
+```
+
+## 4.2. Line crossings
 Let's say 0.2 as threshold. This means that each segment crosses on average 0.05 times.
 
 ```{r}
@@ -620,6 +648,7 @@ for(i in 1:(round(length(IDlist)/(N_rows*N_cols)*3)+1)){
     geom_text(aes(x = X_mean_zs+0.1, y = Y_mean_zs+0.1), colour = "black", size = 0.5) +
     geom_path(aes(x = X_mean_zs, y = Y_mean_zs, group = 1)) +
     geom_path(aes(x = x_zs, y = y_zs, group = repetition), alpha = 0.2) +
+    geom_text(aes(x = x_zs+0.1, y = y_zs+0.1), size = 0.5, alpha = 0.5) +
     facet_wrap_paginate( ~ ID+ Cond, ncol = N_cols, nrow = N_rows, page = i)  +
     theme_minimal()
     ggsave(paste0("Figures/Syn_Categories",i,".pdf"),width = N_cols*2, height = N_rows*2)
@@ -634,7 +663,7 @@ Maybe could automatize by pulling the inconsistent but with few line crossings.
 InconsbutLine_ID <- unique(ds$ID[!ds$SynCons & ds$SynLine])
 ```
 
-### Inconsitent ID's that pass line criteria:
+### 6.1.1 Inconsitent ID's that pass line criteria:
 
 ```{r}
 IDnr = 2
@@ -667,7 +696,7 @@ ds %>%
 
 ```{r}
 ds %>%
-  filter(ID %in% InconsbutLine_ID[10:20]) %>%
+  filter(ID %in% InconsbutLine_ID[30:40]) %>%
   group_by(stimulus) %>%
   arrange(stimulus) %>%
   arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
@@ -762,4 +791,36 @@ ds %>%
 
 ```
 
+### 6.1.1 Not pass SD ID's that pass line criteria:
 
+```{r}
+NoSDbutLine_ID <- unique(ds$ID[!ds$SynSD & ds$SynLine])
+# Only 1 ID!
+NopermbutLine_ID <- unique(ds$ID[!ds$SynPermzs & ds$SynLine])
+# No one!
+
+NoLinebutCons <- unique(ds$ID[!ds$SynLine & ds$SynCons])
+
+```
+
+```{r}
+ds %>%
+  filter(ID %in% NoLinebutCons[1:10]) %>%
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
+  ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+  geom_point(aes(x = 5 -2, y = 5, color =SynQuest), size = 0.5) + 
+  geom_point(aes(x = 5 -1.5, y = 5, color =SynCons), size = 0.5) + 
+  geom_point(aes(x = 5 -1., y = 5, color =SynSD), size = 0.5) +
+  geom_point(aes(x = 5 -0.5, y = 5, color =SynPermzs), size = 0.5) +
+  geom_point(aes(x = 5 + 0.2, y = 5, color =SynLine), size = 0.5) + # SynLine is developed later in the code.
+  geom_polygon(alpha = 0.4) +
+  geom_text(aes(x = X_mean_zs+0.1, y = Y_mean_zs+0.1), colour = "black", size = 0.5) +
+  geom_path(aes(x = X_mean_zs, y = Y_mean_zs, group = 1)) +
+  facet_wrap(ID ~ Cond)  +
+  theme_minimal()
+```
+
+
+# Next step is to include Nicola's data (and maybe)

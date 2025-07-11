@@ -1,0 +1,922 @@
+---
+title: "Test_V2"
+output: html_document
+date: "2025-06-13"
+---
+
+From: https://osf.io/p5xsd/files/osfstorage
+
+
+# 0. Load and prepare data
+
+```{r}
+library(readr)
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+library(readxl)
+```
+
+## 0.1 Load data:
+
+The permutation takes to long to allow for re-computing the code each time, so load it:
+```{r}
+# load("DataSave3SDiag_WardRothen.Data")
+```
+
+### 0.1.1. Ward Data
+```{r}
+ds_syn <- read_excel("raw_synaesthetes_consistency_anon.xlsx")
+ds_syn$group <- "Syn"
+ds_ctl <- read_excel("raw_controls_consistency_anon.xlsx")
+ds_ctl$group <- "Ctl"
+
+ds_Q_syn <- read_excel("raw_synaesthetes_questionnaire_anon.xlsx")
+ds_Q_syn$group <- "Syn"
+ds_Q_ctl <- read_excel("raw_controls_questionnaire_anon.xlsx")
+ds_Q_ctl$group <- "ctl"
+```
+
+### 0.1.1. Rothen Data
+
+```{r}
+library(readr)
+ds_Rothen <- read.csv("~/Documents/SpaceSequenceSynDiagnostic/SpaceSequenceSynDiagnostic/rawdata.txt", sep="")
+
+```
+
+### 0.1.2. Rename variables to match datasets
+
+```{r}
+
+ds <- merge(ds_syn,ds_ctl, all = TRUE)
+ds_Q <- merge(ds_Q_syn,ds_Q_ctl, all = TRUE)
+
+rm(ds_syn,ds_ctl,ds_Q_syn,ds_Q_ctl)
+
+ds$ID <- ds$session_id
+ds_Q$ID <- ds_Q$session_id
+
+ds$dataSource <- "Ward"
+```
+
+```{r}
+# From Rothen:
+names(ds_Rothen)[names(ds_Rothen) == "Group"] <- "group"
+ds_Rothen$group <- as.factor(ds_Rothen$group)
+levels(ds_Rothen$group) <- c("Ctl","Syn")
+names(ds_Rothen)[names(ds_Rothen) == "Inducer"] <- "stimulus"
+names(ds_Rothen)[names(ds_Rothen) == "X"] <- "x"
+names(ds_Rothen)[names(ds_Rothen) == "Y"] <- "y"
+
+ds_Rothen$dataSource <- "Rothen"
+# From the paper (all the same since lab based):
+ds_Rothen$width <- 1024
+ds_Rothen$height <- 768
+```
+
+
+
+## 0.2 Merge data:
+
+```{r}
+# Data:
+ds   <- merge(ds,ds_Rothen, all = TRUE)
+
+# Because there is no questionnaire in Nicola's data:
+ds$SynQuest[ds$dataSource == "Rothen"] = "NaN"
+
+# Questionnaire:
+ID <- unique((ds_Rothen$ID))
+ds_Q_Rothen <- as.data.frame(ID)
+ds_Q <- merge(ds_Q,ds_Q_Rothen, all = TRUE)
+
+# Clear up:
+rm(ds_Q_Rothen, ds_Rothen)
+```
+
+## 0.3 Wrangle dataset
+
+```{r}
+# Add Condition, i.e. stim type:
+ds$Cond <- NaN
+ds$Cond[ds$stimulus %in% c("1","2","3","4","5","6","7","8","9","0")] <- "number"
+ds$Cond[ds$stimulus %in% c("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday")] <- "weekday"
+ds$Cond[ds$stimulus %in% c("January", "February", "March", "April", "May","June","July","August","September","October","November","December")] <- "month"
+
+
+# Remove if not 3 repetitions per stimuli:
+ds <- ds %>% 
+    group_by(ID,stimulus) %>% 
+    mutate(Nrep = length(stimulus))
+
+ds <- ds %>%
+  filter(Nrep == 3)
+
+# Add stimulus repetition number
+ds <- ds %>%
+  group_by(ID, stimulus) %>%
+  arrange(ID, stimulus, .by_group = TRUE) %>%
+  mutate(repetition = row_number()) %>%
+  ungroup()
+
+# Sanity Check (should be empty)
+# tmp <- ds %>% filter(repetition > 3)
+
+# Compute mean x,y:
+
+ds <- ds %>% 
+  group_by(ID, Cond, stimulus) %>%
+  mutate(X_mean = mean(x), Y_mean = mean(y)) 
+
+# Sanity Check:
+# ds %>% group_by(dataSource) %>% summarise(n = length(stimulus), maxrep = max(Nrep), minrep = min(Nrep))
+```
+
+
+## 0.4 Filter ID's
+
+```{r}
+
+
+# Match ID's across datasets:
+ID_ds   <- unique(ds$ID)
+ID_ds_Q <- unique(ds_Q$ID)
+
+ds <- ds %>%
+    filter(ID %in% ID_ds[ID_ds %in% ID_ds_Q]) %>%
+    filter(ID %in% ID_ds_Q[ID_ds_Q %in% ID_ds])
+
+ds_Q <- ds_Q %>% 
+    filter(ID %in% ID_ds[ID_ds %in% ID_ds_Q]) %>%
+    filter(ID %in% ID_ds_Q[ID_ds_Q %in% ID_ds])
+
+# Sanity Check:
+# sum(ID_ds == ID_ds_Q) == length(unique(ds$ID))
+# sum(ID_ds == ID_ds_Q) == length(unique(ds_Q$ID))
+```
+
+
+## 0.4 Standardize/scale coordinates
+
+```{r}
+ds <- ds %>%
+  group_by(ID, Cond) %>%
+  mutate(x_zs = scale(x)) %>%
+  mutate(y_zs = scale(y))
+
+ds <- ds %>% 
+  group_by(ID, Cond, stimulus) %>%
+  mutate(X_mean_zs = mean(x_zs), Y_mean_zs = mean(y_zs)) 
+```
+
+# 1. Consistency:
+
+Calculating consistency  Each stimulus is represented by three xy coordinates - (x1, y1), (x2, y2), (x3, y3) - from the three  repetitions. For each stimulus, the area of the triangle bounded by the coordinates is calculated as follows:  
+$Area = (x1y2 + x2y3 + x3y1 – x1y3 – x2y1 – x3y2) / 2$
+
+```{r}
+library(dplyr)
+
+# Define area calculation function
+triangle_area <- function(x, y) {
+  if(length(x) != 3 | length(y) != 3) return(NA)
+  area <- abs(
+    x[1]*y[2] + x[2]*y[3] + x[3]*y[1] -
+    x[1]*y[3] - x[2]*y[1] - x[3]*y[2]
+  ) / 2
+  return(area)
+}
+
+# Apply per group
+ds <- ds %>%
+    group_by(ID, stimulus) %>%
+    mutate(triangle_area = triangle_area(x, y))
+
+```
+
+
+The mean area is calculated by adding together the area for each stimulus and dividing by 29. This unit is  transformed into a percentage area taking into account the different pixel resolution of each participant.  
+Mean area = $(Summed area / 29) * 100 / Screen area $
+Where: $Screen area = Xpixels * Ypixels$
+
+Note: 29 since 29 stimuli
+```{r}
+# Manually adjust:
+
+ds$height[ds$ID == 29324] <- 1080
+ds$width[ds$ID == 32190 ] <- 1440
+
+# This ID has weird changing screen settings, consider exclusion:
+ds$width[ds$ID == 33168 ]  <- 308
+ds$height[ds$ID == 33168 ] <- 149
+
+ds$width[ds$ID == 35556 ] <- 1439
+ds$height[ds$ID == 35556 ] <- 734
+
+ds$width[ds$ID == 48114 ]  <- 1593
+ds$height[ds$ID == 48114 ] <- 671
+
+ds$width[ds$ID == 59854] <- 1366
+ds$height[ds$ID == 59854] <- 663
+
+ds$width[ds$ID == 63127] <- 1920
+ds$height[ds$ID == 63127] <- 880
+
+# Should be empty:
+ID_heigthKO <- ds %>%
+  group_by(ID) %>%
+  mutate(nhig = length(unique(height))) %>%
+  filter(nhig != 1) %>%
+  filter(row_number()==1) %>%
+  pull(ID)
+
+ID_widthKO <- ds %>%
+  group_by(ID) %>%
+  mutate(nwid = length(unique(width))) %>%
+  filter(nwid != 1) %>%
+  filter(row_number()==1) %>%
+  pull(ID)
+```
+
+
+```{r}
+ds$Screen_area <- ds$width*ds$height
+
+ds <- ds %>%  
+  group_by(ID,repetition) %>%
+  mutate(Consistency = ((sum(triangle_area)/29)*100)/Screen_area)
+
+
+# Sanity Check:
+# ds %>%
+#   filter(ID == 46603) %>%
+#   pull(Consistency)
+
+# Should be 0.14498267124883
+```
+
+# 2. Permuted consistency 
+
+Replicate Rothen methods. Might take some time to compute.
+
+*Calculating chance levels of consistency  To create permuted datasets for each participant: the 87 xy coordinates are randomly shuffled so they  are no longer linked to the original data labels (“Monday”, “5”, “April”, etc.). The mean area of the triangles  based on the shuffled coordinates is computed (as described above), and the whole process is repeated  1000 times to obtain a subject-specific distribution of chance levels of consistency. A z-score is calculated  comparing the observed consistency against the mean and SD of the permuted data: *
+$Z = [(observed consistency) – (mean consistency of permuted data)] / (SD of permuted data)$
+
+Code retrieved from OSF (adapted here):
+
+```{r eval=FALSE, include=FALSE}
+  
+### Create a simulated distribution of consistency.  Note that each time this is run it will give a slightly different answer due to the randomisation
+
+IDlist <- unique(ds$ID)
+
+simulated_consistency <- data.frame() 
+observed_consistency <- data.frame() 
+
+n <- 100  # Total iterations
+bar_width <- 50
+update_points <- round(seq(1, length(IDlist), length.out = 200))
+
+for(ID_n in 1:length(IDlist)) {
+  
+  if (ID_n %in% update_points || length(IDlist) == n) {
+    percent <- ID_n / length(IDlist)
+    num_hashes <- round(percent * bar_width)
+    bar <- paste0("[", 
+                  paste(rep("#", num_hashes), collapse = ""), 
+                  paste(rep("-", bar_width - num_hashes), collapse = ""), 
+                  "]")
+    cat(sprintf("\r%s %3d%%", bar, round(percent * 100)))
+    flush.console()
+  }
+  
+  # print(ID_n)
+  ds_ID <- ds %>%
+    filter(ID == IDlist[ID_n])
+  
+  observed_consistency[ID_n,1] <- unique(ds_ID$ID)
+  observed_consistency[ID_n,2] <- unique(ds_ID$Consistency)
+  
+  ### calculate the x and y standard deviations (no longer used, but calculated by Ward et al. 2018); Note the syntoolkit software calculated population SD (using N) but R will use sample SD (using N-1).  The values returned are very similar.
+  
+  observed_consistency[ID_n,3] <- unique(sd (ds_ID$x) / ds_ID$width)
+  observed_consistency[ID_n,4] <- unique(sd (ds_ID$y) / ds_ID$height)
+
+  
+  for (N_shuffle in 1:1000) {
+    
+    ## shuffle the data
+    
+    shuffled <- ds_ID[sample(nrow(ds_ID)),]
+    shuffled$rep2 <- rep(1:29,3)
+    
+    area = 0
+    
+    Stim_list <- unique(ds_ID$stimulus)
+    
+    shuffled <- shuffled %>%
+      group_by(rep2) %>%
+      mutate(area = triangle_area(x, y))
+    
+    simulated_consistency[N_shuffle,1] = unique((sum(shuffled$area)/29) * 100 / (shuffled$width * shuffled$height))
+    
+  }
+  
+  ## calculate the p-value and z-score of the observed consistency
+  observed_consistency[ID_n,5] <- mean(simulated_consistency[,1])
+  observed_consistency[ID_n,6] <- sd(simulated_consistency[,1])
+  observed_consistency[ID_n,7] <- (observed_consistency[ID_n,2] - observed_consistency[ID_n,5]) /   observed_consistency[ID_n,6]
+  
+  
+}
+
+
+colnames(observed_consistency) <- c('participant', 'consistency', 'x-sd', 'y-sd', 'mean_simulation', 'SD_simulation', 'z-score')
+
+```
+
+
+
+# 3. SD as in Ward
+
+As in Ward:
+
+"*Specifically, the standard deviation of the x-coordinates and/or  the standard deviation of the y-coordinates (measured across all trials) should exceed a proposed value of  0.075 for a normalized screen with width and height of 1 unit.*"
+
+"*A participant who produced a horizontal  straight-line form would have a very low standard deviation in the y-coordinates but a high standard deviation  in x-coordinates, and a participant with a vertical line would have the reverse profile. A participant with a  circular spatial form would be high on both. A participant who clicks randomly around the screen would also  be high on both x and y standard deviation, but would fail the consistency tests (the triangles would be large).*"
+
+```{r}
+# Rescale x & y mcoordinates depending on screen size:
+ds$xSc <- ds$x/ds$width
+ds$ySc <- ds$y/ds$height
+
+# Compute the SD across all trials (per ID):
+ds <- ds %>% 
+  ungroup() %>%
+  group_by(ID) %>%
+  mutate(SD_IDx = sd(xSc)) %>%
+  mutate(SD_IDy = sd(ySc)) 
+  
+ds %>%  filter(ID == 28301) %>%
+  filter(row_number()==1) %>%
+  pull(SD_IDy)
+
+ds_Q %>%
+  filter(ID == 28301) %>%
+  pull(y_sd)
+
+
+# Compare full lists:
+sd_ds <- ds %>%  group_by(ID) %>%
+    filter(row_number()==1) %>%
+    select(SD_IDy,ID)
+
+sd_dsQ <- ds_Q %>%  group_by(ID)  %>%
+  select(y_sd,ID)
+
+merge_sd <- merge(sd_ds,sd_dsQ, by = "ID")
+
+ggplot(aes(x = SD_IDy, y = y_sd), data = merge_sd)  +
+    geom_line()
+    # geom_text(aes(label = ID))
+
+# I think we can live with this degree of error (i.e. max 0.002)
+# boxplot(merge_sd$SD_IDy -merge_sd$y_sd)
+
+```
+
+# 4. line crossing. PROMISING!
+
+An idea I have is to look into the lines and order of the forms. I would exclude when lines crosses. (since we expect forms the lines crossing means no form is formed). Needs refinement.
+```{r}
+
+# Define function: this was generated by chatgpt. I tested it and it works, but need to figure out the geometry behind it:
+
+count_self_intersections <- function(x, y, verbose = TRUE) {
+  n <- length(x)
+  if (n < 4) {
+    if (verbose) cat("Need at least 4 points to check for self-intersection.\n")
+    return(0)
+  }
+
+  # Orientation function
+  orientation <- function(p, q, r) {
+    val <- (q[2] - p[2]) * (r[1] - q[1]) - (q[1] - p[1]) * (r[2] - q[2])
+    if (is.na(val)) return(NA)
+    if (val == 0) return(0)
+    if (val > 0) return(1) else return(2)
+  }
+
+  # Check if q lies on segment pr
+  on_segment <- function(p, q, r) {
+    if (any(is.na(c(p, q, r)))) return(FALSE)
+    q[1] <= max(p[1], r[1]) && q[1] >= min(p[1], r[1]) &&
+      q[2] <= max(p[2], r[2]) && q[2] >= min(p[2], r[2])
+  }
+
+  # Main intersection check
+  segments_intersect <- function(p1, p2, p3, p4) {
+    o1 <- orientation(p1, p2, p3)
+    o2 <- orientation(p1, p2, p4)
+    o3 <- orientation(p3, p4, p1)
+    o4 <- orientation(p3, p4, p2)
+
+    if (any(is.na(c(o1, o2, o3, o4)))) return(FALSE)
+
+    # General case
+    if (o1 != o2 && o3 != o4) return(TRUE)
+
+    # Special colinear cases
+    if (o1 == 0 && on_segment(p1, p3, p2)) return(TRUE)
+    if (o2 == 0 && on_segment(p1, p4, p2)) return(TRUE)
+    if (o3 == 0 && on_segment(p3, p1, p4)) return(TRUE)
+    if (o4 == 0 && on_segment(p3, p2, p4)) return(TRUE)
+
+    return(FALSE)
+  }
+
+  count <- 0
+  for (i in 1:(n - 2)) {
+    for (j in (i + 2):(n - 1)) {
+      if (j == i + 1) next  # skip adjacent segments
+
+      p1 <- c(x[i], y[i])
+      p2 <- c(x[i + 1], y[i + 1])
+      p3 <- c(x[j], y[j])
+      p4 <- c(x[j + 1], y[j + 1])
+
+      if (segments_intersect(p1, p2, p3, p4)) {
+        count <- count + 1
+        if (verbose) {
+          cat(sprintf("Intersection #%d: segments (%d-%d) and (%d-%d)\n", count, i, i+1, j, j+1))
+        }
+      }
+    }
+  }
+
+  if (verbose) cat("Total crossings:", count, "\n")
+  return(count)
+}
+
+
+```
+
+I think that the number of stimuli per condition should be taken into account (i.e. 9 numbers, 7 days, 12 months). Hence would need to be divided by this number of stimulus.
+
+In each condition the connected x and y generates a segment, hence the number of segment is `length(stimuli)-1`. Moreover, currently, each stimuli is connected by 3 segment, one for each (of the 3) repetition. So dividing by 3, we have the average number of segment corssings per condition. Next we sum these for each ID
+Ideally we should compute the number of crossings across the repetitions, in addition to make it more complex it would also be computationally more demanding, and I don't beleive it would lead to a significant difference.
+
+To do:
+- Maybe the easier would be to have the average number of crossing per segment.
+
+IMPORTANT: data frame needs to be informed of stimulus order to make sense!
+
+```{r}
+ds <- ds %>%
+  group_by(ID, Cond,repetition) %>%
+  mutate(nSegments = length(stimulus)-1)
+  
+# Number of crossings per condition and repetition
+ds <- ds %>% 
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
+  ungroup() %>%
+  # group_by(ID, Cond,repetition) %>%
+  group_by(ID, Cond) %>% # This should ignore the repetitions. So it should become a very long line including all repetitions, which might catch some consistency.
+  mutate(nLineCross = (count_self_intersections(x,y, verbose = FALSE)))
+
+ds <- ds %>% 
+  group_by(ID, Cond) %>%
+  mutate(meanLineCross = nLineCross/(3*nSegments))
+
+# Average per ID, use the number of segment rather than the number of stimuli
+ds <- ds %>%
+  group_by(ID) %>%
+  mutate(totLineCross = mean(meanLineCross))
+```
+
+## 4.1 Random walk
+
+There are thee way of dealing with repetitions:
+- compute separately the line crossing across repetitions
+- compute the line crossing as if we had a very long line (i.e. 1_1 -> 2_1 -> 3_1 -> 4_1, ... 7_3 -> 8_3 -> 9_3) (_x = repetition).
+- do a random walk across repetitions. (But I don't know if it makes any sense practically).
+
+```{r}
+ds <- ds %>%
+  group_by(ID, Cond,repetition) %>%
+  mutate(nSegments = length(stimulus)-1)
+  
+# Number of crossings per condition and repetition
+ds <- ds %>% 
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
+  ungroup() %>%
+  # group_by(ID, Cond,repetition) %>%
+  group_by(ID, Cond) %>% # This should ignore the repetitions. So it should become a very long line including all repetitions, which might catch some consistency.
+  mutate(nLineCross = (count_self_intersections(x,y, verbose = FALSE)))
+
+ds <- ds %>% 
+  group_by(ID, Cond) %>%
+  mutate(meanLineCross = nLineCross/(3*nSegments))
+
+# Average per ID, use the number of segment rather than the number of stimuli
+ds <- ds %>%
+  group_by(ID) %>%
+  mutate(totLineCross = mean(meanLineCross))
+```
+
+## 4.2. Line crossings
+Let's say 0.2 as threshold. This means that each segment crosses on average 0.05 times.
+
+```{r}
+
+ggplot(ds, aes(x = totLineCross, group = SynQuest, fill = SynQuest)) +
+    geom_density(alpha = 0.5) +
+    xlim(0,5)
+
+ds$SynLine <- ds$totLineCross <= 1.25
+
+IDSynline <- ds %>%
+    group_by(ID) %>%
+    filter(row_number() == 1) %>%
+    select(SynLine)
+
+
+sum(IDSynline$SynLine)
+```
+
+With this criteria alone `r sum(IDSynline$SynLine)/length(IDSynline$SynLine)*100` % of the sample would be classified as 3S.
+
+
+
+# 5. Classifications:
+
+This needs thresholds
+
+## 5.1. Questionnaire based
+
+see ´SynQuest´
+
+```{r}
+ds_Q$QuestCriteria <- ds_Q$`questionnaire score` <= 19
+sum(ds_Q$QuestCriteria)/length(ds_Q$QuestCriteria)*100
+
+ID_SynQuest <- ds_Q$ID[ds_Q$QuestCriteria]
+ds$SynQuest <- ds$ID %in% ID_SynQuest
+```
+
+With this criteria alone `r sum(ds_Q$QuestCriteria)/length(ds_Q$QuestCriteria)*100` % would qualify as 3S
+## 5.2. Consistency
+
+see ´SynCons´
+
+```{r}
+ds$SynCons <- ds$Consistency <= .203
+
+IDSynCons<- ds %>%
+    group_by(ID) %>%
+    filter(row_number() == 1) %>%
+    select(SynCons)
+
+
+sum(IDSynCons$SynCons)
+```
+
+
+With this criteria alone `r sum(IDSynCons$SynCons)/length(IDSynCons$ID)*100` % would qualify as 3S
+
+## 5.3. SD
+
+```{r}
+IDSynSD <- observed_consistency$participant[observed_consistency$`x-sd` >= .075 | observed_consistency$`y-sd` >= .075]
+
+
+ds$SynSD<- ds$ID %in% IDSynSD
+```
+
+With this criteria alone `r length(IDSynSD)/length(unique(ds$ID))*100` % would qualify as 3S
+
+## 5.4. Permuted z-score
+
+see ´SynPermzs´
+
+Note this might vary due to the randomisation process involved in the permutation. Some sd are 0, leadiong to NaN in the z score. The two additional lines are to take this into account. 
+
+```{r}
+ID_SynPermzs <- unique(observed_consistency$participant[abs(observed_consistency$`z-score`) >= 2])
+ID_SynPermzs <- c(ID_SynPermzs,observed_consistency$participant[is.nan(observed_consistency$`z-score`)])
+ID_SynPermzs <- ID_SynPermzs[!is.na(ID_SynPermzs)]
+
+ds$SynPermzs <- ds$ID %in% ID_SynPermzs
+
+```
+
+
+With this criteria alone `r length(ID_SynPermzs)/length(unique(ds$ID))*100` % would qualify as 3S
+
+##  5.4. Summary plot for each criteria:
+
+```{r}
+
+AllID <- unique(ds$ID)
+
+library(ggalluvial)
+
+ID_SynCons <- unique(ds %>% filter(SynCons) %>% pull(ID))
+IDSynSD
+ID_SynPermzs
+ID_Synline <- unique(ds %>% filter(SynLine) %>% pull(ID))
+
+df <- data.frame(
+  ID = AllID,
+  C_Quest = AllID %in% ID_SynQuest,
+  C_Cons = AllID %in% ID_SynCons,
+  C_SD = AllID %in% IDSynSD,
+  C_permzs = AllID %in% ID_SynPermzs,
+  C_linecross = AllID %in% ID_Synline
+)
+
+df_long <- df %>%
+  pivot_longer(cols = starts_with("C"), names_to = "Stage", values_to = "Passed")
+
+ggplot(df_long,
+       aes(x = Stage, stratum = Passed, alluvium = ID,
+           fill = Passed, label = Passed)) +
+  geom_flow(stat = "alluvium", lode.guidance = "frontback") +
+  geom_stratum() +
+  theme_minimal() +
+  labs(title = "Dropout by Criteria", y = "Number of IDs")
+
+
+```
+
+## 5.5 Plot desities 
+
+This plot exites me the most, indicates that those who self report synesthesia seem to have less line crossings than non synesthetes. Also indicates that most do not have line crossings. 
+
+```{r}
+
+ggplot(ds, aes(x = totLineCross, group = SynQuest, fill = SynQuest)) +
+    geom_density(alpha = 0.5)
+
+```
+
+
+```{r}
+# Eventually export:
+
+write.csv(observed_consistency, file = "ExportedCsv/observed_consistency.csv")
+
+write.csv(ds %>%
+            group_by(ID) %>%
+            filter(row_number()==1) %>%
+            select(ID,group, triangle_area, Consistency,totLineCross,SynQuest,SynCons,SynSD,SynPermzs, SynLine),file = "ExportedCsv/SynCat.csv")
+```
+
+# 6.Figure Mega plot 
+
+This exports many pdf's. It plots each ID and condition z-score x and y coordinates. Since each coordinate is repeated 3 times, these are represented by triangles. The line paths connect average coordinates to visualize forms (stimulus are ordered, i.e. 1 to 9, monday to sunday, january to december). Finally in the top right corner, each dots indicates if the ID would pass / fails depending on the criteria: 
+
+- Questionnaire     `SynQuest`
+- Consistency       `SynCons`
+- SD                `SynSD`
+- Permuted z-score  `SynPermzs`
+
+```{r}
+# Multiple pages
+library(ggforce)
+
+
+# Set the number of rows & columns per pages
+N_rows = 5
+N_cols = 9
+
+for(i in 1:(round(length(IDlist)/(N_rows*N_cols)*3)+1)){
+  
+ ds %>% 
+    # filter(ID  %in% c(28779,29027,29043)) %>%
+    group_by(stimulus) %>%
+    arrange(stimulus) %>%
+    arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
+    ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+    geom_text(aes(x = 4, y = 4.5, label = dataSource), size = 1) + 
+    geom_text(aes(x = 3.7, y = 5.5, label = c("Criteria:  Ques   Cons  SD    Pzs     Line")), size = 2) + 
+    geom_point(aes(x = 5 -2, y = 5, color =SynQuest), size = 0.5) + 
+    geom_point(aes(x = 5 -1.5, y = 5, color =SynCons), size = 0.5) + 
+    geom_point(aes(x = 5 -1., y = 5, color =SynSD), size = 0.5) +
+    geom_point(aes(x = 5 -0.5, y = 5, color =SynPermzs), size = 0.5) +
+    geom_point(aes(x = 5 + 0.2, y = 5, color =SynLine), size = 0.5) + # SynLine is developed later in the code.
+    geom_polygon(alpha = 0.4) +
+    geom_text(aes(x = X_mean_zs+0.1, y = Y_mean_zs+0.1), colour = "black", size = 0.5) +
+    geom_path(aes(x = X_mean_zs, y = Y_mean_zs, group = 1)) +
+    geom_path(aes(x = x_zs, y = y_zs, group = repetition), alpha = 0.2) +
+    geom_text(aes(x = x_zs+0.1, y = y_zs+0.1), size = 0.5, alpha = 0.5) +
+    facet_wrap_paginate( ~ ID+ Cond, ncol = N_cols, nrow = N_rows, page = i)  +
+    theme_minimal()
+    ggsave(paste0("Figures/Syn_Categories",i,".pdf"),width = N_cols*2, height = N_rows*2)
+}
+```
+
+## 6.1. ID issues:
+
+Maybe could automatize by pulling the inconsistent but with few line crossings. 
+
+```{r}
+InconsbutLine_ID <- unique(ds$ID[!ds$SynCons & ds$SynLine])
+```
+
+### 6.1.1 Inconsitent ID's that pass line criteria:
+
+```{r}
+IDnr = 2
+
+ds %>%
+    filter(ID %in% InconsbutLine_ID[IDnr]) %>%
+    group_by(stimulus) %>%
+    arrange(stimulus) %>%
+    arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% 
+    arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
+    ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+    geom_point(aes(x = 5 -2, y = 5, color =SynQuest), size = 0.5) + 
+    geom_point(aes(x = 5 -1.5, y = 5, color =SynCons), size = 0.5) + 
+    geom_point(aes(x = 5 -1., y = 5, color =SynSD), size = 0.5) +
+    geom_point(aes(x = 5 -0.5, y = 5, color =SynPermzs), size = 0.5) +
+    geom_point(aes(x = 5 + 0.2, y = 5, color =SynLine), size = 0.5) + # SynLine is developed later in the code.
+    geom_polygon(alpha = 0.4) +
+    geom_text(aes(x = x_zs+0.1, y = y_zs+0.1), colour = "black", size = 0.5) +
+    geom_path(aes(x = x_zs, y = y_zs, group = 1)) +
+    facet_wrap( ~ ID+ Cond + repetition)  +
+    theme_minimal()
+
+ds %>%
+    filter(ID %in% InconsbutLine_ID[IDnr]) %>%
+    group_by(Cond, repetition) %>%
+    filter(row_number()==1) %>%
+    select(triangle_area,nLineCross,totLineCross)
+```
+
+
+```{r}
+ds %>%
+  filter(ID %in% InconsbutLine_ID[30:40]) %>%
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
+  ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+  geom_point(aes(x = 5 -2, y = 5, color =SynQuest), size = 0.5) + 
+  geom_point(aes(x = 5 -1.5, y = 5, color =SynCons), size = 0.5) + 
+  geom_point(aes(x = 5 -1., y = 5, color =SynSD), size = 0.5) +
+  geom_point(aes(x = 5 -0.5, y = 5, color =SynPermzs), size = 0.5) +
+  geom_point(aes(x = 5 + 0.2, y = 5, color =SynLine), size = 0.5) + # SynLine is developed later in the code.
+  geom_polygon(alpha = 0.4) +
+  geom_text(aes(x = X_mean_zs+0.1, y = Y_mean_zs+0.1), colour = "black", size = 0.5) +
+  geom_path(aes(x = X_mean_zs, y = Y_mean_zs, group = 1)) +
+  facet_wrap(ID ~ Cond)  +
+  theme_minimal()
+```
+
+
+```{r}
+# Diagnostic tables and figures per ID:
+ID_here <- InconsbutLine_ID[5]
+
+
+ds %>%
+    filter(ID %in% ID_here) %>%
+    group_by(stimulus) %>%
+    arrange(stimulus) %>%
+    arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% 
+    arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
+    ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+    geom_point(aes(x = 5 -2, y = 5, color =SynQuest), size = 0.5) + 
+    geom_point(aes(x = 5 -1.5, y = 5, color =SynCons), size = 0.5) + 
+    geom_point(aes(x = 5 -1., y = 5, color =SynSD), size = 0.5) +
+    geom_point(aes(x = 5 -0.5, y = 5, color =SynPermzs), size = 0.5) +
+    geom_point(aes(x = 5 + 0.2, y = 5, color =SynLine), size = 0.5) + # SynLine is developed later in the code.
+    geom_polygon(alpha = 0.4) +
+    geom_text(aes(x = X_mean_zs+0.1, y = Y_mean_zs+0.1), colour = "black", size = 0.5) +
+    geom_path(aes(x = X_mean_zs, y = Y_mean_zs, group = 1)) +
+    facet_wrap( ~ ID+ Cond + repetition)  +
+    theme_minimal()
+
+
+## Criteriums:
+
+ds %>%
+  filter(ID %in% ID_here) %>%
+  filter(row_number()==1) %>%
+  select(Consistency,totLineCross)
+
+# Per condition:
+ds %>%
+    filter(ID %in% ID_here) %>%
+    group_by(Cond) %>%
+    filter(row_number()==1) %>%
+    select(triangle_area,nLineCross)
+  
+
+## Response level
+ds %>% 
+    filter(ID  %in% ID_here) %>%
+    group_by(Cond) %>%
+    summarize(Mx = mean(x_zs), My = mean(y_zs), nStim =length(stimulus)) 
+
+  
+ds %>% 
+    filter(ID  %in% ID_here) %>%
+    group_by(Cond) %>%
+    summarize(Mx = mean(x), My = mean(y), SDx = sd(x), SDy = sd(y), nStim =length(stimulus))
+```
+
+
+```{r}
+### Most detailed possible, stimulus level:
+
+ds %>% 
+    filter(ID  %in% ID_here) %>%
+    group_by(Cond, stimulus) %>%
+    summarize(Mx = mean(x), My = mean(y), SDx = sd(x), SDy = sd(y), nStim =length(stimulus)) 
+
+## Hardware level:
+ds %>% 
+    filter(ID  %in% ID_here) %>%
+    group_by(Cond) %>%
+    summarize(Mwidth = mean(width), Mheight = mean(height)) 
+
+# Illustrations
+
+# Apply per group
+ds %>%
+  filter(ID  %in% ID_here) %>%
+  group_by(ID, stimulus) %>%
+  mutate(triangle_area = triangle_area(x, y))
+
+```
+
+### 6.1.1 Not pass SD ID's that pass line criteria:
+
+```{r}
+NoSDbutLine_ID <- unique(ds$ID[!ds$SynSD & ds$SynLine])
+# Only 1 ID!
+NopermbutLine_ID <- unique(ds$ID[!ds$SynPermzs & ds$SynLine])
+# No one!
+
+NoLinebutCons <- unique(ds$ID[!ds$SynLine & ds$SynCons])
+
+```
+
+```{r}
+ds %>%
+  filter(ID %in% NoLinebutCons[1:10]) %>%
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
+  ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+  geom_point(aes(x = 5 -2, y = 5, color =SynQuest), size = 0.5) + 
+  geom_point(aes(x = 5 -1.5, y = 5, color =SynCons), size = 0.5) + 
+  geom_point(aes(x = 5 -1., y = 5, color =SynSD), size = 0.5) +
+  geom_point(aes(x = 5 -0.5, y = 5, color =SynPermzs), size = 0.5) +
+  geom_point(aes(x = 5 + 0.2, y = 5, color =SynLine), size = 0.5) + # SynLine is developed later in the code.
+  geom_polygon(alpha = 0.4) +
+  geom_text(aes(x = X_mean_zs+0.1, y = Y_mean_zs+0.1), colour = "black", size = 0.5) +
+  geom_path(aes(x = X_mean_zs, y = Y_mean_zs, group = 1)) +
+  facet_wrap(ID ~ Cond)  +
+  theme_minimal()
+```
+
+
+# 7. Cohen's k
+
+```{r}
+# Install if needed
+install.packages("irr")
+
+library(irr)
+
+Diagnoses <- ds %>%
+  group_by(ID) %>%
+  filter(row_number() == 1) %>%
+  select(ID, SynQuest, SynCons, SynPermzs, SynLine,dataSource)
+
+# Line categorizes significantly differently from Consistency:
+kappa2(Diagnoses[,c(3,5)])  
+
+# Line categorizes significantly different than Questionnaire
+tmp = Diagnoses %>%
+  filter(dataSource == "Ward") %>%
+  select(ID, SynQuest, SynLine)
+
+kappa2(tmp[,2:3], weight = "unweighted") 
+
+# Overall does not change (but doubt about this):
+# Note: Missing data are omitted in a listwise way.
+# THM: significant difference might depend on calculation used:
+kappam.light(Diagnoses[,2:5])  
+kappam.fleiss(Diagnoses[,2:5]) 
+kappam.fleiss(Diagnoses[,2:5], exact=TRUE) 
+```
+
