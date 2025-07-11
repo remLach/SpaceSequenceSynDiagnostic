@@ -534,9 +534,11 @@ Let's say 0.2 as threshold. This means that each segment crosses on average 0.05
 
 ```{r}
 
-ggplot(ds, aes(x = totLineCross, group = SynQuest, fill = SynQuest)) +
-    geom_density(alpha = 0.5) +
-    xlim(0,5)
+ds %>% 
+  filter(dataSource == "Ward") %>%
+  ggplot(ds, aes(x = totLineCross, group = SynQuest, fill = SynQuest)) +
+  geom_density(alpha = 0.5) +
+  xlim(0,5)
 
 ds$SynLine <- ds$totLineCross <= 1.25
 
@@ -732,7 +734,9 @@ InconsbutLine_ID <- unique(ds$ID[!ds$SynCons & ds$SynLine])
 ### 6.1.1 Inconsitent ID's that pass line criteria:
 
 ```{r}
-IDnr = 2
+IDnr = 2:5
+
+
 
 ds %>%
     filter(ID %in% InconsbutLine_ID[IDnr]) %>%
@@ -741,15 +745,19 @@ ds %>%
     arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% 
     arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
     ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+    geom_text(aes(x = 4, y = 4.5, label = dataSource), size = 1) + 
+    geom_text(aes(x = 3.7, y = 5.5, label = c("Criteria:  Ques   Cons  SD    Pzs     Line")), size = 2) + 
     geom_point(aes(x = 5 -2, y = 5, color =SynQuest), size = 0.5) + 
     geom_point(aes(x = 5 -1.5, y = 5, color =SynCons), size = 0.5) + 
     geom_point(aes(x = 5 -1., y = 5, color =SynSD), size = 0.5) +
     geom_point(aes(x = 5 -0.5, y = 5, color =SynPermzs), size = 0.5) +
     geom_point(aes(x = 5 + 0.2, y = 5, color =SynLine), size = 0.5) + # SynLine is developed later in the code.
     geom_polygon(alpha = 0.4) +
-    geom_text(aes(x = x_zs+0.1, y = y_zs+0.1), colour = "black", size = 0.5) +
-    geom_path(aes(x = x_zs, y = y_zs, group = 1)) +
-    facet_wrap( ~ ID+ Cond + repetition)  +
+    geom_text(aes(x = X_mean_zs+0.1, y = Y_mean_zs+0.1), colour = "black", size = 0.5) +
+    geom_path(aes(x = X_mean_zs, y = Y_mean_zs, group = 1)) +
+    geom_path(aes(x = x_zs, y = y_zs, group = repetition), alpha = 0.2) +
+    geom_text(aes(x = x_zs+0.1, y = y_zs+0.1), size = 0.5, alpha = 0.5) +
+    facet_wrap( ~ ID+ Cond)  +
     theme_minimal()
 
 ds %>%
@@ -889,7 +897,107 @@ ds %>%
 ```
 
 
-# 7. Cohen's k
+
+# 8. Fig Distributions
+
+```{r}
+library(ggridges)
+
+ds %>% 
+  filter(dataSource == "Ward") %>%
+  ggplot(aes(x = Consistency, y = 1, group = SynQuest, fill = SynQuest)) +
+  stat_density_ridges(quantile_lines = TRUE,quantiles = 0.5,alpha = 0.5) +
+  facet_grid(~Cond) +
+  xlim(0,1)
+```
+
+
+```{r}
+
+ds <- ds %>%
+  group_by(ID, Cond,repetition) %>%
+  mutate(nSegments = length(stimulus)-1)
+  
+# Number of crossings per condition and repetition
+ds <- ds %>% 
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
+  ungroup() %>%
+  group_by(ID, Cond,repetition) %>%
+  # group_by(ID, Cond) %>% # This should ignore the repetitions. So it should become a very long line including all repetitions, which might catch some consistency.
+  mutate(nLineCross = (count_self_intersections(x,y, verbose = FALSE)))
+
+ds <- ds %>% 
+  group_by(ID, Cond) %>%
+  mutate(meanLineCross = nLineCross/(3*nSegments))
+
+# Average per ID, use the number of segment rather than the number of stimuli
+ds <- ds %>%
+  group_by(ID) %>%
+  mutate(totLineCross = mean(meanLineCross))
+
+
+ds %>% 
+    filter(dataSource == "Ward") %>%
+    ggplot(aes(x = totLineCross, y = 1, group = SynQuest, fill = SynQuest)) +
+    stat_density_ridges(quantile_lines = TRUE,quantiles = 0.5,alpha = 0.5) +
+    facet_grid(~Cond) +
+    xlim(0,1)
+
+```
+### Laboratory or Sandkiste
+ 
+```{r}
+
+ds <- ds %>%
+  group_by(ID, Cond,repetition) %>%
+  mutate(nSegments = length(stimulus)-1)
+  
+# Number of intersections for each ID X Cond X repetition
+ds <- ds %>% 
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
+  ungroup() %>%
+  group_by(ID, Cond,repetition) %>%
+  mutate(nLineCross = (count_self_intersections(x,y, verbose = FALSE)))
+
+ds %>% 
+    filter(dataSource == "Ward") %>%
+    ggplot(aes(x = nLineCross, y = 1, group = SynQuest, fill = SynQuest,colour = SynQuest)) +
+    stat_density_ridges(quantile_lines = TRUE,quantiles = c(0.25,0.5,0.75),alpha = 0.5) +
+    facet_grid(~Cond) 
+
+# Linear transformation: chances for each segment to intersect:
+
+ds <- ds %>% 
+  group_by(ID, Cond,repetition) %>%
+  mutate(mean_lineInter = nLineCross/nSegments)
+
+# Average per ID
+ds <- ds %>%
+  group_by(ID) %>%
+  mutate(GA_lineInter = mean(meanLineCross))
+
+## Plot
+ds %>% 
+    filter(dataSource == "Ward") %>%
+    ggplot(aes(x = mean_lineInter, y = 1, group = SynQuest, fill = SynQuest,colour = SynQuest)) +
+    stat_density_ridges(quantile_lines = TRUE,quantiles = c(0.25,0.5,0.75),alpha = 0.5) +
+    facet_grid(~Cond) 
+
+ds %>% 
+    filter(dataSource == "Ward") %>%
+    ggplot(aes(x = GA_lineInter, y = 1, group = SynQuest, fill = SynQuest,colour = SynQuest)) +
+    stat_density_ridges(quantile_lines = TRUE,quantiles = c(0.25,0.5,0.75),alpha = 0.5) 
+
+
+ds$SynLine <- ds$GA_lineInter <= 0.25
+```
+
+
+# 7. Cohen's k,consistency, Specificity and Accuracy
 
 ```{r}
 # Install if needed
@@ -906,11 +1014,11 @@ Diagnoses <- ds %>%
 kappa2(Diagnoses[,c(3,5)])  
 
 # Line categorizes significantly different than Questionnaire
-tmp = Diagnoses %>%
+Diagnoses_Ward = Diagnoses %>%
   filter(dataSource == "Ward") %>%
-  select(ID, SynQuest, SynLine)
+  select(ID, SynQuest, SynCons, SynLine, SynPermzs, SynLine,dataSource)
 
-kappa2(tmp[,2:3], weight = "unweighted") 
+kappa2(Diagnoses_Ward[,2:3], weight = "unweighted") 
 
 # Overall does not change (but doubt about this):
 # Note: Missing data are omitted in a listwise way.
@@ -918,5 +1026,101 @@ kappa2(tmp[,2:3], weight = "unweighted")
 kappam.light(Diagnoses[,2:5])  
 kappam.fleiss(Diagnoses[,2:5]) 
 kappam.fleiss(Diagnoses[,2:5], exact=TRUE) 
+```
+
+## 7.1. Consistency
+
+```{r}
+
+criterion1 = as.logical(Diagnoses_Ward$SynQuest)
+criterion2 = as.logical(Diagnoses_Ward$SynCons)
+
+# Accuracy
+accuracy <- sum(criterion1 == criterion2) / length(criterion1)
+
+# Sensitivity: how well criterion1 detects positive cases in criterion2
+true_positives <- sum(criterion1 & criterion2)
+actual_positives <- sum(criterion2)
+sensitivity <- true_positives / actual_positives
+
+# Consistency: Percent agreement (could also compute Cohen’s kappa)
+percent_agreement <- mean(criterion1 == criterion2)
+
+# Output
+cat(sprintf("Accuracy:    %.2f\n", accuracy))
+cat(sprintf("Sensitivity: %.2f\n", sensitivity))
+cat(sprintf("Agreement:   %.2f\n", percent_agreement))
+
+```
+
+## 7.2. Line Intersection:
+
+```{r}
+  criterion1 = as.logical(Diagnoses_Ward$SynQuest)
+  criterion2 = as.logical(Diagnoses_Ward$SynLine)
+  
+  # Accuracy
+  accuracy <- sum(criterion1 == criterion2) / length(criterion1)
+  
+  # Sensitivity: how well criterion1 detects positive cases in criterion2
+  true_positives <- sum(criterion1 & criterion2)
+  actual_positives <- sum(criterion2)
+  sensitivity <- true_positives / actual_positives
+  
+  # Consistency: Percent agreement (could also compute Cohen’s kappa)
+  percent_agreement <- mean(criterion1 == criterion2)
+  
+  # Output
+  cat(sprintf("Accuracy:    %.2f\n", accuracy))
+  cat(sprintf("Sensitivity: %.2f\n", sensitivity))
+  cat(sprintf("Agreement:   %.2f\n", percent_agreement))
+```
+
+### 7.2.3. Tried to do it with different questionnaires cutoffs
+```{r}
+
+hist(ds_Q$`questionnaire score`,45)
+
+
+for(i in 9:45){
+  ds_Q$QuestCriteria <- ds_Q$`questionnaire score` <= i
+  sum(ds_Q$QuestCriteria)/length(ds_Q$QuestCriteria)*100
+  
+  ID_SynQuest <- ds_Q$ID[ds_Q$QuestCriteria]
+  ds$SynQuest <- ds$ID %in% ID_SynQuest
+  
+  gp1 <- ds %>% 
+    filter(dataSource == "Ward") %>%
+    ggplot(aes(x = Consistency, y = 1, group = SynQuest, fill = SynQuest,colour = SynQuest)) +
+            stat_density_ridges(quantile_lines = TRUE,quantiles = c(0.25,0.5,0.75),alpha = 0.5)
+  ggsave(paste0("FigureDens/FigCons",as.character(i),".png"))
+    
+  print(gp1)
+  
+  Diagnoses_Ward <-  ds %>%
+    filter(dataSource == "Ward") %>%
+    group_by(ID) %>%
+    filter(row_number() == 1)   %>%
+    select(ID, SynQuest, SynCons, SynPermzs, SynLine,dataSource)
+  
+    criterion1 = as.logical(Diagnoses_Ward$SynQuest)
+  criterion2 = as.logical(Diagnoses_Ward$SynLine)
+  
+  # Accuracy
+  accuracy <- sum(criterion1 == criterion2) / length(criterion1)
+  
+  # Sensitivity: how well criterion1 detects positive cases in criterion2
+  true_positives <- sum(criterion1 & criterion2)
+  actual_positives <- sum(criterion2)
+  sensitivity <- true_positives / actual_positives
+  
+  # Consistency: Percent agreement (could also compute Cohen’s kappa)
+  percent_agreement <- mean(criterion1 == criterion2)
+  
+  # Output
+  cat(sprintf("Accuracy:    %.2f\n", accuracy))
+  cat(sprintf("Sensitivity: %.2f\n", sensitivity))
+  cat(sprintf("Agreement:   %.2f\n", percent_agreement))
+}
 ```
 
