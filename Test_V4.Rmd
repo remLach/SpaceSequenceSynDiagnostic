@@ -387,7 +387,7 @@ ggplot(aes(x = SD_IDy, y = y_sd), data = merge_sd)  +
 
 ```
 
-# 4. line crossing. PROMISING!
+# 4. Line intersection
 
 An idea I have is to look into the lines and order of the forms. I would exclude when lines crosses. (since we expect forms the lines crossing means no form is formed). Needs refinement.
 ```{r}
@@ -587,31 +587,39 @@ ID_Q_NR <- ds_Q %>%
   filter(`Q11 When doing the experiment, I didn't have any strong intuition as to where to put the MONTHS OF THE YEAR (1= strongly agree; 5= strongly disagree)` == 5)
   
 ds$SynQuest_NR <-  ds$ID %in% ID_Q_NR$ID
+```
+
+Visualize it with cumulative empirical density plots. In this plots the x xis indicates the average number of intersections per segments. The y axis indicates the percentage of participant. Hence while 93 % of the self identified synesthetes have less than 1 intersection per segment, 52 % of not self-identified synesthetes do.
+
+```{r}
+# Compute the ECDF value at x_intersect
+x_intersect <- 1.0
+
+ecdf_vals <- ds %>%
+    group_by(SynQuest_NR) %>%
+    summarise(y_intersect = ecdf(GA_lineInter)(x_intersect), .groups = 'drop') %>%
+    mutate(x_intersect = x_intersect)
 
 
-ggplot(ds,   aes(x = GA_lineInter, y = SynQuest_NR, group = SynQuest_NR, fill = factor(stat(quantile)))) +
-  stat_density_ridges(
-    geom = "density_ridges_gradient", calc_ecdf = TRUE,
-    quantiles = 4, quantile_lines = TRUE
-  ) +
-  scale_fill_ordinal(name = "Quartiles")
+ggplot(ds,   aes(x = GA_lineInter, group = SynQuest_NR,fill =SynQuest_NR, colour = SynQuest_NR)) +
+  stat_ecdf(geom = "step", size = 1) +
+  geom_segment(data = ecdf_vals,
+               aes(x = x_intersect, xend = x_intersect,
+                   y = 0, yend = y_intersect,
+                   color = SynQuest_NR),
+               linetype = "dashed") +
+  geom_segment(data = ecdf_vals,
+               aes(x = x_min, xend = x_intersect,
+                   y = y_intersect, yend = y_intersect,
+                   color = SynQuest_NR),
+               linetype = "dotted") +
+  geom_point(data = ecdf_vals, aes(x = x_intersect, y = y_intersect)) +
+  geom_text(data = ecdf_vals,
+            aes(x = x_intersect, y = y_intersect,
+                label = paste0("(", round(x_intersect, 2), ", ", round(y_intersect, 2), ")")),
+            vjust = -1.2, hjust = 0.5) +
+    labs(x = "Avererage number of intersections", y = "Percentiles", group = "Legend") 
 
-
-ds %>%
-  group_by(SynQuest_NR) %>%
-  summarize(quant10 = quantile(GA_lineInter, probs = 0.1), 
-            quant20 = quantile(GA_lineInter, probs = 0.2),
-            quant30 = quantile(GA_lineInter, probs = 0.3),
-            quant40 = quantile(GA_lineInter, probs = 0.4),
-            quant50 = quantile(GA_lineInter, probs = 0.5),
-            quant60 = quantile(GA_lineInter, probs = 0.6),
-            quant70 = quantile(GA_lineInter, probs = 0.7),
-            quant80 = quantile(GA_lineInter, probs = 0.8),
-            quant90 = quantile(GA_lineInter, probs = 0.9))
-
-ggplot(ds,   aes(x = GA_lineInter, group = SynQuest_NR,fill =SynQuest_NR )) +
-    stat_ecdf(geom = "step") +
-    geom_vline(xintercept = 1, alpha = 0.2, colour = "red")
 ```
 
 
@@ -1131,6 +1139,53 @@ for(i in 9:45){
   
 }
 ```
+
+```{r}
+
+library(pROC) 
+
+roc_obj <- roc( ds$SynQuest_NR,ds$GA_lineInter)
+
+# Best threshold using Youden's J
+best_coords <- coords(roc_obj, "best", ret = c("threshold", "sensitivity", "specificity"), best.method = "youden")
+
+print(best_coords)
+
+
+roc_df <- tibble(
+  fpr = rev(1 - roc_obj$specificities),
+  tpr = rev(roc_obj$sensitivities),
+  thresholds = rev(roc_obj$thresholds)
+)
+
+# Choose a threshold to highlight
+threshold_highlight <- best_coords$threshold  # you can adjust this
+
+# Get closest point to threshold
+closest_point <- roc_df %>%
+  slice_min(abs(thresholds - threshold_highlight), n = 1)
+
+# Plot ROC with L-shaped highlight
+ggplot(roc_df, aes(x = fpr, y = tpr)) +
+  geom_line(color = "blue", size = 1.2) +
+  geom_segment(data = closest_point,
+               aes(x = fpr, xend = fpr, y = 0, yend = tpr),
+               linetype = "dashed", color = "red") +
+  geom_segment(data = closest_point,
+               aes(x = 0, xend = fpr, y = tpr, yend = tpr),
+               linetype = "dotted", color = "red") +
+  geom_text(data = closest_point,
+            aes(x = fpr, y = tpr,
+                label = paste0("(", round(fpr, 2), ", ", round(tpr, 2), ")")),
+            vjust = -1.2, hjust = -0.1, color = "red") +
+  labs(title = "ROC Curve with Highlighted Threshold",
+       x = "False Positive Rate (1 - Specificity)",
+       y = "True Positive Rate (Sensitivity)") +
+  coord_equal()
+
+
+```
+
 
 ```{r}
 sessionInfo()
