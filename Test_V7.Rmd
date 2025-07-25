@@ -39,14 +39,14 @@ library(pROC)
 ```{r eval=FALSE, include=FALSE}
 ### 0.1.1. Ward Data
 
-ds_syn <- read_excel("raw_synaesthetes_consistency_anon.xlsx")
+ds_syn       <- read_excel("raw_synaesthetes_consistency_anon.xlsx")
 ds_syn$group <- "Syn"
-ds_ctl <- read_excel("raw_controls_consistency_anon.xlsx")
+ds_ctl       <- read_excel("raw_controls_consistency_anon.xlsx")
 ds_ctl$group <- "Ctl"
 
-ds_Q_syn <- read_excel("raw_synaesthetes_questionnaire_anon.xlsx")
+ds_Q_syn       <- read_excel("raw_synaesthetes_questionnaire_anon.xlsx")
 ds_Q_syn$group <- "Syn"
-ds_Q_ctl <- read_excel("raw_controls_questionnaire_anon.xlsx")
+ds_Q_ctl       <- read_excel("raw_controls_questionnaire_anon.xlsx")
 ds_Q_ctl$group <- "ctl"
 
 ### 0.1.1. Rothen Data
@@ -181,9 +181,6 @@ ID_na_x <-unique(ds$ID[is.na(ds$x_zs)])
 
 ```{r eval=FALSE, include=FALSE}
 # 1. Subjective questionnaire based clasification
-
-
-
 ds_Q$QuestCriteria <- ds_Q$`questionnaire score` <= 19
 sum(ds_Q$QuestCriteria)/length(ds_Q$QuestCriteria)*100
 
@@ -518,6 +515,30 @@ ds <- ds %>%
 ´r apa_print(t.test(Consistency ~ SynQuest_NR, ds))$full_result`
 
 # 3. Compare group and Questionnaire
+
+## 3.1. What is the optimal questinnaire threshold?
+
+```{r}
+ds_pID <- ds_Q %>%
+  filter(dataSource == "Ward") %>%
+  select(ID,`questionnaire score`,group,QuestCriteria)
+
+ds_pID$groupSyn <- ds_pID$group == "Syn"
+
+
+roc_Quest <- roc(group ~ `questionnaire score`, ds_pID, 
+                percent=TRUE,
+                # arguments for ci
+                ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+                # arguments for plot
+                plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+                print.auc=TRUE, show.thres=TRUE)
+
+# Best threshold using Youden's J
+best_coords <- coords(roc_Quest, "best", ret = c("threshold", "sensitivity", "specificity"), best.method = "youden")
+```
+
+The best questionnaire score threshold is `r best_coords$threshold`
 
 How many % ID fall in the pre-defined group with the questionnaire criteria(s)?
 
@@ -1251,6 +1272,8 @@ roc_obj <- roc(ds$SynGroup, combined_score,percent=TRUE,
     # arguments for plot
     plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
     print.auc=TRUE, show.thres=TRUE)
+
+
 ```
 
 
@@ -1272,6 +1295,43 @@ roc_obj <- roc(ds$SynGroup, combined_score2,percent=TRUE,
 ```{r}
 anova(M1,M2)
 ```
+
+```{r}
+# ds_pID <- ds_Q %>%
+#   filter(dataSource == "Ward") %>%
+#   select(ID,`questionnaire score`,group,QuestCriteria)
+# 
+# ds_pID$groupSyn <- ds_pID$group == "Syn"
+# 
+# M0 <- glm(groupSyn ~ `questionnaire score`, family=binomial, data = ds_pID)
+# combined_score3 <- predict(M0, type="response")
+# 
+# # ROC calculation
+# library(pROC)
+# roc_obj <- roc(ds_pID$group, combined_score3,percent=TRUE,
+#     # arguments for ci
+#     ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+#     # arguments for plot
+#     plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+#     print.auc=TRUE, show.thres=TRUE)
+
+# best_coords <- coords(roc_obj, "best", ret = c("threshold", "sensitivity", "specificity"), best.method = "youden")
+
+roc_Quest <- roc(group ~ `questionnaire score`, ds_pID, 
+                percent=TRUE,
+                # arguments for ci
+                ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+                # arguments for plot
+                plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+                print.auc=TRUE, show.thres=TRUE)
+
+# Best threshold using Youden's J
+best_coords <- coords(roc_Quest, "best", ret = c("threshold", "sensitivity", "specificity"), best.method = "youden")
+
+
+
+```
+
 
 
 ```{r}
