@@ -1,0 +1,15 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+At Test_V5_light.
+
+I computed ROC and AUC with Consistency and line intersections on Ward and Nicola's data. While on Ward data line intersection seems to be more appropriate, on Nicolas data it seems that consistency works best (with high sensitivity and specificity). Why?
+This could be either on the sample slection side as:
+- more "strong" synesthetes in NR data)
+- more "strong" controls in Ward data (from what I understand these are people who want to diagnose synesthesia, so they might all have some form of it).
+And vice-versa.
+Also NR excludes some participants manually. Also in NR data some participants actually don't have responses in some of the conditions (but that also occurs in Ward data).
+
+Remains the question of why the segment intersection criteria works so badly with NR data.

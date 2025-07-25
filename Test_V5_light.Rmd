@@ -499,6 +499,9 @@ ds <- ds %>%
 ```
 
 
+´r apa_print(t.test(GA_lineInter ~ SynQuest_NR, ds))$full_result`
+
+´r apa_print(t.test(Consistency ~ SynQuest_NR, ds))$full_result`
 
 # 3. ROC to set thresholds
 
@@ -599,11 +602,48 @@ ggplot(ds,   aes(x = GA_lineInter, group = SynQuest_NR,fill =SynQuest_NR, colour
 
 ```
 
+### 3.1.2 For months
+
+```{r}
+ds %>%
+   filter(Cond =="month") %>%
+    roc(SynQuest_NR ~ nLineCross, data = . ,percent=TRUE,
+        # arguments for ci
+        ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+        # arguments for plot
+        plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+        print.auc=TRUE, show.thres=TRUE)
+```
+### 3.1.2 For weekdays
+
+```{r}
+ds %>%
+   filter(Cond =="weekday") %>%
+    roc(SynQuest_NR ~ nLineCross, data = . ,percent=TRUE,
+        # arguments for ci
+        ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+        # arguments for plot
+        plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+        print.auc=TRUE, show.thres=TRUE)
+```
+### 3.1.2 For nubmers
+
+```{r}
+ds %>%
+   filter(Cond =="number") %>%
+    roc(SynQuest_NR ~ nLineCross, data = . ,percent=TRUE,
+        # arguments for ci
+        ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+        # arguments for plot
+        plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+        print.auc=TRUE, show.thres=TRUE)
+```
+
 ## 3.2. ROC Consistency
 
 ### 3.2.1. AUC 
 ```{r message=FALSE, warning=FALSE}
-roc_Cons <- roc( SynQuest_NR ~ Consistency, ds, percent=TRUE,
+roc_Cons <- roc( SynQuest_NR ~ Consistency, ds[ds$dataSource =="Ward",], percent=TRUE,
             # arguments for ci
             ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
             # arguments for plot
@@ -693,6 +733,42 @@ ggplot(ds,   aes(x = Consistency, group = SynQuest_NR,fill =SynQuest_NR, colour 
 
 
 
+```
+### 3.1.2 For months
+
+```{r}
+ds %>%
+   filter(Cond =="month") %>%
+    roc(SynQuest_NR ~ triangle_area, data = . ,percent=TRUE,
+        # arguments for ci
+        ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+        # arguments for plot
+        plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+        print.auc=TRUE, show.thres=TRUE)
+```
+### 3.1.2 For weekdays
+
+```{r}
+ds %>%
+   filter(Cond =="weekday") %>%
+    roc(SynQuest_NR ~ triangle_area, data = . ,percent=TRUE,
+        # arguments for ci
+        ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+        # arguments for plot
+        plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+        print.auc=TRUE, show.thres=TRUE)
+```
+### 3.1.2 For nubmers
+
+```{r}
+ds %>%
+   filter(Cond =="number") %>%
+    roc(SynQuest_NR ~ triangle_area, data = . ,percent=TRUE,
+        # arguments for ci
+        ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+        # arguments for plot
+        plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+        print.auc=TRUE, show.thres=TRUE)
 ```
 
 
@@ -864,9 +940,125 @@ ggplot(ds_long,
 
 ```
 
-# 6. Bonus ROC for each questionnaire Criteria
+
+
+# 6. NR Data
 
 ```{r}
+load("DataSave3S_V5.RData")
+ds_Rothen <- ds[ds$dataSource == "Rothen",]
+ds_Rothen$Syn <- ds_Rothen$group == "Syn"
+
+# Id with no zs in one conition (i.e. responded the same position):
+# ds %>%
+#     filter(!ID %in% c("101_Elin","1188_MiBo","1198_LiKe","12_CH","1230_FeKe","2006_MeFu","2014_DeMl","806_AmSq","755_FrIn") )
+```
+
+# 6.1. Consistency
+```{r}
+roc_Cons_NR<- roc(Syn ~ Consistency, ds_Rothen,percent=TRUE,
+                # arguments for ci
+                ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+                # arguments for plot
+                plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+                print.auc=TRUE, show.thres=TRUE)
+
+best_coords <- coords(roc_Cons_NR, "best", ret = c("threshold", "sensitivity", "specificity"), best.method = "youden")
+
+best_coords
+```
+
+# 6.2. Line Intersections
+```{r}
+ds_Rothen %>%
+    ggplot(aes(x = GA_lineInter,y = 1, group = Syn, fill = Syn)) +
+    stat_density_ridges(quantile_lines = TRUE,quantiles = c(0.25,0.5,0.75),alpha = 0.5)
+
+
+ds_Rothen %>%
+    ggplot(aes(x = Consistency,y = 1, group = Syn, fill = Syn)) +
+    stat_density_ridges(quantile_lines = TRUE,quantiles = c(0.25,0.5,0.75),alpha = 0.5)
+```
+
+
+```{r}
+roc_line_NR <- roc(Syn ~ GA_lineInter , ds_Rothen,percent=TRUE,
+                # arguments for ci
+                ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+                # arguments for plot
+                plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+                print.auc=TRUE, show.thres=TRUE)
+
+best_coords <- coords(roc_line_NR, "best", ret = c("threshold", "sensitivity", "specificity"), best.method = "youden")
+
+best_coords
+```
+Weeks
+```{r}
+ds_Rothen %>%
+   filter(Cond =="weekday") %>%
+    roc(Syn ~ GA_lineInter, data = . ,percent=TRUE,
+        # arguments for ci
+        ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+        # arguments for plot
+        plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+        print.auc=TRUE, show.thres=TRUE)
+```
+Months
+```{r}
+ds_Rothen %>%
+   filter(Cond =="month") %>%
+    roc(Syn ~ GA_lineInter, data = . ,percent=TRUE,
+        # arguments for ci
+        ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+        # arguments for plot
+        plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+        print.auc=TRUE, show.thres=TRUE)
+```
+
+Numbers
+```{r}
+ds_Rothen %>%
+   filter(Cond =="number") %>%
+    roc(Syn ~ GA_lineInter, data = . ,percent=TRUE,
+        # arguments for ci
+        ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+        # arguments for plot
+        plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+        print.auc=TRUE, show.thres=TRUE)
+```
+
+## 6.2.1.
+
+```{r}
+
+# Apply per group
+ds_Rothen<-ds_Rothen%>%
+    group_by(ID, stimulus) %>%
+    mutate(triangle_area_zs = triangle_area(x_zs, y_zs))
+
+
+
+ds_Rothen<- ds_Rothen %>%  
+  group_by(ID,repetition) %>%
+  mutate(Consistency_zs = ((sum(triangle_area_zs)/29)*100)/Screen_area)
+
+roc_Cons_NR<- roc(Syn ~ Consistency_zs, ds_Rothen,percent=TRUE,
+                  # arguments for ci
+                  ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+                  # arguments for plot
+                  plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+                  print.auc=TRUE, show.thres=TRUE)
+
+best_coords <- coords(roc_Cons_NR, "best", ret = c("threshold", "sensitivity", "specificity"), best.method = "youden")
+
+best_coords
+```
+
+
+# 7. Bonus ROC for each questionnaire Criteria
+
+```{r eval=FALSE, warning=FALSE, include=FALSE}
 ds_Q <- ds_Q %>%
   filter(dataSource == "Ward")
 
@@ -894,6 +1086,44 @@ for(i in 10:44){
   
 }
 ```
+
+
+## Test
+
+In NR 2016, they:
+
+*Our online screening questionnaire contains the question: BSome people always experience sequences in a particular spatial arrangement. Do you think this applies to you?^ They were also shown a single example of a drawing of a three-dimensional (3D) spatial arrangement of days of the week as an example (Fig. 3b in Rothen, Meier, & Ward, 2012). Those giving an affirmative answer were then asked which kinds of stimuli they visualize in this way*
+This seems like Q1 in Ward. So I recategorized the synesthetes only based on that question:
+
+
+```{r}
+SynIDQ1 <- ds_Q$ID[ds_Q$`Q1 . Some people routinely think about sequences as arranged in a particular spatial configuration (as in the examples below), do you think this might apply to you? (1=strongly agree, 5= strongly disagree)` %in% 5]
+
+ds$SynQ1 <- ds$ID %in% SynIDQ1
+
+
+roc_Cons_NR<- roc(SynQ1 ~ Consistency, ds,percent=TRUE,
+                # arguments for ci
+                ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+                # arguments for plot
+                plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+                print.auc=TRUE, show.thres=TRUE)
+
+best_coords <- coords(roc_Cons_NR, "best", ret = c("threshold", "sensitivity", "specificity"), best.method = "youden")
+
+best_coords
+
+roc_Cons_NR<- roc(SynQ1 ~ GA_lineInter, ds,percent=TRUE,
+                  # arguments for ci
+                  ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+                  # arguments for plot
+                  plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+                  print.auc=TRUE, show.thres=TRUE)
+
+best_coords <- coords(roc_Cons_NR, "best", ret = c("threshold", "sensitivity", "specificity"), best.method = "youden")
+
+best_coords
+``` 
 
 
 ```{r}
