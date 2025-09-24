@@ -1,0 +1,458 @@
+---
+title: "TEST LINE INTERSECT FUNCTION"
+output: html_notebook
+---
+
+# Generate random data:
+
+```{r}
+
+
+ds_smp <- ds %>%
+  filter(ID == "45736") %>% # sample(unique(ds$ID),1)
+  filter(Cond == "number")
+
+
+ds_smp %>%
+  ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+  geom_polygon(alpha = 0.4) +
+  geom_text(aes(x = X_mean_zs+0.1, y = Y_mean_zs+0.1), colour = "black", size = 0.5) +
+  geom_path(aes(x = X_mean_zs, y = Y_mean_zs, group = 1)) +
+  geom_path(aes(x = x_zs, y = y_zs, group = repetition), alpha = 0.2) +
+  geom_text(aes(x = x_zs+0.1, y = y_zs+0.1), size = 0.5, alpha = 0.5) +
+  theme_minimal()
+
+tmp <- ds_smp %>%
+    filter(repetition == 1)
+```
+
+Should obtain about 13!
+
+
+OR random lines:
+
+```{r}
+# Generate two lines (10 points each)
+npts <- 100
+order <- 1:npts
+x1 <- runif(npts); y1 <- runif(npts)
+x2 <- runif(npts); y2 <- runif(npts)
+
+ggplot() +
+    geom_line(aes(x = x1[order],y = x2[order])) +
+    geom_line(aes(x = x2[order],y = y2[order])) 
+```
+
+
+What I already have:
+```{r}
+
+count_self_intersections <- function(x, y, verbose = TRUE) {
+  n <- length(x)
+  if (n < 4) {
+    if (verbose) cat("Need at least 4 points to check for self-intersection.\n")
+    return(0)
+  }
+
+  # Orientation function
+  orientation <- function(p, q, r) {
+    val <- (q[2] - p[2]) * (r[1] - q[1]) - (q[1] - p[1]) * (r[2] - q[2])
+    if (is.na(val)) return(NA)
+    if (val == 0) return(0)
+    if (val > 0) return(1) else return(2)
+  }
+
+  # Check if q lies on segment pr
+  on_segment <- function(p, q, r) {
+    if (any(is.na(c(p, q, r)))) return(FALSE)
+    q[1] <= max(p[1], r[1]) && q[1] >= min(p[1], r[1]) &&
+      q[2] <= max(p[2], r[2]) && q[2] >= min(p[2], r[2])
+  }
+
+  # Main intersection check
+  segments_intersect <- function(p1, p2, p3, p4) {
+    o1 <- orientation(p1, p2, p3)
+    o2 <- orientation(p1, p2, p4)
+    o3 <- orientation(p3, p4, p1)
+    o4 <- orientation(p3, p4, p2)
+
+    if (any(is.na(c(o1, o2, o3, o4)))) return(FALSE)
+
+    # General case
+    if (o1 != o2 && o3 != o4) return(TRUE)
+
+    # Special colinear cases
+    if (o1 == 0 && on_segment(p1, p3, p2)) return(TRUE)
+    if (o2 == 0 && on_segment(p1, p4, p2)) return(TRUE)
+    if (o3 == 0 && on_segment(p3, p1, p4)) return(TRUE)
+    if (o4 == 0 && on_segment(p3, p2, p4)) return(TRUE)
+
+    return(FALSE)
+  }
+
+  count <- 0
+  for (i in 1:(n - 2)) {
+    for (j in (i + 2):(n - 1)) {
+      if (j == i + 1) next  # skip adjacent segments
+
+      p1 <- c(x[i], y[i])
+      p2 <- c(x[i + 1], y[i + 1])
+      p3 <- c(x[j], y[j])
+      p4 <- c(x[j + 1], y[j + 1])
+
+      if (segments_intersect(p1, p2, p3, p4)) {
+        count <- count + 1
+        if (verbose) {
+          cat(sprintf("Intersection #%d: segments (%d-%d) and (%d-%d)\n", count, i, i+1, j, j+1))
+        }
+      }
+    }
+  }
+
+  if (verbose) cat("Total crossings:", count, "\n")
+  return(count)
+}
+```
+
+
+
+
+```{r}
+
+count_orientations <- function(x, y, verbose = TRUE) {
+  n <- length(x)
+  if (n < 4) {
+    if (verbose) cat("Need at least 4 points to check for self-intersection.\n")
+    return(0)
+  }
+  
+  # Orientation function
+  orientation <- function(p, q, r) {
+    val <- (q[2] - p[2]) * (r[1] - q[1]) - (q[1] - p[1]) * (r[2] - q[2])
+    if (is.na(val)) return(NA)
+    if (val == 0) return(0)
+    if (val > 0) return(1) else return(2)
+  }
+  
+  
+  count <- 0
+  for (i in 1:(n - 2)) {
+    for (j in (i + 2):(n - 1)) {
+      if (j == i + 1) next  # skip adjacent segments
+      
+      p1 <- c(x[i], y[i])
+      p2 <- c(x[i + 1], y[i + 1])
+      p3 <- c(x[j], y[j])
+  
+      cat(orientation(p1, p2, p3))
+      count <- count + 1
+
+    }
+  }
+  cat(count)
+}
+
+```
+
+
+
+```{r}
+
+df <- data.frame(
+  repetition = rep(1:3, each = 9),
+  number = rep(1:9, times = 3),
+  x = runif(27),
+  y = runif(27)
+)
+
+ggplot(aes(x = x, y = y, group = repetition), data =df) +
+    geom_line()
+
+
+
+# Function to check if two segments (p1,q1) and (p2,q2) intersect
+segments_intersect <- function(p1, q1, p2, q2) {
+  orientation <- function(a, b, c) {
+    val <- (b[2] - a[2]) * (c[1] - b[1]) - (b[1] - a[1]) * (c[2] - b[2])
+    if (val == 0) return(0)  # colinear
+    return(ifelse(val > 0, 1, 2))  # clock or counterclockwise
+  }
+
+  o1 <- orientation(p1, q1, p2)
+  o2 <- orientation(p1, q1, q2)
+  o3 <- orientation(p2, q2, p1)
+  o4 <- orientation(p2, q2, q1)
+
+  # General case
+  if (o1 != o2 && o3 != o4) return(TRUE)
+
+  return(FALSE)  # No intersection
+}
+
+# Function to generate segment list for one repetition
+get_segments <- function(data_rep) {
+  data_rep <- data_rep[order(data_rep$number), ]
+  segments <- list()
+  for (i in 1:(nrow(data_rep) - 1)) {
+    seg <- list(
+      p1 = c(data_rep$x[i], data_rep$y[i]),
+      p2 = c(data_rep$x[i + 1], data_rep$y[i + 1])
+    )
+    segments[[length(segments) + 1]] <- seg
+  }
+  return(segments)
+}
+
+# Count intersections between two repetitions
+count_intersections <- function(rep1, rep2) {
+  segs1 <- get_segments(rep1)
+  segs2 <- get_segments(rep2)
+  count <- 0
+  for (s1 in segs1) {
+    for (s2 in segs2) {
+      if (segments_intersect(s1$p1, s1$p2, s2$p1, s2$p2)) {
+        count <- count + 1
+      }
+    }
+  }
+  return(count)
+}
+
+
+
+# Split data by repetition
+reps <- split(df, df$repetition)
+
+# Compare all repetition pairs
+rep_pairs <- combn(names(reps), 2)
+
+# Apply the intersection count
+results <- apply(rep_pairs, 2, function(pair) {
+  r1 <- reps[[pair[1]]]
+  r2 <- reps[[pair[2]]]
+  count <- count_intersections(r1, r2)
+  data.frame(pair = paste0("Rep", pair[1], "_vs_Rep", pair[2]), intersections = count)
+})
+
+# Combine and show results
+final_result <- do.call(rbind, results)
+print(final_result)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# With repettions
+
+```{r}
+count_repetitons_intersections <- function(x, y, repetition, verbose = TRUE) {
+  
+  # For debug purpose:
+  browser()
+  
+  nrep = length(unique(repetition))
+  n <- length(x)/nrep # assume all trials included
+  
+  if (n < 4) {
+    if (verbose) cat("Need at least 4 points to check for self-intersection.\n")
+    return(0)
+  }
+
+  # Orientation function
+  orientation <- function(p, q, r) {
+    val <- (q[2] - p[2]) * (r[1] - q[1]) - (q[1] - p[1]) * (r[2] - q[2])
+    if (is.na(val)) return(NA)
+    if (val == 0) return(0)
+    if (val > 0) return(1) else return(2)
+  }
+
+  # Check if q lies on segment pr
+  # Checks wheter middle point lies on the segment between left and right.
+  on_segment <- function(p, q, r) {
+    if (any(is.na(c(p, q, r)))) return(FALSE)
+    q[1] <= max(p[1], r[1]) && q[1] >= min(p[1], r[1]) &&
+      q[2] <= max(p[2], r[2]) && q[2] >= min(p[2], r[2])
+  }
+
+  # Main intersection check
+  segments_intersect <- function(p1, p2, p3, p4) {
+    o1 <- orientation(p1, p2, p3)
+    o2 <- orientation(p1, p2, p4)
+    o3 <- orientation(p3, p4, p1)
+    o4 <- orientation(p3, p4, p2)
+
+    if (any(is.na(c(o1, o2, o3, o4)))) return(FALSE)
+
+    # General case
+    if (o1 != o2 && o3 != o4) return(TRUE)
+
+    # Special colinear cases
+    if (o1 == 0 && on_segment(p1, p3, p2)) return(TRUE)
+    if (o2 == 0 && on_segment(p1, p4, p2)) return(TRUE)
+    if (o3 == 0 && on_segment(p3, p1, p4)) return(TRUE)
+    if (o4 == 0 && on_segment(p3, p2, p4)) return(TRUE)
+
+    return(FALSE)
+  }
+  
+  
+  count <- 0
+  # Walk point to points and check for intersections.
+  # Add all possible combinations between repetitions:
+  pairComb = combn(1:nrep, 2)
+  
+  for (rep in 1:lnrep) {
+    rep_pair = pairComb[,rep]
+    x_rep = x[repetition %in% rep_pair]
+    y_rep = y[repetition %in% rep_pair]
+    rep_vec = repetition[repetition %in% rep_pair]
+    
+    for (i in 1:(n - 2)) { # i = initial point 
+      for (j in (i + 2):(n - 1)) { # j = initial point to count intersections (i.e. + 2 from 1st and -1 from end)
+        if (j == i + 1) next  # skip adjacent segments
+        if ()
+        
+        p1 <- c(x_rep[i], y_rep[i])
+        p2 <- c(x_rep[i + 1], y_rep[i + 1])
+        p3 <- c(x_rep[j], y_rep[j])
+        p4 <- c(x_rep[j + 1], y_rep[j + 1])
+        
+        if (segments_intersect(p1, p2, p3, p4)) {
+          count <- count + 1
+          if (verbose) {
+            cat(sprintf("Intersection #%d: segments (%d-%d) and (%d-%d)\n", count, i, i+1, j, j+1))
+          }
+        }
+      }
+    }
+  }
+  
+  if (verbose) cat("Total crossings:", count, "\n")
+  return(count)
+}
+
+# 
+# ds_smp %>%
+#   ungroup() %>%
+#   mutate(ncross = count_self_intersections(x,y)) %>%
+#   select(ncross)
+
+
+ds_smp %>%
+  ungroup() %>%
+  mutate(ncross = count_repetitons_intersections(x,y,repetition)) %>%
+  select(ncross)
+```
+
+
+```{r}
+# Function to check intersection between two segments
+segments_intersect <- function(p1, p2, q1, q2) {
+  ccw <- function(A, B, C) {
+    (C[2] - A[2]) * (B[1] - A[1]) > (B[2] - A[2]) * (C[1] - A[1])
+  }
+  
+  (ccw(p1, q1, q2) != ccw(p2, q1, q2)) && (ccw(p1, p2, q1) != ccw(p1, p2, q2))
+}
+
+# Generate two lines (10 points each)
+set.seed(1)
+x1 <- runif(10); y1 <- runif(10)
+x2 <- runif(10); y2 <- runif(10)
+
+# Store points as coordinate pairs
+line1 <- cbind(x1, y1)
+line2 <- cbind(x2, y2)
+
+# Break into segments
+count <- 0
+for (i in 1:(nrow(line1) - 1)) {
+  for (j in 1:(nrow(line2) - 1)) {
+    p1 <- line1[i, ]
+    p2 <- line1[i + 1, ]
+    q1 <- line2[j, ]
+    q2 <- line2[j + 1, ]
+    
+    if (segments_intersect(p1, p2, q1, q2)) {
+      count <- count + 1
+    }
+  }
+}
+
+cat("Number of segment intersections:", count, "\n")
+
+ggplot() +
+    geom_polygon(aes(x = x1,y = y1), alpha = 0.5)+
+    geom_polygon(aes(x = x2,y = y2), alpha = 0.5)
+
+```
+```{r}
+# Check if two 2D line segments intersect using orientation test
+segments_intersect <- function(p1, p2, q1, q2) {
+  # Orientation function
+  orientation <- function(a, b, c) {
+    val <- (b[2] - a[2]) * (c[1] - b[1]) - (b[1] - a[1]) * (c[2] - b[2])
+    if (val == 0) return(0)  # colinear
+    if (val > 0) return(1)   # clockwise
+    return(2)                # counter-clockwise
+  }
+  
+  o1 <- orientation(p1, p2, q1)
+  o2 <- orientation(p1, p2, q2)
+  o3 <- orientation(q1, q2, p1)
+  o4 <- orientation(q1, q2, p2)
+
+  # General case
+  if (o1 != o2 && o3 != o4) return(TRUE)
+  
+  # Special cases (colinear overlapping cases — optional)
+  return(FALSE)
+}
+
+
+x1 <- runif(10)
+y1 <- runif(10)
+x2 <- runif(10)
+y2 <- runif(10)
+
+line1 <- cbind(x1, y1)
+line2 <- cbind(x2, y2)
+
+ggplot() +
+    geom_line(aes(x = x1,y = y1), alpha = 0.5)+
+    geom_line(aes(x = x2,y = y2), alpha = 0.5)
+
+# Count intersections between segments
+intersection_count <- 0
+for (i in 1:(nrow(line1) - 1)) {
+  p1 <- line1[i, ]
+  p2 <- line1[i + 1, ]
+  
+  for (j in 1:(nrow(line2) - 1)) {
+    q1 <- line2[j, ]
+    q2 <- line2[j + 1, ]
+    
+    if (segments_intersect(p1, p2, q1, q2)) {
+      intersection_count <- intersection_count + 1
+    }
+  }
+}
+
+cat("Total number of 2D segment intersections:", intersection_count, "\n")
+
+ggplot() +
+    geom_line(aes(x = x1,y = y1), alpha = 0.5)+
+    geom_line(aes(x = x2,y = y2), alpha = 0.5)
+```
+

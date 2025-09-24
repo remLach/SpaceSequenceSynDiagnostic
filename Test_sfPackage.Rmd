@@ -1,0 +1,676 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Try to use sf package
+
+```{r}
+library(sf)
+```
+
+# Set to sf dataset:
+
+Setups:
+```{r}
+# Turn off spherical geometry:
+
+sf::sf_use_s2(FALSE)
+
+ds <- ds %>%
+  group_by(Cond) %>%
+  mutate(
+    item_order = case_when(
+      Cond == "number"  ~ match(stimulus, as.character(0:9)),
+      Cond == "weekday" ~ match(stimulus, c("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday")),
+      Cond == "month"   ~ match(stimulus, c("January","February","March","April","May","June", "July","August","September","October","November","December")),
+      TRUE ~ NA_integer_
+    ) 
+  )%>%
+  ungroup()
+
+
+## Sanity Check:
+
+ds %>% 
+    group_by(stimulus) %>%
+    filter(row_number() == 1) %>%
+    select(stimulus, item_order)
+```
+
+Load all the segments using *st*:
+
+Now add a dataset with:
+- segments
+- convex hulls
+- polygons
+
+```{r}
+
+# ds_Multipoint <- ds %>%
+#     filter(!is.nan(x_zs), !is.nan(y_zs)) %>% # sf hates NaN! 
+#     mutate(
+#         Group = as.character(group),
+#         ID     = as.character(ID),
+#         Cond      = as.character(Cond),
+#         repetition     = as.integer(repetition),
+#         item_order     = as.integer(item_order)
+#     ) %>%
+#     arrange(ID, Cond, repetition,Group) %>%
+#     group_by(ID, Cond, repetition,Group) %>%
+#     summarise(
+#         geometry = st_sfc(st_multipoint(as.matrix(cbind(x_zs, y_zs)))), # preserves order
+#         .groups = "drop",
+#         stimulus = stimulus
+#     ) %>%
+#     st_as_sf(crs = NA)
+
+
+ds_segm <- ds %>%
+  filter(!is.nan(x_zs), !is.nan(y_zs)) %>% # sf hates NaN! 
+  mutate(
+    Group = as.character(group),
+    ID     = as.character(ID),
+    Cond      = as.character(Cond),
+    repetition     = as.integer(repetition),
+    item_order     = as.integer(item_order)
+  ) %>%
+  arrange(ID, Cond, repetition,Group) %>%
+  group_by(ID, Cond, repetition,Group) %>%
+  summarise(
+    geometry = st_sfc(st_linestring(as.matrix(cbind(x_zs, y_zs)))), # preserves order
+    .groups = "drop",
+  stimulus = stimulus
+  ) %>%
+  st_as_sf(crs = NA)
+
+# nrow(st_coordinates(ds_segm[1,1]))
+
+ds_conv_hull <- ds_segm %>%
+    mutate(geometry = st_convex_hull(geometry))
+
+# WWhy doesn't this one work:
+ds_conc_hull <- ds_segm %>%
+    mutate(geometry = st_concave_hull(geometry, ratio = 0.5))
+
+# With st_geometry I remove the "field", I want only the lines
+
+ds_poly <- st_cast(ds_segm, "POLYGON")
+
+ds_poly2 <- ds_segm %>%
+  mutate(geometry = st_geometry(st_cast(ds_segm, "POLYGON")))
+
+# ds_poly <-  st_geometry(st_cast(ds_segm, "POLYGON"))
+```
+
+Convert lines to segments to count intersections
+```{r}
+line_to_segments <- function(line) {
+  cc <- st_coordinates(line)
+  if (nrow(cc) < 2) return(st_sfc())
+  # L1 indexes separate rings/parts; step within each part
+  segs <- list()
+  for (g in unique(cc[, "L1"])) {
+    part <- cc[cc[, "L1"] == g, , drop = FALSE]
+    if (nrow(part) < 2) next
+    for (i in seq_len(nrow(part) - 1)) {
+      segs[[length(segs)+1]] <- st_linestring(rbind(part[i, c("X","Y")], part[i+1, c("X","Y")]))
+    }
+  }
+  st_sfc(segs, crs = st_crs(line))
+}
+
+count_polygon_crossings <- function(polyA, polyB) {
+  BA <- st_boundary(polyA)
+  BB <- st_boundary(polyB)
+
+  segA <- line_to_segments(BA)
+  segB <- line_to_segments(BB)
+
+  if (length(segA) == 0 || length(segB) == 0) return(0L)
+
+  # Build segment sets A and B
+  A <- segA
+  B <- segB
+
+  # For each A_i, which B_j intersect with **interior–interior point** relation?
+  # "****0****" = interior/interior intersection of dimension 0 (a point)
+  rel <- st_relate(A, B, pattern = "****0****")
+
+  # Count total pairs that satisfy that relation
+  sum(lengths(rel) > 0)
+}
+
+
+```
+
+
+
+
+
+
+```{r}
+# Visual Sanity Check:
+ds %>% 
+  filter(ID == "44590", Cond =="number") %>%
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
+  ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+  geom_path(aes(x = x_zs, y = y_zs, group = repetition), alpha = 0.2) +
+  xlim(-2, 2) +
+  ylim(-2,2) +
+  theme_minimal()
+
+ds_segm %>%
+  filter(ID == "44590", Cond =="number") %>%
+  ggplot() +
+  geom_sf() +
+  xlim(-2, 2) +
+  ylim(-2,2) +
+  theme_minimal()
+
+```
+# Descriptives 
+
+Hull is not polygon:
+```{r}
+plot(st_area(ds_conv_hull),st_area(ds_poly))
+```
+
+# Intersections
+
+## Between repetitions: OK
+
+```{r}
+# Proof of concept I
+# LINESTRING
+tmp <- st_intersection(ds_segm[1,1],ds_segm[2,1])
+nrow(st_coordinates(tmp))
+
+plot(tmp$geometry)
+plot(ds_segm[1,1], add = TRUE)
+plot(ds_segm[2,1], add = TRUE)
+
+# Proof of concept II
+i12 <- st_intersection(ds_segm[1,1],ds_segm[2,1])
+i13 <- st_intersection(ds_segm[1,1],ds_segm[3,1])
+i23 <- st_intersection(ds_segm[2,1],ds_segm[3,1])
+
+nrow(st_coordinates(i12))
+nrow(st_coordinates(i13))
+nrow(st_coordinates(i23))
+
+all_pts = c(i12$geometry,i13$geometry,i23$geometry)
+
+# pts <- st_collection_extract(st_union(all_pts), "POINT")
+
+plot(all_pts)
+plot(ds_segm[1,1], add = TRUE, color = "red")
+plot(ds_segm[2,1], add = TRUE)
+plot(ds_segm[3,1], add = TRUE)
+
+
+# Number of intersections between the 3 repetitions:
+nrow(st_coordinates(i12)) + nrow(st_coordinates(i13)) + nrow(st_coordinates(i23))
+
+# Ok "just" need to be looped
+```
+
+## With poly
+
+Maybe if we can find the number of polygons, we can also extract the intersections! Try this.
+
+## Self-intersections KO
+
+Should match:
+```{r}
+# ds$nLineCross
+```
+
+
+```{r}
+# make_segments <- function(coords) {
+#   n <- nrow(coords)
+#   segs <- lapply(1:(n-1), function(i) st_linestring(coords[i:(i+1), ]))
+#   st_sfc(segs, crs = 4326) |> st_sf(seg_id = 1:length(segs))
+# }
+# 
+# for ID_n in 1:unique(ds_segm$ID){
+#   ID_n <- unique(ds_segm$ID)[ID_n]
+#   for Cond_n in 1:unique(ds_segm$Cond){
+#     Cond_n <- unique(ds_segm$Cond)[Cond_n]
+#     for rep_n in unique(ds_segm$repetition){
+#       rep_n <- unique(ds_segm$repetition)[rep_n]
+#       ds_segm %>%
+#         filter(ID == ID_n) %>%
+#         filter(Cond == Cond_n) %>%
+#         filter(repetition == rep_n) %>%
+#     }    
+#   }
+# }
+# 
+# segments_sf <- ds_segm %>%
+#   group_by(ID, Cond, repetition,Group) %>%
+#   mutate(segm = make_segments(st_coordinates(ds_segm)))
+```
+
+
+```{r}
+# snap_tol <- 0.0000001
+# precision = 1e6
+# 
+# if (!is.null(precision)) ds_poly <- st_set_precision(ds_poly, precision)
+# if (snap_tol > 0) ds_poly <- st_snap(ds_poly, ds_poly, tolerance = snap_tol)
+# 
+# # 1) boundary lines
+# bnd  <- st_boundary(ds_poly)
+# # 2) add nodes at all line-line intersections
+# bndN <- st_node(bnd)
+# # 3) polygonize the noded linework => all closed faces (inside + outside loops)
+# faces <- st_polygonize(bndN)
+# # 4) keep only polygons covered by the original polygon (odd-even fill)
+# inside <- st_collection_extract(st_intersection(faces, st_make_valid(g)), "POLYGON")
+# inside
+
+
+ds_poly[605,1]
+plot(ds_poly[605,1])
+faces_poly <- st_cast(st_polygonize(st_boundary(ds_poly[605,1]))),"POLYGON")
+plot(faces_poly, col = sf.colors(length(faces_poly)), border = "black")
+```
+
+
+### Step 1: split into sub segments (i.e. 3 consectuives)
+
+```{r}
+# NOT WORKING!
+# Split a LINESTRING (or MULTILINESTRING) into its consecutive segments
+line_to_segments <- function(line) {
+  cc <- st_coordinates(line)
+  if (nrow(cc) < 2) return(st_sfc())
+  segs <- list()
+  # L1 separates parts/rings if present
+  for (g in unique(cc[, "L1"])) {
+    part <- cc[cc[, "L1"] == g, , drop = FALSE]
+    if (nrow(part) < 2) next
+    for (i in seq_len(nrow(part) - 2)) {
+      p1 <- part[i,  c("X","Y")]
+      p2 <- part[i+1,c("X","Y")]
+      p3 <- part[i+2,c("X","Y")]
+      # skip zero-length segments
+      if (identical(as.numeric(p1), as.numeric(p2),as.numeric(p3))) next
+      segs[[length(segs)+1]] <- st_linestring(rbind(p1, p2,p3))
+    }
+  }
+  st_sfc(segs, crs = st_crs(line))
+}
+
+ds_subsegments <- line_to_segments(ds_segm)
+```
+
+
+
+```{r}
+tmp_1 <- ds_segm %>%
+  select(geometry) %>%
+  filter(row_number() == 1) 
+
+segs <- line_to_segments(tmp_1)
+closed <- is_closed_line(segs)
+```
+
+```{r}
+# DOES NOT WORK!!!!
+
+
+# library(sf)
+# 
+# sf::sf_use_s2(FALSE)  # planar ops for screen/z-scored coords
+# 
+# 
+# 
+# 
+# # Count self-crossings (interior–interior point intersections) of one line
+# count_self_crossings <- function(line) {
+#   segs <- line_to_segments(line)
+#   n <- length(segs)
+#   if (n < 3) return(0L)
+# 
+#   closed <- is_closed_line(line)
+# 
+#   # all segment index pairs i<j
+#   pairs <- utils::combn(seq_len(n), 2)
+#   # exclude adjacent pairs (share a vertex)
+#   keep <- abs(pairs[1,] - pairs[2,]) > 1
+#   # if closed, first and last segments also share a vertex; exclude that pair too
+#   if (closed) {
+#     keep <- keep & !(pairs[1,] == 1 & pairs[2,] == n)
+#   }
+#   if (!any(keep)) return(0L)
+#   pairs <- pairs[, keep, drop = FALSE]
+# 
+#   A <- st_sfc(lapply(pairs[1,], function(i) segs[[i]]), crs = st_crs(line))
+#   B <- st_sfc(lapply(pairs[2,], function(i) segs[[i]]), crs = st_crs(line))
+# 
+#   # Count pairs whose interiors cross at a point
+#   # st_crosses() ensures interior–interior intersection of lower dimension (a point for lines)
+#   crosses <- st_crosses(A, B, sparse = FALSE)
+#   sum(crosses)
+# }
+# 
+# # --- apply to an sf object with LINESTRING geometries ---
+# # lines_sf |> rowwise() |> mutate(n_self_cross = count_self_crossings(geometry)) |> ungroup()
+# # ds_segm <- ds_segm |> rowwise() |> mutate(n_self_cross = count_self_crossings(geometry)) |> ungroup()
+# ds_segm <- ds_segm |> select(geometry) |> rowwise() |> mutate(n_self_cross = count_self_crossings(geometry)) |> ungroup()
+# 
+# ds_segm  %>%
+#     filter(n_self_cross > 500) %>%
+#     filter(row_number() == 1) %>%
+#     plot()
+# 
+# ds_segm  %>%
+#     filter(n_self_cross > 500) %>%
+#     filter(row_number() == 1) |> mutate(n_self_cross = count_self_crossings(geometry)) |> ungroup()
+```
+
+
+
+
+
+
+```{r}
+# tmp1 <- ds_poly %>%
+#     filter(ID == "44590", Cond =="number", repetition == c("1")) 
+# 
+# tmp2 <- ds_poly %>%
+#     filter(ID == "44590", Cond =="number", repetition == c("2")) 
+# 
+# 
+# st_intersects(tmp1$geometry,tmp2$geometry)
+# 
+# plot(tmp1$geometry)
+# plot(tmp2$geometry, add = TRUE)
+```
+
+
+
+```{r}
+#  
+# library(lwgeom)
+# 
+# 
+# test <- ds_segm %>%
+#   mutate(
+#     n_parts_before = lengths(st_geometry(.)),        # always 1
+#     n_parts_after  = lengths(st_cast(st_node(geometry), "LINESTRING")),
+#     n_self_intersections = n_parts_after - n_parts_before
+#   )
+
+```
+
+
+```{r}
+
+# Split one LINESTRING into its consecutive segments
+line_to_segments <- function(line) {
+  coords <- st_coordinates(line)[, c("X","Y"), drop = FALSE]
+  if (nrow(coords) < 2) return(st_sfc())
+  segs <- lapply(seq_len(nrow(coords) - 1), function(i) {
+    st_linestring(rbind(coords[i,], coords[i+1,]))
+  })
+  st_sfc(segs, crs = st_crs(line))
+}
+
+# Count self-intersections for one LINESTRING
+count_self_intersections <- function(line) {
+  segs <- line_to_segments(line)
+  n <- length(segs)
+  if (n < 3) return(0L)
+
+  # make all non-adjacent pairs
+  pairs <- combn(seq_len(n), 2)
+  keep <- abs(pairs[1,] - pairs[2,]) > 1  # exclude neighbors
+  pairs <- pairs[, keep, drop = FALSE]
+
+  if (ncol(pairs) == 0) return(0L)
+
+  a <- st_sfc(lapply(pairs[1,], function(i) segs[[i]]), crs = st_crs(line))
+  b <- st_sfc(lapply(pairs[2,], function(i) segs[[i]]), crs = st_crs(line))
+
+  # test for interior–interior intersection
+  rel <- st_relate(a, b, pattern = "****1****")
+  sum(lengths(rel) > 0)
+}
+
+```
+
+
+
+```{r}
+# ds_segm <- ds_segm %>%
+#   rowwise() %>%
+#   mutate(
+#     n_self_intersections = count_self_intersections(geometry),
+#     is_self_intersecting = n_self_intersections > 0
+#   ) %>%
+#   ungroup()
+```
+
+
+
+
+
+
+```{r}
+# library(sf)
+# library(dplyr)
+# 
+# sf::sf_use_s2(FALSE)  # planar ops for standardized/screen coordinates
+# 
+# # split one LINESTRING into its consecutive segments
+# line_to_segments <- function(line) {
+#   coords <- st_coordinates(line)[, c("X","Y"), drop = FALSE]
+#   if (nrow(coords) < 2) return(st_sfc())
+#   segs <- lapply(seq_len(nrow(coords) - 1), function(i) {
+#     st_linestring(rbind(coords[i,], coords[i+1,]))
+#   })
+#   st_sfc(segs, crs = st_crs(line))
+# }
+# 
+# # count interior–interior intersections between non-adjacent segments
+# count_self_intersections <- function(line) {
+#   segs <- line_to_segments(line)
+#   n <- length(segs)
+#   if (n < 3) return(0L)
+# 
+#   pairs <- utils::combn(seq_len(n), 2)
+#   keep <- abs(pairs[1,] - pairs[2,]) > 1   # exclude adjacent segments (endpoint-only meets)
+#   if (!any(keep)) return(0L)
+#   pairs <- pairs[, keep, drop = FALSE]
+# 
+#   A <- st_sfc(lapply(pairs[1,], function(i) segs[[i]]), crs = st_crs(line))
+#   B <- st_sfc(lapply(pairs[2,], function(i) segs[[i]]), crs = st_crs(line))
+# 
+#   # interior–interior intersection pattern
+#   rel <- st_relate(A, B, pattern = "****1****")
+#   sum(lengths(rel) > 0)
+# }
+# 
+# # apply to your lines_sf
+# ds_segm <- ds_segm %>%
+#   rowwise() %>%
+#   mutate(
+#     n_self_intersections = count_self_intersections(geometry),
+#     is_self_intersecting = n_self_intersections > 0
+#   ) %>%
+#   ungroup()
+
+```
+
+# Geometrical Categories:
+
+is geometrically simple
+```{r}
+st_is_simple(ds_poly)
+# I.e.:
+plot(ds_poly[100,1])
+st_is_simple(ds_poly[100,1])
+plot(ds_poly[605,1])
+st_is_simple(ds_poly[605,1])
+```
+
+is topologically valid:
+```{r}
+st_is_valid(ds_poly)
+```
+
+ is clockwise (?)
+```{r}
+st_is_polygon_cw(ds_poly)
+```
+
+# Geometrical Continuums
+
+## Simple
+Area of the polygons/convex or concave hull:
+```{r}
+Polyarea <- st_area(ds_poly)
+```
+
+Length of the segments
+```{r}
+Segm_leng <- st_length(ds_segm)
+```
+
+## Mid complex
+
+Distance between segments:
+```{r}
+st_distance(ds_segm[1,1],ds_segm[2,1])
+```
+
+## Complex
+
+Self-intersection:
+
+```{r}
+# 
+# # Jitter all geometries by a tiny bit:
+# # Hence when we self interest the lines we avoid to find the same coordinates and only intersecting points (which will be a little off)
+# ds_segm$geometry_jit <- ds_segm$geometry+0.0001
+# 
+# # 1,] -1.641505e+00 -4.666546e-01    1
+# # 1,] -1.6416052041 -4.667546e-01    1
+# 
+# tmp <- st_as_sf(ds_segm) %>%  filter(row_number() == 135) %>% select(geometry,geometry_jit) %>% mutate(self_intersection_geom = st_intersection(geometry,geometry_jit))
+# # 
+# # library(geos)
+# # tmp <- ds_segm %>%  filter(row_number() == 135) %>% geos_offset_curve(., dist = 0.00001)
+# 
+# plot(tmp$geometry, col = "blue")
+# plot(tmp$geometry_jit, col = "red", add = TRUE)
+# plot(tmp$self_intersection_geom, add = TRUE)
+
+
+```
+
+
+
+```{r}
+st_as_sf(ds_segm) %>%  filter(row_number() == 1) %>%  mutate(self_intersection_geom = map(geometry, ~ st_intersection(.x, .x)))
+
+st_as_sf(ds_segm) %>%  filter(row_number() == 135) %>% select(geometry) %>% mutate(self_intersection_geom = st_intersection(., .)$geometry)
+```
+
+
+
+
+```{r}
+n <- length(ds_segm$geometry)
+
+segs <- ds_segm
+pts <- list()
+k <- 0L
+for (i in 1:(n - 1)) {
+  for (j in (i + 1):n) {
+    # exclude adjacent segments (share a vertex)
+    if (abs(i - j) == 1) next
+
+    # true crossings only (interior–interior point intersections)
+    if (st_crosses(segs[i,1], segs[j,1], sparse = FALSE)[1, 1]) {
+      k <- k + 1L
+      pts[[k]] <- st_intersection(segs[i], segs[j])
+    }
+  }
+}
+if (k == 0L) return(st_sfc(crs = st_crs(g)))
+
+# Deduplicate coincident points
+st_collection_extract(st_union(st_sfc(pts, crs = st_crs(g))), "POINT")
+
+```
+
+
+
+# Exploratives
+
+
+## All data overlapped:
+```{r}
+# I don't know what those could describe, but they look beautifull to me:
+# ggplot(data = st_as_sf(ds_segm)) + geom_sf(alpha = 0.05)
+
+
+ggplot(data = ds_segm)+
+  geom_sf(alpha = 0.05) +
+  facet_grid(~ Cond)
+
+
+ggplot(data = ds_poly) + 
+  geom_sf(alpha = 0.03) +
+    facet_grid(~Cond)
+
+ggplot(aes(fill = Cond), data = ds_conv_hull) + 
+    geom_sf(alpha = 0.03) +
+    facet_grid(~Cond)
+
+```
+
+## Centroids:
+```{r}
+
+ds_conc_hull_centroids <- st_centroid(ds_conc_hull)
+
+ggplot(data = ds_conc_hull_centroids)+
+  geom_sf(alpha = 0.05) +
+  facet_grid(~ Cond)
+
+
+```
+
+
+could substract convex and concave hulls
+```{r}
+plot(st_area(ds_conv_hull), st_area(ds_conc_hull))
+
+st_area(ds_conv_hull) -  st_area(ds_conc_hull)
+```
+## Simplifications
+
+```{r}
+ds_segm_simple <- st_simplify(ds_segm,dTolerance = 8)
+
+ggplot(data = ds_segm_simple)+
+  geom_sf(alpha = 0.02) +
+  facet_grid(Group ~ Cond) +
+  theme_minimal()
+
+ggplot(data = st_simplify(ds_poly,dTolerance = 2.5))+
+  geom_sf(alpha = 0.02) +
+  facet_grid(Group ~ Cond) +
+  theme_minimal()
+
+plot(st_area(st_simplify(ds_poly,dTolerance = 1)),st_area(ds_poly))
+```
+

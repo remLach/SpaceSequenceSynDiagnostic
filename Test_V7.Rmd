@@ -493,7 +493,8 @@ ds <- ds %>%
 ds <- ds %>% 
   group_by(stimulus) %>%
   arrange(stimulus) %>%
-  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% 
+  arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
   ungroup() %>%
   group_by(ID, Cond,repetition) %>%
   mutate(nLineCross = (count_self_intersections(x,y, verbose = FALSE)))
@@ -513,6 +514,146 @@ ds <- ds %>%
 ´r apa_print(t.test(GA_lineInter ~ SynQuest_NR, ds))$full_result`
 
 ´r apa_print(t.test(Consistency ~ SynQuest_NR, ds))$full_result`
+
+## 2.1. Across repetitions dirty
+
+Simple dirty: count ignoring repetitions (so the last of each repetition should be then counted with the next)
+
+```{r}
+ds <- ds %>%
+  group_by(ID, Cond) %>%
+  mutate(nSegments_wrep = length(stimulus)-1)
+
+
+# Number of intersections for each ID X Cond X repetition
+ds <- ds %>% 
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% 
+  arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
+  arrange(repetition) %>%
+  ungroup() %>%
+  group_by(ID, Cond) %>%
+  mutate(nLineCross_wRep = (count_self_intersections(x,y, verbose = FALSE)))
+
+# Linear transformation: chances for each segment to intersect:
+ds <- ds %>% 
+  group_by(ID, Cond) %>%
+  mutate(mean_lineInter_wRep = nLineCross_wRep/nSegments)
+
+# Average per ID
+ds <- ds %>%
+  group_by(ID) %>%
+  mutate(GA_lineInter_wRep  = mean(mean_lineInter_wRep ))
+
+
+roc_line <- roc(SynQuest ~ mean_lineInter_wRep, ds, 
+                percent=TRUE,
+                # arguments for ci
+                ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+                # arguments for plot
+                plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+                print.auc=TRUE, show.thres=TRUE)
+
+# Best threshold using Youden's J
+best_coords <- coords(roc_line, "best", ret = c("threshold", "sensitivity", "specificity"), best.method = "youden")
+
+
+```
+
+From:
+  threshold sensitivity specificity
+1 0.09279577    84.14634    54.72527
+
+To:
+ threshold sensitivity specificity
+1   3.89899    74.60943    60.52197
+
+We lose sensitivity but gain specificity, seems the good direction!
+
+## 2.2. Across repetitions clean
+
+Analyzing each repetition separately might favour horizontal positioning based on LTR order. For example, using the strategy if the number 0 is always positioned in the left, and 9 on the right (see MNL), there might be no intersections, though no Synesthesia. However it is more unlikely that this would work across repetitions (i.e. having the same vertical position). So I need to add a criteria of the number of intersections across repetitions. This would however only work if I exclude the end to 1st between each repetition. 
+
+With 3 repetitions we have:
+- 1 vs 2
+- 2 vs 3
+- 3 vs 1
+
+```{r}
+# 
+# count_repetitons_intersections <- function(x, y, repetition, verbose = TRUE) {
+#   n <- length(x)
+#   if (n < 4) {
+#     if (verbose) cat("Need at least 4 points to check for self-intersection.\n")
+#     return(0)
+#   }
+# 
+#   # Orientation function
+#   orientation <- function(p, q, r) {
+#     val <- (q[2] - p[2]) * (r[1] - q[1]) - (q[1] - p[1]) * (r[2] - q[2])
+#     if (is.na(val)) return(NA)
+#     if (val == 0) return(0)
+#     if (val > 0) return(1) else return(2)
+#   }
+# 
+#   # Check if q lies on segment pr
+#   # Checks wheter middle point lies on the segment between left and right.
+#   on_segment <- function(p, q, r) {
+#     if (any(is.na(c(p, q, r)))) return(FALSE)
+#     q[1] <= max(p[1], r[1]) && q[1] >= min(p[1], r[1]) &&
+#       q[2] <= max(p[2], r[2]) && q[2] >= min(p[2], r[2])
+#   }
+# 
+#   # Main intersection check
+#   segments_intersect <- function(p1, p2, p3, p4) {
+#     o1 <- orientation(p1, p2, p3)
+#     o2 <- orientation(p1, p2, p4)
+#     o3 <- orientation(p3, p4, p1)
+#     o4 <- orientation(p3, p4, p2)
+# 
+#     if (any(is.na(c(o1, o2, o3, o4)))) return(FALSE)
+# 
+#     # General case
+#     if (o1 != o2 && o3 != o4) return(TRUE)
+# 
+#     # Special colinear cases
+#     if (o1 == 0 && on_segment(p1, p3, p2)) return(TRUE)
+#     if (o2 == 0 && on_segment(p1, p4, p2)) return(TRUE)
+#     if (o3 == 0 && on_segment(p3, p1, p4)) return(TRUE)
+#     if (o4 == 0 && on_segment(p3, p2, p4)) return(TRUE)
+# 
+#     return(FALSE)
+#   }
+#   
+#   
+#   count <- 0
+#   # Walk point to points and check for intersections.
+#   for (i in 1:(n - 2)) { # i = initial point 
+#     for (j in (i + 2):(n - 1)) { # j = initial poitn to count intersections (i.e. + 2 from 1st and -1 from end)
+#       if (j == i + 1) next  # skip adjacent segments
+# 
+#       p1 <- c(x[i], y[i])
+#       p2 <- c(x[i + 1], y[i + 1])
+#       p3 <- c(x[j], y[j])
+#       p4 <- c(x[j + 1], y[j + 1])
+# 
+#       if (segments_intersect(p1, p2, p3, p4)) {
+#         count <- count + 1
+#         if (verbose) {
+#           cat(sprintf("Intersection #%d: segments (%d-%d) and (%d-%d)\n", count, i, i+1, j, j+1))
+#         }
+#       }
+#     }
+#   }
+# 
+#   if (verbose) cat("Total crossings:", count, "\n")
+#   return(count)
+# }
+
+```
+
+
 
 # 3. Compare group and Questionnaire
 
@@ -1240,7 +1381,7 @@ SynCons  <-  dsCat$SynCons_ROC
 SynLine  <- dsCat$SynLine_Quest
 
 
-prop.table(table(SynCons,SynGroup,SynQuest)) * 100
+prop.table(table(SynCons,SynQuest,SynGroup)) * 100
 ```
 I will list them from the highest %.
 
@@ -1260,6 +1401,20 @@ prop.table(table(SynLine,SynGroup,SynQuest)) * 100
 41 %: those are syntheses by questionnaire and group, as well as by the line intersection criteria. 
 
 # GLM 
+
+```{r}
+M1 <- glm(SynGroup ~ GA_lineInter , family=binomial, data = ds)
+M2 <- glm(SynGroup ~ Consistency , family=binomial, data = ds)
+anova(M1,M2)
+
+
+M1.1 <- glm(SynQuest ~ GA_lineInter , family=binomial, data = ds)
+M2.1 <- glm(SynQuest ~ Consistency , family=binomial, data = ds)
+anova(M1.1,M2.1)
+
+```
+
+
 ```{r}
 M1 <- glm(SynGroup ~ SynQuest + SynQuest_NR + GA_lineInter , family=binomial, data = ds)
 combined_score <- predict(M1, type="response")

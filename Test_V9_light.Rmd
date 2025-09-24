@@ -1,0 +1,1059 @@
+---
+title: "Test_V2"
+output: html_document
+date: "2025-06-13"
+---
+
+From: https://osf.io/p5xsd/files/osfstorage
+
+New here: ds_Rothen's includes the group as a corresponding of SynQuest in Ward.
+
+```{r}
+# knitr::opts_chunk$set(echo = F)
+# 
+# load("DataSave3S_V5.RData")
+```
+
+
+
+```{r message=FALSE, warning=FALSE}
+library(readr)
+library(readxl)
+
+library(tidyr)
+library(dplyr)
+
+library(papaja)
+
+library(ggplot2)
+library(ggridges)
+library(ggalluvial)
+
+library(pROC) 
+```
+
+## 0.1 Load data:
+
+In sum, I want 2 data sets:
+ds:   item level
+ds_Q: ID level
+```{r }
+### 0.1.1. Ward Data
+
+ds_syn       <- read_excel("raw_synaesthetes_consistency_anon.xlsx")
+ds_syn$group <- "Syn"
+ds_ctl       <- read_excel("raw_controls_consistency_anon.xlsx")
+ds_ctl$group <- "Ctl"
+
+ds_Q_syn       <- read_excel("raw_synaesthetes_questionnaire_anon.xlsx")
+ds_Q_syn$group <- "Syn"
+ds_Q_ctl       <- read_excel("raw_controls_questionnaire_anon.xlsx")
+ds_Q_ctl$group <- "ctl"
+
+### 0.1.1. Rothen Data
+
+ds_Rothen <- read.csv("~/Documents/SpaceSequenceSynDiagnostic/SpaceSequenceSynDiagnostic/rawdata.txt", sep="")
+
+### 0.1.2. Rename variables to match datasets
+
+ds <- merge(ds_syn,ds_ctl, all = TRUE)
+ds_Q <- merge(ds_Q_syn,ds_Q_ctl, all = TRUE)
+
+sum(ds_Q$consistency_score != ds_Q$consistency) # Dubpicate variable
+ds_Q$consistency <- NULL
+ds_Q$...36 <- NULL
+ds_Q$...37 <- NULL
+ds_Q$mean_simulation_Z <- NULL
+ds_Q$SD_simulation <- NULL
+ds_Q$`z-score`  <- NULL
+
+rm(ds_syn,ds_ctl,ds_Q_syn,ds_Q_ctl)
+
+ds$ID <- ds$session_id
+ds_Q$ID <- ds_Q$session_id
+
+ds_Q$dataSource <- "Ward"
+ds$dataSource <- "Ward"
+
+# From Rothen:
+names(ds_Rothen)[names(ds_Rothen) == "Group"] <- "group"
+ds_Rothen$group <- as.factor(ds_Rothen$group)
+levels(ds_Rothen$group) <- c("Ctl","Syn")
+names(ds_Rothen)[names(ds_Rothen) == "Inducer"] <- "stimulus"
+names(ds_Rothen)[names(ds_Rothen) == "X"] <- "x"
+names(ds_Rothen)[names(ds_Rothen) == "Y"] <- "y"
+ds_Rothen$SynQuest <- ds_Rothen$group == "Syn"
+
+ds_Rothen$dataSource <- "Rothen"
+
+# From the paper (all the same since lab based):
+ds_Rothen$width <- 1024
+ds_Rothen$height <- 768
+```
+
+
+```{r }
+## 0.2 Merge data:
+# Data:
+ds   <- merge(ds,ds_Rothen, all = TRUE)
+
+# Because there is no questionnaire in Nicola's data:
+ds$SynQuest[ds$dataSource == "Rothen"] = "NaN"
+
+# Questionnaire:
+ID <- unique((ds_Rothen$ID))
+ds_Q_Rothen <- as.data.frame(ID)
+# Append rows:
+ds_Q$ID <- as.character(ds_Q$ID)
+ds_Q <-  bind_rows(ds_Q,ds_Q_Rothen)
+
+# Clear up:
+rm(ds_Q_Rothen, ds_Rothen)
+
+
+## 0.3 Wrangle dataset
+
+# Add Condition, i.e. stim type:
+ds$Cond <- NaN
+ds$Cond[ds$stimulus %in% c("1","2","3","4","5","6","7","8","9","0")] <- "number"
+ds$Cond[ds$stimulus %in% c("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday")] <- "weekday"
+ds$Cond[ds$stimulus %in% c("January", "February", "March", "April", "May","June","July","August","September","October","November","December")] <- "month"
+
+
+# Remove if not 3 repetitions per stimuli:
+ds <- ds %>% 
+    group_by(ID,Cond,stimulus) %>% 
+    mutate(Nrep = length(stimulus))
+
+ds <- ds %>%
+  filter(Nrep == 3)
+
+# Add stimulus repetition number
+ds <- ds %>%
+  group_by(ID, stimulus) %>%
+  arrange(ID, stimulus, .by_group = TRUE) %>%
+  mutate(repetition = row_number()) %>%
+  ungroup()
+
+# Sanity Check (should be empty)
+# tmp <- ds %>% filter(repetition > 3)
+
+# Compute mean x,y:
+
+ds <- ds %>% 
+  group_by(ID, Cond, stimulus) %>%
+  mutate(X_mean = mean(x), Y_mean = mean(y)) 
+
+# Sanity Check:
+# ds %>% group_by(dataSource) %>% summarise(n = length(stimulus), maxrep = max(Nrep), minrep = min(Nrep))
+
+## 0.4 Filter ID's
+# Match ID's across datasets:
+ID_ds   <- unique(ds$ID)
+ID_ds_Q <- unique(ds_Q$ID)
+
+ds <- ds %>%
+    filter(ID %in% ID_ds[ID_ds %in% ID_ds_Q]) %>%
+    filter(ID %in% ID_ds_Q[ID_ds_Q %in% ID_ds])
+
+ds_Q <- ds_Q %>% 
+    filter(ID %in% ID_ds[ID_ds %in% ID_ds_Q]) %>%
+    filter(ID %in% ID_ds_Q[ID_ds_Q %in% ID_ds])
+
+# Sanity Check:
+# sum(ID_ds == ID_ds_Q) == length(unique(ds$ID))
+# sum(ID_ds == ID_ds_Q) == length(unique(ds_Q$ID))
+```
+
+
+```{r }
+## 0.4 Standardize/scale coordinates
+
+ds <- ds %>%
+  group_by(ID, Cond) %>%
+  mutate(x_zs = scale(x)) %>%
+  mutate(y_zs = scale(y))
+
+ds <- ds %>% 
+  group_by(ID, Cond, stimulus) %>%
+  mutate(X_mean_zs = mean(x_zs), Y_mean_zs = mean(y_zs))
+```
+
+```{r}
+## 0.5 Determine ID's with NaN coordinates (to exclude?)
+ID_na_y <- unique(ds$ID[is.na(ds$y_zs)])
+ID_na_x <- unique(ds$ID[is.na(ds$x_zs)])
+```
+
+
+
+```{r }
+# 1. Subjective questionnaire based classification
+ds_Q$QuestCriteria <- ds_Q$`questionnaire score` <= 19
+sum(ds_Q$QuestCriteria)/length(ds_Q$QuestCriteria)*100
+
+ID_SynQuest <- ds_Q$ID[ds_Q$QuestCriteria]
+ds$SynQuest <- ds$ID %in% ID_SynQuest
+
+
+### 1.2 Questionnaire based NR 
+
+ID_SynQuest_NR <- ds_Q %>%
+  filter(`Q3 Where do you tend to routinely experience these sequences? (1= in the space outside my body; 2= on an imagined space that has no real location; 3= inside my body; 4= this doesn't apply to me!)` != 4) %>%
+  filter(`Q5 Before doing this experiment, I always thought about NUMBERS as existing in a particular spatial sequence (1= strongly agree; 5= strongly disagree)` == 1) %>%
+  filter(`Q6 Before doing this experiment, I always thought about DAYS OF THE WEEK as existing in a particular spatial sequence (1= strongly agree; 5= strongly disagree)` == 1) %>%
+  filter(`Q7 Before doing this experiment, I always thought about MONTHS OF THE YEAR as existing in a particular spatial sequence (1= strongly agree; 5= strongly disagree)` == 1) %>%
+  filter(`Q9 When doing the experiment, I didn't have any strong intuition as to where to put the NUMBERS (1= strongly agree; 5= strongly disagree)` == 5) %>%
+  filter(`Q10 When doing the experiment, I didn't have any strong intuition as to where to put the DAYS OF THE WEEK (1= strongly agree; 5= strongly disagree)` == 5) %>%
+  filter(`Q11 When doing the experiment, I didn't have any strong intuition as to where to put the MONTHS OF THE YEAR (1= strongly agree; 5= strongly disagree)` == 5)
+
+ID_SynQuest_NR <- ID_SynQuest_NR$ID
+  
+ds$SynQuest_NR   <-  ds$ID %in% ID_SynQuest_NR
+ds_Q$SynQuest_NR <-  ds_Q$ID %in% ID_SynQuest_NR
+```
+# 1. Replicated measures 
+
+## 1.1. Consistency:
+
+Calculating consistency  Each stimulus is represented by three xy coordinates - (x1, y1), (x2, y2), (x3, y3) - from the three  repetitions. For each stimulus, the area of the triangle bounded by the coordinates is calculated as follows:  
+$Area = (x1y2 + x2y3 + x3y1 – x1y3 – x2y1 – x3y2) / 2$
+```{r }
+
+# Define area calculation function
+triangle_area <- function(x, y) {
+  if(length(x) != 3 | length(y) != 3) return(NA)
+  area <- abs(
+    x[1]*y[2] + x[2]*y[3] + x[3]*y[1] -
+    x[1]*y[3] - x[2]*y[1] - x[3]*y[2]
+  ) / 2
+  return(area)
+}
+
+# Apply per group
+ds <- ds %>%
+    group_by(ID, stimulus) %>%
+    mutate(triangle_area = triangle_area(x, y))
+
+
+```
+
+
+The mean area is calculated by adding together the area for each stimulus and dividing by 29. This unit is  transformed into a percentage area taking into account the different pixel resolution of each participant.  
+Mean area = $(Summed area / 29) * 100 / Screen area $
+Where: $Screen area = Xpixels * Ypixels$
+
+Note: 29 since 29 stimuli
+
+```{r }
+# Manually adjust:
+
+ds$height[ds$ID == 29324] <- 1080
+
+ds$width[ds$ID == 32190 ] <- 1440
+
+# This ID has unexpected changing screen settings, consider exclusion:
+ds$width[ds$ID == 33168 ]  <- 308
+ds$height[ds$ID == 33168 ] <- 149
+
+ds$width[ds$ID == 35556 ] <- 1439
+ds$height[ds$ID == 35556 ] <- 734
+
+ds$width[ds$ID == 48114 ]  <- 1593
+ds$height[ds$ID == 48114 ] <- 671
+
+ds$width[ds$ID == 59854] <- 1366
+ds$height[ds$ID == 59854] <- 663
+
+ds$width[ds$ID == 63127] <- 1920
+ds$height[ds$ID == 63127] <- 880
+
+# Sanity Check: should be empty:
+ID_heigthKO <- ds %>%
+  group_by(ID) %>%
+  mutate(nhig = length(unique(height))) %>%
+  filter(nhig != 1) %>%
+  filter(row_number()==1) %>%
+  pull(ID)
+
+ID_widthKO <- ds %>%
+  group_by(ID) %>%
+  mutate(nwid = length(unique(width))) %>%
+  filter(nwid != 1) %>%
+  filter(row_number()==1) %>%
+  pull(ID)
+
+ds$Screen_area <- ds$width*ds$height
+
+ds <- ds %>%  
+  group_by(ID,repetition) %>%
+  mutate(Consistency = ((sum(triangle_area)/29)*100)/Screen_area)
+
+
+tmp_perID <- ds %>% ungroup() %>% group_by(ID) %>% filter(row_number() == 1) %>% select(ID, Consistency)
+# names(tmp_perID) <- c("ID", "Consistency2")
+ds_Q <- merge(ds_Q,tmp_perID,by = "ID")
+rm(tmp_perID)
+
+# Sanity Checks:
+# Visual SC: does consitency computed here correspond to the one int he papers:
+# The first is the consistency computed here, the second the one from Ward
+
+# plot(ds_Q$Consistency,ds_Q$consistency_score)
+# sum(round(ds_Q$Consistency,3) != round(ds_Q$consistency_score,3), na.rm = TRUE)
+# ds_Q$ID[round(ds_Q$Consistency,3) != round(ds_Q$consistency_score,3)]
+# 
+# # So we don't replicate the consistency from 7 ID's, 6 of them it is because we have adjusted their screen size. 39492?
+# ds_Q %>% filter(ID == 39492) %>% select(Consistency, consistency_score) # Ok that is fine
+```
+
+## 1.2 Permuted consistency 
+
+Replicate Rothen methods. Might take some time to compute.
+
+*Calculating chance levels of consistency  To create permuted datasets for each participant: the 87 xy coordinates are randomly shuffled so they  are no longer linked to the original data labels (“Monday”, “5”, “April”, etc.). The mean area of the triangles  based on the shuffled coordinates is computed (as described above), and the whole process is repeated  1000 times to obtain a subject-specific distribution of chance levels of consistency. A z-score is calculated  comparing the observed consistency against the mean and SD of the permuted data: *
+$Z = [(observed consistency) – (mean consistency of permuted data)] / (SD of permuted data)$
+
+Code retrieved from OSF (adapted here):
+
+```{r eval=FALSE, include=FALSE}
+  
+### Create a simulated distribution of consistency.  Note that each time this is run it will give a slightly different answer due to the randomisation
+
+IDlist <- unique(ds$ID)
+
+simulated_consistency <- data.frame() 
+observed_consistency <- data.frame() 
+
+n <- 100  # Total iterations
+bar_width <- 50
+update_points <- round(seq(1, length(IDlist), length.out = 200))
+
+for(ID_n in 1:length(IDlist)) {
+  
+  if (ID_n %in% update_points || length(IDlist) == n) {
+    percent <- ID_n / length(IDlist)
+    num_hashes <- round(percent * bar_width)
+    bar <- paste0("[", 
+                  paste(rep("#", num_hashes), collapse = ""), 
+                  paste(rep("-", bar_width - num_hashes), collapse = ""), 
+                  "]")
+    cat(sprintf("\r%s %3d%%", bar, round(percent * 100)))
+    flush.console()
+  }
+  
+  # print(ID_n)
+  ds_ID <- ds %>%
+    filter(ID == IDlist[ID_n])
+  
+  observed_consistency[ID_n,1] <- unique(ds_ID$ID)
+  observed_consistency[ID_n,2] <- unique(ds_ID$Consistency)
+  
+  ### calculate the x and y standard deviations (no longer used, but calculated by Ward et al. 2018); Note the syntoolkit software calculated population SD (using N) but R will use sample SD (using N-1).  The values returned are very similar.
+  
+  observed_consistency[ID_n,3] <- unique(sd (ds_ID$x) / ds_ID$width)
+  observed_consistency[ID_n,4] <- unique(sd (ds_ID$y) / ds_ID$height)
+
+  
+  for (N_shuffle in 1:1000) {
+    
+    ## shuffle the data
+    
+    shuffled <- ds_ID[sample(nrow(ds_ID)),]
+    shuffled$rep2 <- rep(1:29,3)
+    
+    area = 0
+    
+    Stim_list <- unique(ds_ID$stimulus)
+    
+    shuffled <- shuffled %>%
+      group_by(rep2) %>%
+      mutate(area = triangle_area(x, y))
+    
+    simulated_consistency[N_shuffle,1] = unique((sum(shuffled$area)/29) * 100 / (shuffled$width * shuffled$height))
+    
+  }
+  
+  ## calculate the p-value and z-score of the observed consistency
+  observed_consistency[ID_n,5] <- mean(simulated_consistency[,1])
+  observed_consistency[ID_n,6] <- sd(simulated_consistency[,1])
+  observed_consistency[ID_n,7] <- (observed_consistency[ID_n,2] - observed_consistency[ID_n,5]) /   observed_consistency[ID_n,6]
+  
+  
+}
+
+
+colnames(observed_consistency) <- c('participant', 'consistency', 'x-sd', 'y-sd', 'mean_simulation', 'SD_simulation', 'z-score')
+
+```
+
+
+
+## 1.3. SD as in Ward
+
+As in Ward:
+
+"*Specifically, the standard deviation of the x-coordinates and/or  the standard deviation of the y-coordinates (measured across all trials) should exceed a proposed value of  0.075 for a normalized screen with width and height of 1 unit.*"
+
+"*A participant who produced a horizontal  straight-line form would have a very low standard deviation in the y-coordinates but a high standard deviation  in x-coordinates, and a participant with a vertical line would have the reverse profile. A participant with a  circular spatial form would be high on both. A participant who clicks randomly around the screen would also  be high on both x and y standard deviation, but would fail the consistency tests (the triangles would be large).*"
+
+```{r}
+# Rescale x & y coordinates depending on screen size:
+ds$xSc <- ds$x/ds$width
+ds$ySc <- ds$y/ds$height
+
+# Compute the SD across all trials (per ID):
+ds <- ds %>% 
+  ungroup() %>%
+  group_by(ID) %>%
+  mutate(SD_ID_xsc = sd(xSc)) %>%
+  mutate(SD_ID_ysc = sd(ySc)) 
+
+ds <- ds %>% 
+  ungroup() %>%
+  group_by(ID) %>%
+  mutate(SD_ID_x = sd(x)) %>%
+  mutate(SD_ID_y = sd(y)) 
+
+# Add to ds_Q:
+ds_Q <- merge(ds_Q, ds %>% ungroup() %>% group_by(ID) %>% filter(row_number() == 1) %>% select(ID, SD_ID_x,SD_ID_y,SD_ID_xsc,SD_ID_ysc),by = "ID")
+
+# Sanity Check DOES NOT EXACTLY REPRODUCE!!!
+
+# plot(ds_Q$x_sd, ds_Q$SD_ID_x)
+# plot(ds_Q$x_sd, ds_Q$SD_ID_y)
+# plot(ds_Q$x_sd, ds_Q$SD_ID_xsc)
+# plot(ds_Q$x_sd, ds_Q$SD_ID_ysc)
+# 
+# ds_Q$ID[round(ds_Q$x_sd,2) != round(ds_Q$SD_ID_xsc,2)]
+```
+
+# 2. New measures
+
+These new measures aim to take advantage of several properties:
+- ordinality
+- synesthetic forms
+Hence we aim to take advantage of some geometrical features of the synesthetic forms. For example we can define segments across the ordered stimuli (i.e. from 1 to 9, monday to sunday and january to december).
+
+## 2.1 Segment self-intersection
+
+An idea I have is to look into the lines and order of the forms. I would exclude when lines crosses. (since we expect forms the lines crossing means no form is formed). Needs refinement.
+```{r}
+
+# Define function: this was generated by chatgpt. I tested it and it works, but need to figure out the geometry behind it:
+
+count_self_intersections <- function(x, y, verbose = TRUE) {
+  n <- length(x)
+  if (n < 4) {
+    if (verbose) cat("Need at least 4 points to check for self-intersection.\n")
+    return(0)
+  }
+
+  # Orientation function
+  orientation <- function(p, q, r) {
+    val <- (q[2] - p[2]) * (r[1] - q[1]) - (q[1] - p[1]) * (r[2] - q[2])
+    if (is.na(val)) return(NA)
+    if (val == 0) return(0)
+    if (val > 0) return(1) else return(2)
+  }
+
+  # Check if q lies on segment pr
+  on_segment <- function(p, q, r) {
+    if (any(is.na(c(p, q, r)))) return(FALSE)
+    q[1] <= max(p[1], r[1]) && q[1] >= min(p[1], r[1]) &&
+      q[2] <= max(p[2], r[2]) && q[2] >= min(p[2], r[2])
+  }
+
+  # Main intersection check
+  segments_intersect <- function(p1, p2, p3, p4) {
+    o1 <- orientation(p1, p2, p3)
+    o2 <- orientation(p1, p2, p4)
+    o3 <- orientation(p3, p4, p1)
+    o4 <- orientation(p3, p4, p2)
+
+    if (any(is.na(c(o1, o2, o3, o4)))) return(FALSE)
+
+    # General case
+    if (o1 != o2 && o3 != o4) return(TRUE)
+
+    # Special colinear cases
+    if (o1 == 0 && on_segment(p1, p3, p2)) return(TRUE)
+    if (o2 == 0 && on_segment(p1, p4, p2)) return(TRUE)
+    if (o3 == 0 && on_segment(p3, p1, p4)) return(TRUE)
+    if (o4 == 0 && on_segment(p3, p2, p4)) return(TRUE)
+
+    return(FALSE)
+  }
+
+  count <- 0
+  for (i in 1:(n - 2)) {
+    for (j in (i + 2):(n - 1)) {
+      if (j == i + 1) next  # skip adjacent segments
+
+      p1 <- c(x[i], y[i])
+      p2 <- c(x[i + 1], y[i + 1])
+      p3 <- c(x[j], y[j])
+      p4 <- c(x[j + 1], y[j + 1])
+
+      if (segments_intersect(p1, p2, p3, p4)) {
+        count <- count + 1
+        if (verbose) {
+          cat(sprintf("Intersection #%d: segments (%d-%d) and (%d-%d)\n", count, i, i+1, j, j+1))
+        }
+      }
+    }
+  }
+
+  if (verbose) cat("Total crossings:", count, "\n")
+  return(count)
+}
+
+```
+
+I think that the number of stimuli per condition should be taken into account (i.e. 9 numbers, 7 days, 12 months). Hence would need to be divided by this number of stimulus.
+
+In each condition the connected x and y generates a segment, hence the number of segment is `length(stimuli)-1`. Moreover, currently, each stimuli is connected by 3 segment, one for each (of the 3) repetition. So dividing by 3, we have the average number of segment corssings per condition. Next we sum these for each ID
+Ideally we should compute the number of crossings across the repetitions, in addition to make it more complex it would also be computationally more demanding, and I don't beleive it would lead to a significant difference.
+
+IMPORTANT: data frame needs to be informed of stimulus order to make sense!
+
+```{r}
+ds <- ds %>%
+  group_by(ID, Cond,repetition) %>%
+  mutate(nSegments = length(stimulus)-1)
+  
+# Number of intersections for each ID X Cond X repetition
+ds <- ds %>% 
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% 
+  arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
+  ungroup() %>%
+  group_by(ID, Cond,repetition) %>%
+  mutate(nLineCross = (count_self_intersections(x,y, verbose = FALSE)))
+
+# # Linear transformation: chances for each segment to intersect:
+# ds <- ds %>% 
+#   group_by(ID, Cond,repetition) %>%
+#   mutate(mean_lineInter = nLineCross/nSegments)
+# 
+# # Average per ID
+# ds <- ds %>%
+#   group_by(ID) %>%
+#   mutate(GA_lineInter = mean(mean_lineInter))
+
+# Sum per ID
+# ds <- ds %>%
+#   group_by(ID) %>%
+#   mutate(Sum_lineInter = sum(nLineCross))
+
+ds_sum <- ds %>%
+  group_by(ID, Cond, repetition)%>%
+  filter(row_number() == 1) %>%
+  summarize(Sum_lineInter = sum(nLineCross), GA_lineInter = mean(nLineCross))
+
+ds_sum2 <- ds_sum %>%
+  group_by(ID) %>%
+  summarise(Sum_lineInter = sum(Sum_lineInter), GA_lineInter = mean(GA_lineInter))
+
+# Add to ds_Q
+ds_Q <- merge(ds_Q, ds_sum2 %>% ungroup() %>% group_by(ID) %>% filter(row_number() == 1) %>% select(ID, Sum_lineInter, GA_lineInter),by = "ID")
+
+```
+
+### Example 
+
+```{r}
+IDlist = unique(ds$ID)
+IDEx = sample(IDlist,1)
+ds %>%
+    filter(ID == IDEx) %>%
+    filter(Cond == "weekday") %>%
+    group_by(stimulus) %>%
+    arrange(stimulus) %>%
+    arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% 
+    arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
+    ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = nLineCross, fill = stimulus)) +
+    geom_path(aes(x = x_zs, y = y_zs, group = repetition), alpha = 0.2) +
+    geom_text(aes(x = 0, y = 2)) +
+    facet_grid(~ repetition) +
+    theme_minimal()
+
+
+IDEx = "39208"
+ds %>%
+    filter(ID == IDEx) %>%
+    group_by(stimulus) %>%
+    arrange(stimulus) %>%
+    arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% 
+    arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
+    ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+    geom_path(aes(x = x_zs, y = y_zs, group = repetition), alpha = 0.2) +
+   geom_text(aes(label = unique(ds_sum2$Sum_lineInter[ds_sum2$ID == IDEx]), x = 0, y = 2)) +
+    facet_grid(repetition~Cond) +
+    theme_minimal()
+
+ds %>%
+    filter(ID == IDEx) %>%
+    group_by(stimulus) %>%
+    arrange(stimulus) %>%
+    arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% 
+    arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
+    ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+    geom_path(aes(x = x_zs, y = y_zs, group = repetition), alpha = 0.2) +
+   geom_text(aes(label = unique(ds_sum2$GA_lineInter[ds_sum2$ID == IDEx]), x = 0, y = 2)) +
+    facet_grid(repetition~Cond) +
+    theme_minimal()
+
+IDEX = "39208"
+
+3/(10+12+7)/3
+```
+
+
+
+## 2.2.  Segments (with sf)
+
+Analyzing each repetition separately might favour horizontal positioning based on LTR order. For example, using the strategy if the number 0 is always positioned in the left, and 9 on the right (see MNL), there might be no intersections, though no Synesthesia. However it is more unlikely that this would work across repetitions (i.e. having the same vertical position). So I need to add a criteria of the number of intersections across repetitions. This would however only work if I exclude the end to 1st between each repetition. 
+
+With 3 repetitions we have:
+- 1 vs 2
+- 2 vs 3
+- 3 vs 1
+
+We will take advantage of the `sf` package.
+
+```{r}
+library(sf)
+# Turn off spherical geometry:
+sf::sf_use_s2(FALSE)
+
+# Explicitly inform about item order (i.e. ordinality):
+ds <- ds %>%
+  group_by(Cond) %>%
+  mutate(
+    item_order = case_when(
+      Cond == "number"  ~ match(stimulus, as.character(0:9)),
+      Cond == "weekday" ~ match(stimulus, c("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday")),
+      Cond == "month"   ~ match(stimulus, c("January","February","March","April","May","June", "July","August","September","October","November","December")),
+      TRUE ~ NA_integer_
+    ) 
+  )%>%
+  ungroup()
+
+## Sanity Check:
+
+# ds %>%
+#     group_by(stimulus) %>%
+#     filter(row_number() == 1) %>%
+#     select(stimulus, item_order)
+
+# Convert into segments with the sf package:
+
+ds_segm <- ds %>%
+  filter(!is.nan(x_zs), !is.nan(y_zs)) %>% # sf hates NaN! 
+  mutate(
+    Group = as.character(group),
+    ID     = as.character(ID),
+    Cond      = as.character(Cond),
+    repetition     = as.integer(repetition),
+    item_order     = as.integer(item_order)
+  ) %>%
+  arrange(ID, Cond, repetition,Group) %>%
+  group_by(ID, Cond, repetition,Group) %>%
+  summarise(
+    geometry = st_sfc(st_linestring(as.matrix(cbind(x_zs, y_zs)))), # preserves order
+    .groups = "drop"
+  ) %>%
+  st_as_sf(crs = NA)
+
+
+# Visual Sanity Check:
+# ds %>% 
+#   filter(ID == "44590", Cond =="number") %>%
+#   group_by(stimulus) %>%
+#   arrange(stimulus) %>%
+#   arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
+#   ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+#   geom_path(aes(x = x_zs, y = y_zs, group = repetition), alpha = 0.2) +
+#   xlim(-2, 2) +
+#   ylim(-2,2) +
+#   theme_minimal()
+# 
+# ds_segm %>%
+#   filter(ID == "44590", Cond =="number") %>%
+#   ggplot() +
+#   geom_sf() +
+#   xlim(-2, 2) +
+#   ylim(-2,2) +
+#   theme_minimal()
+
+ds_segm %>%
+    filter(ID == "44590", Cond =="number", repetition == "1") %>%
+    ggplot() +
+    geom_sf() +
+    xlim(-2, 2) +
+    ylim(-2,2) +
+    theme_minimal()
+
+tmp = ds_segm %>%
+    filter(ID == "44590", Cond =="number", repetition == "1") 
+st_coordinates(tmp$geometry)
+
+ds_segm %>%
+    group_by(ID,Cond) %>%
+    summarize(nGeom = length(geometry))
+
+ds_segm %>%
+    group_by(ID,Cond) %>%
+    summarize(nGeom = length(st_coordinates(geometry)))
+
+# Somethning is off:
+10*3
+7*(7+2)
+12*(12+2)
+```
+
+## 2.3. Between repetitions: 
+```{r}
+
+
+# Oh Gosh, loop it:
+ID_list     <- unique(ds$ID)
+Cond_list   <- unique(ds$Cond)
+ds$BtwInter <- NaN
+
+for (ID_n in 1:length(ID_list)) {
+   for (Cond_n in 1: length(Cond_list)) {
+     ds_here = ds_segm %>% filter(ID == ID_list[ID_n]) %>% filter(Cond == Cond_list[Cond_n])
+     if (length(ds_here$geometry) != 3) {
+       break
+     }
+     
+     #  N_inter = InterBtwRep(ds_here$geometry[1],ds_here$geometry[2],ds_here$geometry[3])
+     # ds[ds$ID == ID_list[ID_n] & ds$Cond == Cond_list[Cond_n],]$BtwInter = N_inter
+     
+     segm1 = ds_here$geometry[1]
+     segm2 = ds_here$geometry[2]
+     segm3 = ds_here$geometry[3]
+     
+     i12 <- st_intersection(segm1,segm2)
+     i13 <- st_intersection(segm1,segm3)
+     i23 <- st_intersection(segm2,segm3)
+     
+     i12 <- st_cast(i12, "POINT")
+     i13 <- st_cast(i13, "POINT")
+     i23 <- st_cast(i23, "POINT")
+     
+     # # Sometimes the intersections are plain lines:
+     # if (st_geometry_type(i12) == "GEOMETRYCOLLECTION") {
+     #   i12 <- st_collection_extract(i12, type = "POINT")
+     #   
+     # } else if (st_geometry_type(i12) == "MULTILINESTRING"){
+     #   i12 <- NULL
+     # }
+     # 
+     # if (st_geometry_type(i13) == "GEOMETRYCOLLECTION") {
+     #   i13 <- st_collection_extract(i13, type = "POINT")
+     # }
+     # if (st_geometry_type(i23) == "GEOMETRYCOLLECTION") {
+     #   i23 <- st_collection_extract(i23, type = "POINT")
+     # }
+     
+     # plot(segm1)
+     # plot(segm2, add = TRUE)
+     # plot(segm3, add = TRUE)
+     # plot(i12, add = TRUE)
+     # plot(i13, add = TRUE)
+     # plot(i23, add = TRUE)
+     
+     nInter = nrow(st_coordinates(i12)) + nrow(st_coordinates(i13)) + nrow(st_coordinates(i23))
+     
+     ds[ds$ID == ID_list[ID_n] & ds$Cond == Cond_list[Cond_n],]$BtwInter = nInter
+    
+   }
+}
+
+# Average per ID
+ds <- ds %>%
+  group_by(ID) %>%
+  mutate(GA_BtwInter = mean(BtwInter, na.rm = TRUE))
+
+
+ds_Q <- merge(ds_Q, ds %>% ungroup() %>% group_by(ID) %>% filter(row_number() == 1) %>% select(ID, GA_BtwInter),by = "ID")
+
+```
+
+## 2.4. Segment length
+```{r}
+ds_segm$leng <- st_length(ds_segm)
+
+ds_segm <- ds_segm %>%
+  group_by(ID) %>%
+  mutate(GA_segm = mean(leng, na.rm = TRUE))
+
+ds_Q <- merge(ds_Q, ds_segm %>% ungroup() %>% group_by(ID) %>% filter(row_number() == 1) %>% select(ID, GA_segm),by = "ID")
+```
+
+## 2.5. Distances between repetitions
+
+```{r}
+ID_list     <- unique(ds$ID)
+Cond_list   <- unique(ds$Cond)
+ds$BtwDist <- NaN
+
+for (ID_n in 1:length(ID_list)) {
+   for (Cond_n in 1: length(Cond_list)) {
+     ds_here = ds_segm %>% filter(ID == ID_list[ID_n]) %>% filter(Cond == Cond_list[Cond_n])
+     if (length(ds_here$geometry) != 3) {
+       break
+     }
+
+     ds[ds$ID == ID_list[ID_n] & ds$Cond == Cond_list[Cond_n],]$BtwDist = mean(st_distance(ds_here))
+    
+   }
+}
+
+
+# Average per ID
+ds <- ds %>%
+  group_by(ID) %>%
+  mutate(GA_BtwDist = mean(BtwDist, na.rm = TRUE))
+
+
+ds_Q <- merge(ds_Q, ds %>% ungroup() %>% group_by(ID) %>% filter(row_number() == 1) %>% select(ID, GA_BtwDist),by = "ID")
+```
+
+
+
+# 3. Polygon based geometries
+
+## 3.1. Polygon area 
+
+```{r}
+ds_poly          <- st_cast(ds_segm, "POLYGON")
+ds_poly$area     <- st_area(ds_poly)
+
+ds_poly <- ds_poly %>%
+  group_by(ID) %>%
+  mutate(GA_areaPoly = mean(area, na.rm = TRUE))
+
+ds_Q <- merge(ds_Q, ds_poly %>% ungroup() %>% group_by(ID) %>% filter(row_number() == 1) %>% select(ID, GA_areaPoly),by = "ID")
+```
+
+## 3.1. Polygon simplicity
+```{r}
+ds_poly$isSimple <- st_is_simple(ds_poly)
+
+ds_poly <- ds_poly %>%
+  group_by(ID) %>%
+  mutate(GA_isSimple = mean(isSimple, na.rm = TRUE))
+
+ds_Q <- merge(ds_Q, ds_poly %>% ungroup() %>% group_by(ID) %>% filter(row_number() == 1) %>% select(ID, GA_isSimple),by = "ID")
+```
+
+## 3.2. Topological validity
+
+is topologically valid:
+```{r}
+
+ds_poly$isValid <- st_is_valid(ds_poly)
+
+ds_poly <- ds_poly %>%
+  group_by(ID) %>%
+  mutate(Sum_isValid = sum(isValid, na.rm = TRUE))
+
+ds_Q <- merge(ds_Q, ds_poly %>% ungroup() %>% group_by(ID) %>% filter(row_number() == 1) %>% select(ID, Sum_isValid),by = "ID")
+```
+## 3.3 is clockwise (?)
+```{r}
+ds_poly$isClockwise <- lwgeom::st_is_polygon_cw(ds_poly)
+
+ds_poly <- ds_poly %>%
+  group_by(ID) %>%
+  mutate(Sum_isClockwise= sum(isClockwise, na.rm = TRUE))
+
+ds_Q <- merge(ds_Q, ds_poly %>% ungroup() %>% group_by(ID) %>% filter(row_number() == 1) %>% select(ID, Sum_isClockwise),by = "ID")
+```
+
+
+## 3.4. Convex hull area
+```{r}
+ds_conv_hull <- ds_segm %>%
+  mutate(geometry = st_convex_hull(geometry))
+ds_conv_hull$area_convhull <- st_area(ds_conv_hull)
+
+ds_conv_hull <- ds_conv_hull %>%
+  group_by(ID) %>%
+  mutate(GA_area_convhull = mean(area_convhull, na.rm = TRUE))
+
+
+ds_Q <- merge(ds_Q, ds_conv_hull %>% ungroup() %>% group_by(ID) %>% filter(row_number() == 1) %>% select(ID, GA_area_convhull),by = "ID")
+```
+
+
+# 4. AUC
+
+## 4.1. Consistency:
+```{r}
+roc_line <- roc(group ~ Consistency, ds_Q, 
+                percent=TRUE,
+                # arguments for ci
+                ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+                # arguments for plot
+                plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+                print.auc=TRUE, show.thres=TRUE)
+
+# Best threshold using Youden's J
+best_coords <- coords(roc_line, "best", ret = c("threshold", "sensitivity", "specificity"), best.method = "youden")
+knitr::kable(best_coords)
+```
+
+## 4.2. Line inter:
+```{r}
+roc_line <- roc(group ~ GA_lineInter , ds_Q, 
+                percent=TRUE,
+                # arguments for ci
+                ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+                # arguments for plot
+                plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+                print.auc=TRUE, show.thres=TRUE)
+
+# Best threshold using Youden's J
+best_coords <- coords(roc_line, "best", ret = c("threshold", "sensitivity", "specificity"), best.method = "youden")
+knitr::kable(best_coords)
+```
+Sum
+```{r}
+roc_line <- roc(group ~ Sum_lineInter , ds_Q, 
+                percent=TRUE,
+                # arguments for ci
+                ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+                # arguments for plot
+                plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+                print.auc=TRUE, show.thres=TRUE)
+
+# Best threshold using Youden's J
+best_coords <- coords(roc_line, "best", ret = c("threshold", "sensitivity", "specificity"), best.method = "youden")
+knitr::kable(best_coords)
+```
+
+## 4.3. Line between
+```{r}
+roc_line <- roc(group ~ GA_BtwInter , ds_Q, 
+                percent=TRUE,
+                # arguments for ci
+                ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+                # arguments for plot
+                plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+                print.auc=TRUE, show.thres=TRUE)
+
+# Best threshold using Youden's J
+best_coords <- coords(roc_line, "best", ret = c("threshold", "sensitivity", "specificity"), best.method = "youden")
+knitr::kable(best_coords)
+```
+
+## 4.4. Line length
+```{r}
+roc_line <- roc(group ~ GA_segm , ds_Q, 
+                percent=TRUE,
+                # arguments for ci
+                ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+                # arguments for plot
+                plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+                print.auc=TRUE, show.thres=TRUE)
+
+# Best threshold using Youden's J
+best_coords <- coords(roc_line, "best", ret = c("threshold", "sensitivity", "specificity"), best.method = "youden")
+knitr::kable(best_coords)
+```
+
+
+
+## 4.5. Poly area
+```{r}
+roc_line <- roc(group ~ GA_areaPoly , ds_Q, 
+                percent=TRUE,
+                # arguments for ci
+                ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+                # arguments for plot
+                plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+                print.auc=TRUE, show.thres=TRUE)
+
+# Best threshold using Youden's J
+best_coords <- coords(roc_line, "best", ret = c("threshold", "sensitivity", "specificity"), best.method = "youden")
+knitr::kable(best_coords)
+```
+
+## 4.6. Poly Simple
+
+```{r}
+
+roc_line <- roc(group ~ GA_isSimple , ds_Q, 
+                percent=TRUE,
+                # arguments for ci
+                ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+                # arguments for plot
+                plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+                print.auc=TRUE, show.thres=TRUE)
+
+# Best threshold using Youden's J
+best_coords <- coords(roc_line, "best", ret = c("threshold", "sensitivity", "specificity"), best.method = "youden")
+knitr::kable(best_coords)
+```
+
+## 4.7. Poly Valid
+
+```{r}
+roc_line <- roc(group ~ Sum_isValid , ds_Q, 
+                percent=TRUE,
+                # arguments for ci
+                ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+                # arguments for plot
+                plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+                print.auc=TRUE, show.thres=TRUE)
+
+# Best threshold using Youden's J
+best_coords <- coords(roc_line, "best", ret = c("threshold", "sensitivity", "specificity"), best.method = "youden")
+knitr::kable(best_coords)
+```
+
+## 4.8. Poly Clockwise
+
+```{r}
+
+roc_line <- roc(group ~ Sum_isClockwise , ds_Q, 
+                percent=TRUE,
+                # arguments for ci
+                ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+                # arguments for plot
+                plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+                print.auc=TRUE, show.thres=TRUE)
+
+# Best threshold using Youden's J
+best_coords <- coords(roc_line, "best", ret = c("threshold", "sensitivity", "specificity"), best.method = "youden")
+knitr::kable(best_coords)
+```
+
+
+
+## 4.7. Convex hull area
+```{r}
+roc_line <- roc(group ~ GA_area_convhull , ds_Q, 
+                percent=TRUE,
+                # arguments for ci
+                ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+                # arguments for plot
+                plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+                print.auc=TRUE, show.thres=TRUE)
+
+# Best threshold using Youden's J
+best_coords <- coords(roc_line, "best", ret = c("threshold", "sensitivity", "specificity"), best.method = "youden")
+knitr::kable(best_coords)
+```
+
+
+```{r}
+sessionInfo()
+```
+
