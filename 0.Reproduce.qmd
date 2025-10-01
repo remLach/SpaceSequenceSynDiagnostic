@@ -1,0 +1,330 @@
+---
+title: "Reproduce results"
+
+author:
+  - "Rémy Lachelin"
+date: today
+
+format:
+  pdf:
+    toc: true
+  html:
+    toc: true
+    page-layout: article
+  
+link-citations: true
+link-bibliography: true
+bibliography: references.bib
+---
+
+# Analysis:
+
+Here I focus on reproducing these results:
+
+-   Rothen [@rothen2016]
+
+-   Ward [@ward] from: <https://osf.io/p5xsd/files/osfstorage>
+
+-   Root [@root2021]
+
+-   Van Petersen [@vanpetersen2020]
+
+```{r, setup, include=FALSE}
+knitr::opts_chunk$set(
+  fig.width = 10, fig.height = 8, echo = F
+)
+```
+
+```{r, packages, message=FALSE, warning=FALSE}
+library(readr)
+library(readxl)
+
+library(tidyr)
+library(dplyr)
+
+library(papaja)
+
+library(pROC) # See https://www.r-bloggers.com/2019/02/some-r-packages-for-roc-curves/
+```
+
+# Rothen 2016
+
+```{r, LoadData}
+## Load data
+ds_Rothen <- read.csv("~/Documents/SpaceSequenceSynDiagnostic/SpaceSequenceSynDiagnostic/rawdata.txt", sep="")
+rawdata <- read_table("rawdata.txt")
+
+# Not per se necessary, but keeps same nomenclatures across datsets
+names(ds_Rothen)[names(ds_Rothen) == "Group"] <- "group"
+ds_Rothen$group <- as.factor(ds_Rothen$group)
+levels(ds_Rothen$group) <- c("Ctl","Syn")
+names(ds_Rothen)[names(ds_Rothen) == "Inducer"] <- "stimulus"
+names(ds_Rothen)[names(ds_Rothen) == "X"] <- "x"
+names(ds_Rothen)[names(ds_Rothen) == "Y"] <- "y"
+ds_Rothen$SynQuest <- ds_Rothen$group == "Syn"
+
+ds_Rothen$dataSource <- "Rothen"
+
+# From the paper (all the same since lab based):
+ds_Rothen$width <- 1024
+ds_Rothen$height <- 768
+
+```
+
+This is what we aim to replicate [@rothen2016]:
+
+![](Rothen_2016.png)
+
+```{r}
+## Define function to compute ROC:
+Comp_ROC <- function(data, group_col, feature, ID){
+  
+  ################ ROC analyses ################ 
+  
+  ROC_here <- pROC::roc(data[[group_col]] ~ data[[feature]], data, 
+                  percent=TRUE,
+                  # arguments for ci
+                  ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+                  # arguments for plot
+                  plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+                  print.auc=TRUE, show.thres=TRUE)
+  
+  # Best threshold using Youden's J
+  best_coords <- pROC::coords(ROC_here, "best", 
+                              ret = c("threshold", "sensitivity","specificity","ppv","npv"), 
+                              best.method = "youden")
+  
+
+  auc_val <- as.numeric(pROC::auc(ROC_here))
+  ci_auc  <- ci.auc(ROC_here)
+  
+  new_row <- data.frame(
+    Feature   = feature,
+    AUC        = round(auc_val, 4),
+    threshold  = as.numeric(best_coords[["threshold"]]),
+    sensitivity= as.numeric(best_coords[["sensitivity"]]),
+    specificity= as.numeric(best_coords[["specificity"]]),
+    ppv        = as.numeric(best_coords[["ppv"]]),
+    npv        = as.numeric(best_coords[["npv"]]),
+    ci_low     = as.numeric(ci_auc[1]),
+    ci_high    = as.numeric(ci_auc[3]),
+    stringsAsFactors = FALSE
+  )
+
+  ################ Contingency table ################ 
+  
+  data$diagnosis <- ifelse(data[[feature]] >= best_coords$threshold,  "Ctl","Syn")
+  tab_counts <- table(data[[group_col]], data$diagnosis)
+  
+  tab_percent <- prop.table(tab_counts, margin = 1) * 100
+  
+  result <- matrix(
+    paste0(tab_counts, " (", round(tab_percent, 1), "%)"),
+    nrow = nrow(tab_counts),
+    dimnames = dimnames(tab_counts)
+  )
+  
+  ################ General description ################ 
+  
+  Descr_table <- data %>%
+    group_by(!!sym(group_col)) %>%
+    summarize(n = length(unique(!!sym(ID))), Mean = mean(!!sym(feature)), SD = sd(!!sym(feature)))
+
+  ################ Return tables ################ 
+  return(list(ROC_properties = new_row, Coningency_table =result, Descr_table = Descr_table))
+
+}
+```
+
+## Area ($pixel^2$):
+
+**Definition**: Calculating consistency Each stimulus is represented by three xy coordinates - (x1, y1), (x2, y2), (x3, y3) - from the three repetitions. For each stimulus, the area of the triangle bounded by the coordinates is calculated as follows:\
+$Area = (x1y2 + x2y3 + x3y1 – x1y3 – x2y1 – x3y2) / 2$
+
+```{r}
+### Define triangle_area funciton:
+triangle_area <- function(x, y) {
+  if(length(x) != 3 | length(y) != 3) return(NA)
+  area <- abs(
+    x[1]*y[2] + x[2]*y[3] + x[3]*y[1] -
+    x[1]*y[3] - x[2]*y[1] - x[3]*y[2]
+  ) / 2
+  return(area)
+}
+```
+
+```{r}
+
+## Compute triangle area by group:
+ds_Rothen <- ds_Rothen %>%  
+  group_by(ID, stimulus) %>%
+  mutate(triangle_area = triangle_area(x, y)) %>%
+  ungroup()
+
+## Summarize By ID:
+ds_rothen_ID <- ds_Rothen %>%
+  ungroup() %>% group_by(ID,group) %>%
+  summarize(triangle_area_GA = mean(triangle_area)) 
+ 
+Out_area <- Comp_ROC(ds_rothen_ID, "group", "triangle_area_GA","ID")
+
+knitr::kable(Out_area$ROC_properties)
+knitr::kable(Out_area$Descr_table)
+knitr::kable(Out_area$Coningency_table)
+```
+
+```{r}
+# Then would need to replicate it for 
+# ds_Rothen %>%
+#   group_by(ID) %>%
+#   mutate(Ycent = (Y > 300 & < 500))
+
+```
+
+## Maximum length ($pixel$):
+
+```{r}
+### maximum lenth function: 
+triangle_maxLen <- function(x, y) {
+  if(length(x) != 3 | length(y) != 3) return(NA)
+  # Side lengths
+  a <- sqrt((x[2] - x[1])^2 + (y[2] - y[1])^2)
+  b <- sqrt((x[3] - x[2])^2 + (y[3] - y[2])^2)
+  c <- sqrt((x[1] - x[3])^2 + (y[1] - y[3])^2)
+  maxLen <- max(c(a, b, c))
+  return(maxLen)
+}
+```
+
+```{r}
+## Compute max length by group:
+ds_Rothen <- ds_Rothen %>%  
+  group_by(ID, stimulus) %>%
+  mutate(triangle_maxLen = triangle_maxLen(x, y)) %>%
+  ungroup()
+
+## Summarize By ID:
+ds_rothen_ID <- ds_Rothen %>%
+  ungroup() %>% group_by(ID,group) %>%
+  summarize(triangle_maxLen_GA = mean(triangle_maxLen)) 
+ 
+Out_MaxLen <- Comp_ROC(ds_rothen_ID, "group", "triangle_maxLen_GA","ID")
+
+knitr::kable(Out_MaxLen$ROC_properties)
+knitr::kable(Out_MaxLen$Descr_table)
+knitr::kable(Out_MaxLen$Coningency_table)
+```
+
+## Perimeter ($pixel$):
+
+```{r}
+### Perimeter function: 
+triangle_perimeter <- function(x, y) {
+  if(length(x) != 3 | length(y) != 3) return(NA)
+  # Side lengths
+  a <- sqrt((x[2] - x[1])^2 + (y[2] - y[1])^2)
+  b <- sqrt((x[3] - x[2])^2 + (y[3] - y[2])^2)
+  c <- sqrt((x[1] - x[3])^2 + (y[1] - y[3])^2)
+  perimeter <- a + b + c
+  return(perimeter)
+}
+```
+
+```{r}
+## Compute triangle perimeter by group:
+ds_Rothen <- ds_Rothen %>%  
+  group_by(ID, stimulus) %>%
+  mutate(triangle_perim = triangle_perimeter(x, y)) %>%
+  ungroup()
+
+## Summarize By ID:
+ds_rothen_ID <- ds_Rothen %>%
+  ungroup() %>% group_by(ID,group) %>%
+  summarize(triangle_perim_GA = mean(triangle_perim)) 
+ 
+Out_Perim <- Comp_ROC(ds_rothen_ID, "group", "triangle_perim_GA","ID")
+
+knitr::kable(Out_Perim$ROC_properties)
+knitr::kable(Out_Perim$Descr_table)
+knitr::kable(Out_Perim$Coningency_table)
+```
+
+# Comparison
+
+------------------------------------------------------------------------
+
+### Summary Rothen vs Repro
+
+|   | Descriptive | DP | AUC | Mean (syn) | Mean (con) | SD (syn) | SD (con) | Sensitivity | Specificity | Cut-off |
+|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
+| Rothen | Area | 1.57 | 0.76 | 1079 | 7031 | 1365 | 11149 | 88 | 70 | 1,596 |
+| Repro |  |  | 0.75 | **1312** | 7031 | **1829** | 11303 | **85** | 70 | 1,575 |
+|  |  |  |  |  |  |  |  |  |  |  |
+| Rothen | Max. length | 1.20 | 0.77 | 96 | 194 | 42 | 130 | 79 | 70 | 110 |
+| Repro |  |  | 0.77 | 96 | 194 | 49 | 132 | 79 | 70 | 109 |
+|  |  |  |  |  |  |  |  |  |  |  |
+| Rothen | Perimeter (Euclidean sum) | 1.18 | 0.77 | 202 | 415 | 87 | 284 | 76 | 73 | 221 |
+| Repro |  |  | 0.78 | 201 | 415 | **99** | 288 | 79 | 70 | 234 |
+|  |  |  |  |  |  |  |  |  |  |  |
+|  | Nearest neighbor | 0.93 | 0.76 | 66 | 42 | 21 | 22 | 67 | 73 | 56 |
+
+\
+
+## Original table:
+
+------------------------------------------------------------------------
+
+### Summary Statistics Table
+
+| Descriptive | DP | AUC | Mean (syn) | Mean (con) | SD (syn) | SD (con) | Sensitivity | Specificity | Cut-off | N syn / con |
+|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
+|  |  |  |  |  |  |  |  |  |  |  |
+| Area | 1.57 | 0.76 | 1079 | 7031 | 1365 | 11149 | 88 | 70 | 1,596 | 33 / 37 |
+| Max. length | 1.20 | 0.77 | 96 | 194 | 42 | 130 | 79 | 70 | 110 | 33 / 37 |
+| Perimeter (Euclidean sum) | 1.18 | 0.77 | 202 | 415 | 87 | 284 | 76 | 73 | 221 | 33 / 37 |
+| Nearest neighbor | 0.93 | 0.76 | 66 | 42 | 21 | 22 | 67 | 73 | 56 | 33 / 37 |
+|  |  |  |  |  |  |  |  |  |  |  |
+| Area | 1.84 | 0.85 | 1164 | 8085 | 1403 | 11641 | 87 | 81 | 1,596 | 30 / 32 |
+| Perimeter (Euclidean sum) | 1.46 | 0.82 | 207 | 453 | 90 | 287 | 77 | 81 | 236 | 30 / 32 |
+| Max. length | 1.46 | 0.82 | 98 | 211 | 44 | 132 | 77 | 81 | 110 | 30 / 32 |
+| Nearest neighbor | 1.08 | 0.79 | 66 | 40 | 21 | 22 | 67 | 78 | 55 | 30 / 32 |
+
+## Reproduced table:
+
+```{r}
+TableOut <- as.data.frame(rbind(c(Out_area$Descr_table[2,],Out_area$Descr_table[1,],Out_area$ROC_properties),c(Out_MaxLen$Descr_table[2,],Out_MaxLen$Descr_table[1,],Out_MaxLen$ROC_properties),c(Out_Perim$Descr_table[2,],Out_Perim$Descr_table[1,],Out_Perim$ROC_properties)))
+knitr::kable(TableOut, digits = 1)
+```
+
+
+
+# Supplementary
+## Test with Area ($zs$)
+Now use individual z-score transformed pixel. Give rise to better results.
+
+```{r}
+## Compute triangle area by group:
+ds_Rothen <- ds_Rothen %>%  
+  group_by(ID) %>%
+  mutate(x_zs = scale(x), y_zs = scale(y)) %>%
+  group_by(ID, stimulus) %>%
+  mutate(triangle_area_zs = triangle_area(x_zs, y_zs)) %>%
+  ungroup()
+
+## Summarize By ID:
+ds_rothen_ID <- ds_Rothen %>%
+  ungroup() %>% group_by(ID,group) %>%
+  summarize(triangle_area_GA_zs = mean(triangle_area_zs)) 
+ 
+Out_area <- Comp_ROC(ds_rothen_ID, "group", "triangle_area_GA_zs","ID")
+
+knitr::kable(Out_area$ROC_properties)
+knitr::kable(Out_area$Descr_table)
+knitr::kable(Out_area$Coningency_table)
+```
+
+# System info:
+
+```{r}
+sessionInfo()
+```
