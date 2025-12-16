@@ -1,0 +1,197 @@
+---
+title: "TestContTableVis"
+output: html_document
+date: "2025-10-06"
+---
+
+```{r}
+# ---- packages ----
+# install.packages(c("tidyverse", "ggalluvial")) # uncomment if needed
+library(tidyverse)
+library(ggalluvial)
+
+# ---- example data (TT, TF, FT, FF) ----
+set.seed(42)
+case_counts <- tibble(
+  case = c("TT", "TF", "FT", "FF"),
+  n    = c(95, 45, 35, 25)  # totals to 200
+)
+
+# Expand to subject rows + split into A (row) and B (col)
+subjects <- case_counts |>
+  rowwise() |>
+  mutate(idx = list(seq_len(n))) |>
+  unnest(idx) |>
+  select(-idx) |>
+  mutate(A = substr(case, 1, 1),
+         B = substr(case, 2, 2))
+
+# ---- helper: fixed-size grid per cell so dots tile neatly ----
+# We choose a common grid (same cols/rows) for *all* cells
+# based on the largest cell, so facets share the same scale.
+make_cell_grid <- function(n, cell_cols, cell_rows) {
+  # Fill left->right, top->bottom
+  tibble(i = seq_len(n)) |>
+    mutate(
+      x = ((i - 1) %% cell_cols) + 1,
+      y = cell_rows - ((i - 1) %/% cell_cols)
+    )
+}
+
+# Determine common cell grid size from the maximum cell count
+cell_counts <- subjects |>
+  count(A, B, name = "n_cell")
+
+max_cell <- max(cell_counts$n_cell)
+# Aim for ~square cells
+cell_cols <- ceiling(sqrt(max_cell))
+cell_rows <- ceiling(max_cell / cell_cols)
+
+# Build per-subject positions inside its (A,B) cell
+pos_per_cell <- subjects |>
+  count(A, B, name = "n_cell") |>
+  group_by(A, B) |>
+  group_modify(~ make_cell_grid(.x$n_cell[1], cell_cols, cell_rows)) |>
+  ungroup()
+
+# Map back to each subject (order within cell doesn't matter)
+# Generate a per-cell running index to join coordinates
+subjects_pos <- subjects |>
+  group_by(A, B) |>
+  mutate(k = row_number()) |>
+  ungroup()
+
+pos_per_cell <- pos_per_cell |>
+  group_by(A, B) |>
+  mutate(k = row_number()) |>
+  ungroup()
+
+plot_df <- subjects_pos |>
+  inner_join(pos_per_cell, by = c("A","B","k"))
+
+# Define case factor for legend coloring (optional)
+plot_df <- plot_df |>
+  mutate(case = factor(case, levels = c("TT","TF","FT","FF")))
+
+palette_cases <- c(
+  TT = "#1b9e77",
+  TF = "#d95f02",
+  FT = "#7570b3",
+  FF = "#e7298a"
+)
+
+# ---- 1) Contingency-table dot plot (A rows × B cols) ----
+# Each facet is one cell; each dot = 1 subject
+cell_labels <- cell_counts |>
+  mutate(lbl = paste0("n = ", n_cell)) |>
+  select(A, B, lbl)
+
+p_cells <- ggplot(plot_df, aes(x = x, y = y, color = case)) +
+  geom_point(size = 2.2, alpha = 0.85) +
+  facet_grid(rows = vars(A), cols = vars(B),
+             labeller = labeller(
+               A = c(T = "A = T", F = "A = F"),
+               B = c(T = "B = T", F = "B = F")
+             )) +
+  scale_color_manual(values = palette_cases, name = "Case") +
+  coord_equal() +
+  scale_x_continuous(NULL, breaks = NULL, limits = c(0.5, cell_cols + 0.5)) +
+  scale_y_continuous(NULL, breaks = NULL, limits = c(0.5, cell_rows + 0.5)) +
+  ggtitle(sprintf("Subjects arranged into contingency-table cells (N = %d)", nrow(subjects))) +
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position = "top",
+    panel.grid = element_blank(),
+    panel.border = element_rect(color = "grey50", fill = NA),
+    plot.title = element_text(face = "bold")
+  )
+
+print(p_cells)
+
+# ---- optional: add count annotations inside each cell ----
+# (Place labels at top-left of each facet using data + geom_text)
+p_cells +
+  geom_text(
+    data = cell_counts |>
+      mutate(x = 1, y = cell_rows),  # corner placement
+    aes(x = x, y = y, label = paste0("n = ", n_cell)),
+    color = "grey20", inherit.aes = FALSE, hjust = 0, vjust = 1, size = 3.6
+  ) -> p_cells_annot
+print(p_cells_annot)
+```
+
+```{r}
+# Load packages
+library(ggmosaic)
+
+
+ggplot(data = ds_Q) +
+  geom_mosaic(aes(x = product(group, GA_isSimple), fill = GA_isSimple), color = "white", alpha = 0.8) +
+  geom_mosaic_text(aes(x = product(group, GA_isSimple), label = after_stat(.wt)), as.label=TRUE) +
+  labs(title = "Mosaic Plot with Individual IDs",
+       x = "Group",
+       y = "isGA")
+```
+
+
+```{r}
+# Load libraries
+library(tidyverse)
+
+set.seed(123)
+
+# ---- Simulate data ----
+id <- 1:500
+group <- c(rep("Test", 200), rep("Control", 300))
+
+# Test results
+test_result <- c(
+  c(rep("Positive", 180), rep("Negative", 20)),    # Test group
+  c(rep("Negative", 250), rep("Positive", 50))     # Control group
+)
+
+df <- tibble(ID = id, Group = group, Result = test_result)
+
+# ---- Contingency table with percentages ----
+tab <- df %>%
+  count(Group, Result) %>%
+  group_by(Group) %>%
+  mutate(Percent = 100 * n / sum(n))
+
+print(tab)
+
+# ---- Prepare for plotting ----
+tab_plot <- tab %>%
+  mutate(x = ifelse(Result == "Positive", 1, 0),
+         y = ifelse(Group == "Test", 1, 0))
+
+# Expand each cell into points proportional to counts
+plot_points <- tab_plot %>%
+  rowwise() %>%
+  mutate(points = list(tibble(
+    x_jitter = jitter(rep(x, n), amount = 0.05),
+    y_jitter = jitter(rep(y, n), amount = 0.05)
+  ))) %>%
+  unnest(points)
+
+# ---- Plot ----
+ggplot(plot_points, aes(x_jitter, y_jitter)) +
+  geom_point(size = 0.8, alpha = 0.6) +
+  scale_x_continuous(breaks = c(0,1), labels = c("Negative", "Positive")) +
+  scale_y_continuous(breaks = c(0,1), labels = c("Control", "Test")) +
+  coord_fixed() +
+  labs(
+    title = "Contingency Table Visualization",
+    subtitle = "Points proportional to cell counts",
+    x = "Test Result",
+    y = "Group"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.grid = element_blank(),
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5)
+  )
+
+```
+

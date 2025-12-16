@@ -1,0 +1,16 @@
+readr
+readxl
+tidyr
+dplyr
+tinylabels
+papaja
+RColorBrewer
+kableExtra
+ggplot2
+ggridges
+ggalluvial
+sf
+pROC
+webshot
+ggVennDiagram
+corrplot

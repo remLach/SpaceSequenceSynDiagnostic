@@ -1,0 +1,296 @@
+---
+title: "ExploreJamieData2025"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyr)
+library(dplyr)
+
+# ds_Ward2025
+ds_1 <- read.csv("~/Documents/SpaceSequenceSynDiagnostic/Ward_mailedData/syn-database-volunteer_sequence-space-library_results.csv")
+
+ds_2 <- read.csv("~/Documents/SpaceSequenceSynDiagnostic/Ward_mailedData/syn-database-volunteer_sequence-space-library-2_results.csv")
+
+ds_Q <- read.csv("~/Documents/SpaceSequenceSynDiagnostic/Ward_mailedData/syn-database-volunteer_results.csv")
+```
+
+Check ID:
+
+```{r}
+IDlist_1 <- unique(ds_1$session_id)
+IDlist_2 <- unique(ds_2$session_id)
+IDlist_3 <- unique(ds_Q$session_id)
+
+sets <- (list(ds1 = IDlist_1,ds2 = IDlist_2,dsQ = IDlist_3))
+
+library(ggvenn)
+ggvenn(sets, fill_color = c("#E41A1C", "#377EB8", "#4DAF4A"))
+
+IDlist_1[IDlist_1 %in% IDlist_2]
+```
+
+Ok so the dsQ is a larger dataset with questionnaire responses. Some of them have completed the task (i.e. 5.7 +0.2+1.1 = 7 %). Of those 6 ID (0.2 % are in the two datasets with the task. But who is syn/ctl?
+
+Let's remove some empty rows in ds_Q
+
+```{r}
+ds_Q <- ds_Q[ds_Q$syn.database.demographics_gender != "",]
+```
+
+```{r}
+ds_Q$date <- as.Date(ds_Q$date, "%d/%m/%y")
+
+ggplot(ds_Q, aes(x = date)) +
+  geom_histogram() +
+  scale_x_date(date_labels = "%b %y", date_breaks = "1 month")
+
+```
+
+# Interim Summary
+
+I need to (1) merge the dataset with the overlaping ID between ds_1, ds_2 and ds_1 (removing the 6 ID overlapping). Then need to see how to know who is syn or not (from the questionnaire?????). Finally could check if those ID are not already in the pre-registered dataset
+
+## Merge
+
+```{r}
+
+sum(unique(ds_2$session_id) %in% IDlist_1[IDlist_1 %in% IDlist_2])
+ds_1 <- ds_Q %>%
+    filter(session_id %in% IDlist_1) %>%
+    right_join(., ds_1 , by = "session_id")
+
+ds_2 <- ds_Q %>%
+    filter(session_id %in% IDlist_2) %>%
+    right_join(., ds_2 , by = "session_id")
+
+# tmp1 <- ds_1 %>%
+#   filter(session_id %in% IDlist_1[IDlist_1 %in% IDlist_2]) %>%
+#   arrange(trial_id)
+# tmp2 <- ds_2 %>%
+#     filter(session_id %in% IDlist_1[IDlist_1 %in% IDlist_2])%>%
+#   arrange(trial_id)
+# 
+# plot(tmp1$x, tmp2$x) # Well same ID with different coordinates.. Eclude them
+# # plot(tmp1$y, tmp2$y)
+
+ds_1 <- ds_1 %>%
+    filter(! session_id %in% IDlist_1[IDlist_1 %in% IDlist_2])
+
+ds_2 <- ds_2 %>%
+    filter(! session_id %in%  IDlist_1[IDlist_1 %in% IDlist_2])
+
+# Sanity Check (must be 0):
+sum(unique(ds_1$session_id) %in% unique(ds_2$session_id))
+rm(ds_Q)
+```
+
+```{r}
+merged_ds <- merge(ds_1,ds_2,all = TRUE)
+rm(ds_1,ds_2,sets,tmp)
+```
+
+## Remove duplicate columns - reduce columnwise
+
+```{r}
+# colnam_dest <- colnames(ds_Q %>% select(starts_with("Q")))
+# We have two issues: 1 colnames are named differrently from the destination. 2. colnames are duplicated (i.e. 2)
+colname_2 <- colnames(merged_ds %>% select(starts_with("sss")))
+nonduplic  <- colname_2[!grepl("2", colname_2)]
+duplicates <- colname_2[grepl("2", colname_2)]
+
+before_test <- merged_ds$sss.questionnaire.english.2_numbers
+
+# Now should merge one by one
+for(col_n in length(duplicates)){
+  col_nond <- merged_ds %>% select(nonduplic[col_n])
+  col_dupl <- merged_ds %>% select(duplicates[col_n])
+  
+  col_nond <- as.vector(col_nond[[1]])
+  # tmp <- col_nond
+  col_dupl <- as.vector(col_dupl[[1]])
+  # t(rbind(col_nond,col_dupl))
+  if(sum(!is.na(col_nond) & !is.na(col_dupl)) != 0){
+    warning("duplicate and non duplicate conflict")
+  }
+  
+  col_nond[is.na(col_nond) & !is.na(col_dupl)] <- col_dupl[is.na(col_nond) & !is.na(col_dupl)]
+  # col_nond[is.na(col_nond) & !is.na(col_dupl)] <- col_dupl[is.na(col_nond) & !is.na(col_dupl)]
+  
+  merged_ds[[nonduplic[col_n]]] <- col_nond
+  # tmp3 <- t(rbind(tmp,col_dupl, col_nond))
+}
+# visual check:
+# tmp4 <- t(rbind(before_test, merged_ds$sss.questionnaire.english.2_numbers,merged_ds$sss.questionnaire.english_numbers))
+
+# remove duplcated columns
+merged_ds <- merged_ds %>% select(- duplicates)
+
+# remove if less than 10000 obs per columns
+tmp <- merged_ds %>% 
+    summarise(across(everything(), ~sum(. == ""| is.na(.)))) %>%
+    pivot_longer(everything(), names_to = "column", values_to = "is_empty") %>%
+    filter(is_empty <= 10000)
+
+merged_ds <- merged_ds %>% select( tmp$column)
+
+```
+
+## Check Column match with other dataset
+
+```{r}
+###  Ward Data
+ds_Q_syn       <- read_excel("raw_synaesthetes_questionnaire_anon.xlsx")
+ds_Q_syn$group <- "Syn"
+ds_Q_ctl       <- read_excel("raw_controls_questionnaire_anon.xlsx")
+ds_Q_ctl$group <- "Ctl"
+
+ds_Q <- merge(ds_Q_syn,ds_Q_ctl, all = TRUE)
+```
+
+Check questionnaire column and match names
+
+```{r}
+colN_dsQ <- colnames(ds_Q)
+colN_mergeds <- colnames(merged_ds)
+
+VisCheck <- t(rbind(colN_dsQ[grepl("Q", colN_dsQ)],colN_mergeds[grepl("sss", colN_mergeds)]))
+
+oldnames <- colN_mergeds[grepl("sss", colN_mergeds)]
+newnames <- colN_dsQ[grepl("Q", colN_dsQ)]
+merged_ds <- merged_ds %>% rename_at(vars(oldnames), ~ newnames)
+
+```
+
+```{r}
+# Filter if not completed all trials
+tmp_trials <- merged_ds %>% group_by(session_id) %>% summarise(ntrials = length(x)) %>% filter(ntrials < (12+10+7)*3)
+
+merged_ds <- merged_ds %>%
+  filter(! session_id %in% tmp_trials$session_id )
+
+# This ID somehow managed to have 4 repetitions
+merged_ds <- merged_ds %>% filter(!session_id %in% 84702)
+```
+
+```{r}
+# YEEEEEEASS!! Now export this
+# Need to preserve ? in the colnames
+write.csv2(merged_ds, file = "WardData2.csv",row.names = FALSE, fileEncoding = "UTF-8")
+
+```
+
+## Detect Syn (??)
+
+Well since this will need the intervention from Ward, I will first explore wheter it might gain us some data by checking with the ID already available
+
+```{r}
+sets <- (list(Ward_old = ds_Q$session_id, Ward_new = unique(merged_ds$session_id)))
+
+library(ggvenn)
+ggvenn(sets, fill_color = c("#E41A1C", "#377EB8"))
+
+# Oh wow these are exclusively new ID's!
+```
+
+## Columnwise viewup
+
+The dataset is full of empty cells. How many empty cells per columns are there? In theory those could be removed.
+
+```{r}
+# tmp <- merged_ds %>%
+#   summarise(across(everything(), ~sum(. == ""| is.na(.)))) %>%
+#   pivot_longer(everything(), names_to = "column", values_to = "is_empty") %>%
+#   filter(is_empty != 0)
+# tmp$many_empty <- tmp$is_empty > 50
+# 
+# # Remove columns taht are incomplete:
+# merged_ds <- merged_ds %>%
+#   select(! tmp$column[tmp$many_empty])
+```
+
+I was loosing much data, I think it is best to keep the ID's who have responded the sss questionnaire
+
+```{r}
+#| eval: false
+#| include: false
+SSS_quest <- merged_ds %>% select(starts_with("sss"), session_id)
+
+ID_quest <- unique(SSS_quest[SSS_quest$sss.questionnaire.english_numbers != "NaN",]$session_id)
+ID_quest <- ID_quest[!is.na(ID_quest)] 
+
+ds_syn <- merged_ds %>% # syn??
+  filter(session_id %in% ID_quest)
+
+tmp <- ds_syn %>%
+  summarise(across(everything(), ~sum(. == ""| is.na(.)))) %>%
+  pivot_longer(everything(), names_to = "column", values_to = "is_empty") %>%
+  filter(is_empty != 0)
+
+tmp$many_empty <- tmp$is_empty == length(ds_syn$session_id)
+
+# Remove columns with empty cells :
+ds_syn <- ds_syn %>%
+  select(! tmp$column[tmp$many_empty])
+```
+
+Now we have a comprehensible dataset. Remains the question: who is a synesthete?
+
+```{r}
+#| eval: false
+#| include: false
+
+na.rm = function(x) {x[!is.na(x)]}
+
+ds_Q2 <- merged_ds %>%
+  group_by(session_id) %>%
+  filter(row_number() == 1)
+
+# Ctl?
+sum(is.na(ds_Q2$sss.questionnaire.english_months))
+# Syn?
+sum(ds_Q2$sss.questionnaire.english_months, na.rm = TRUE)
+
+ID_synMon <- na.rm(ds_Q2$session_id[ds_Q2$sss.questionnaire.english_months == 1])
+ID_CtlMon <- ds_Q2$session_id[is.na(ds_Q2$sss.questionnaire.english_months)]
+
+ID_synMon <- na.rm(ds_Q2$session_id[ds_Q2$sss.questionnaire.english_numbers == 1])
+ID_CtlMon <- ds_Q2$session_id[is.na(ds_Q2$sss.questionnaire.english_numbers)]
+
+ID_synMon <- na.rm(ds_Q2$session_id[ds_Q2$sss.questionnaire.english_years == 1])
+ID_CtlMon <- ds_Q2$session_id[is.na(ds_Q2$sss.questionnaire.english_years)]
+
+
+sets <- list(
+  synMon = na.rm(ds_Q2$session_id[ds_Q2$sss.questionnaire.english_months == 1]), 
+  # CtlMon = ds_Q2$session_id[is.na(ds_Q2$sss.questionnaire.english_months)],
+
+  synNum = na.rm(ds_Q2$session_id[ds_Q2$sss.questionnaire.english_numbers == 1]),
+  # CtlNum = na.rm(ds_Q2$session_id[ds_Q2$sss.questionnaire.english_numbers == 1]),
+  
+  synYea = na.rm(ds_Q2$session_id[ds_Q2$sss.questionnaire.english_years == 1])
+  # CtlYea = na.rm(ds_Q2$session_id[ds_Q2$sss.questionnaire.english_years == 1])
+)
+
+library(ggvenn)
+ggvenn(sets)
+
+sets <- list(
+    # synMon = na.rm(ds_Q2$session_id[ds_Q2$sss.questionnaire.english_months == 1]), 
+    CtlMon = ds_Q2$session_id[is.na(ds_Q2$sss.questionnaire.english_months)],
+    
+    # SynNum = na.rm(ds_Q2$session_id[ds_Q2$sss.questionnaire.english_numbers == 1]),
+    CtlNum = na.rm(ds_Q2$session_id[ds_Q2$sss.questionnaire.english_numbers == 1]),
+    
+    # synYea = na.rm(ds_Q2$session_id[ds_Q2$sss.questionnaire.english_years == 1])
+    CtlYea = na.rm(ds_Q2$session_id[ds_Q2$sss.questionnaire.english_years == 1])
+)
+
+library(ggvenn)
+ggvenn(sets)
+```
+
+Could consider those who did not respond as control and the others as syntheses.
+
+But then what is `ds_Q2$sss.questionnaire.english.2_numbers` encoding ?

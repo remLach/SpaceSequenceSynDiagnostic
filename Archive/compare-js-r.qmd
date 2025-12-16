@@ -1,0 +1,50 @@
+---
+title: "Compare R vs JavaScript Area Calculation"
+format: html
+---
+
+## Generate random data and compare
+
+```{r}
+# Generate random coordinates
+set.seed(42)
+x <- runif(3, -10, 10)
+y <- runif(3, -10, 10)
+
+# R formula
+area_r <- abs(
+  x[1]*y[2] + x[2]*y[3] + x[3]*y[1] -
+  x[1]*y[3] - x[2]*y[1] - x[3]*y[2]
+) / 2
+
+area_r
+```
+
+
+```{js}
+let x = {{x | json}};
+let y = {{y | json}};
+
+let result = x.map((xi, i) => ({x: xi, y: y[i]}));
+
+let area_js = Math.abs(
+  (result[0]['x'] * result[1]['y']) +
+  (result[1]['x'] * result[2]['y']) +
+  (result[2]['x'] * result[0]['y']) -
+  (result[0]['x'] * result[2]['y']) -
+  (result[1]['x'] * result[0]['y']) -
+  (result[2]['x'] * result[1]['y'])
+) / 2;
+
+
+console.log("JS area:", area_js);
+return area_js
+```
+
+
+```{r}
+# Compare the two results (if you use the same x/y, they should match)
+# Compare the two results
+cat("R area:", area_r, "\n")
+# cat("JavaScript area", {{area_js}})
+```

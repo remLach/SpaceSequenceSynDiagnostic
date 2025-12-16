@@ -1,0 +1,2303 @@
+---
+title: "Pre-registered report: Space Sequence Synesthesia Diagnostic using form mapping"
+shorttitle: "My Paper's Title"
+author:
+  - name: Rémy Lachelin
+    corresponding: true
+    orcid: 0000-0002-8485-7153
+    role: 
+      - design
+      - analyses
+    email: remy.lachelin@fernuni.ch
+    affiliations:
+      - name: UniDistance Suisse
+        department: Psychology
+        address: Schinerstrasse 18
+        city: Brig-Glis
+        region: Valais
+        postal-code: 3900  
+  - name: Chhavi Sachdeva
+    corresponding: false
+    orcid: 0000-0002-0074-4371
+    role: 
+      - design
+      - data collection
+      - manuscript
+    email: chhavi.sachdeva@unidistance.ch
+    affiliations:
+      - name: UniDistance Suisse
+        department: Psychology
+        address: Schinerstrasse 18
+        city: Brig-Glis
+        region: Valais
+        postal-code: 3900     
+  - name: Nicolas Rothen
+    corresponding: false
+    orcid: 0000-0002-8874-8341
+    role: 
+      - design
+      - founding
+      - manuscript
+    email: nicolas.rothen@fernuni.ch
+    affiliations:
+      - name: UniDistance Suisse
+        department: Psychology
+        address: Schinerstrasse 18
+        city: Brig-Glis
+        region: Valais
+        postal-code: 3900   
+abstract: "Sequence-space synesthesia (SSS) is the phenomenon of representing ordered visual symbols in particular spatial positions. Existent tools to detect SSS are based on self-reports (i.e. questionnaire) and  consistency tests. Consistency tests are critical for the understanding of synesthesia to characterize or classify participants' synesthesia in experimental settings. We attempt to further optimize SSS diagnostic criteria with a paradigm shift. In this pre-registered report, we compare available diagnostics with new diagnostic criteria on 685 participants. Conceptually, the novel criteria aim at taking advantage of ordinality and extract geometric features based at the forms level. We harness a geography package to compute new potential criteria. Receiver Operator Characteristics analyses are used to compare all features. The results suggest topological validity to be the best criteria. In a second phase, we will test the predictive power of the new diagnostic features on an additional dataset that has yet to be collected."
+keywords: [Space sequence synesthesia, consistency test]
+author-note:
+  disclosures:
+    conflict of interest: The author has no conflict of interest to declare.
+bibliography: references.bib    
+format:
+  apaquarto-html: 
+    crossrefs-hover: true
+    floatsintext: true
+  apaquarto-docx: default
+  apaquarto-pdf: default
+  apaquarto-typst: default
+execute:
+  warning: false
+  message: false
+  cache: false
+editor: 
+  markdown: 
+    wrap: 72
+---
+
+```{r, libraries, message=FALSE, warning=FALSE}
+# Make shure environment is empty
+rm(list = ls())
+
+# Data import
+library(readr)
+library(readxl)
+# Data wrangling:
+library(tidyr)
+library(dplyr)
+# Render Formatting
+library(papaja)
+library(RColorBrewer)
+library(kableExtra)
+# Plots
+library(ggplot2)
+library(ggridges)
+library(ggalluvial)
+# geometry/geography feature package
+library(sf)
+# for ROC analyses:
+library(pROC) # See https://www.r-bloggers.com/2019/02/some-r-packages-for-roc-curves/
+
+library(webshot)
+```
+
+# Introduction {#sec-introduction}
+
+Sequence-Space Synesthesia (SSS) or visuo-spatial forms is the
+phenomenon where people visualize ordered sequences in particular
+spatial positions. For example, numbers, weekdays or months (synesthetic
+*inducers*) are represented as arranged into specific spatial positions
+is space (synesthetic *concurrent*).
+
+## Heterogeneity and homogeneity of Sequence-Space Synesthesia {#sec-heterogeneity-and-homogeneity-of-sss}
+
+The spatial (visuo-spatial) forms of SSS are idiosyncratic, which
+results in considerable heterogeneity in how this phenomenon is
+manifested across individuals. One source of heterogeneity is given by
+dimensionality: some SSS experiences involve three-dimensional (3D) and
+two-dimensional (2D) spatial arrangement [@eagleman2009a; @price2013].
+Another source is the reference frame, for example , the spatial forms
+take place in an external space around the body (*i.e.* projector) or in
+an internal space (*i.e.* associator) [@dixon2004; @smilek2007]. Further
+variability can be explained by temporal-spatial properties, such as
+manipulation of their spatial forms such as "zooming" in and out,
+rotating or shifting perspectives [@gould2014]. Lastly, the shape,
+complexity and layout of the spatial forms are also heterogeneous such
+as forming for example ovals, lines or zig-zags or loops. With some
+recurring shapes being more frequent, such as ovals for months
+[@eagleman2009a].
+
+Despite the after mentioned heterogeneities, SSS is also
+phenomenological characterized [@seron1992]. *Automaticity*: the
+*inducer* automatically triggers the *concurrent*. *Unidirectionality*:
+while the *inducer* triggers the concurrent, the concurrent does not
+trigger the inducer. *Developmentally early*: the experience was already
+present during childhood. *Consciousness*: The concurrent is consciously
+perceived. *Consistency*: the inducer-concurrent pair remains stable in
+time within subject. These distinctions can be quantified with self
+reported questionnaire (i.e. for development and consciousness), or more
+objectively using behavioural tests such as consistency tests
+[@baron-cohen1993].
+
+## Consistency tests {#sec-consistency-tests}
+
+The rationale behind consistency tests are designed to measure the
+variability in *inducer*-*concurrent* across time. These test are used
+as an objective validation or genuinnes test of self-reported
+synesthetes, it is therefore mainly useful in experimental settings to
+compare synesthetes and control and characterize the former.
+
+Consistency tests have made their proof for colour-grapheme synesthesia.
+Measures of individual consistency can be derived using colour-pickers
+while presenting an inducer repeatedly within a list (i.e. the letter
+"A"). More specifically the euclidean distance in CIE-LUV colour space
+(which is designed for perceptual uniformity) between repetitions of the
+same inducer lead to satisfactory accuracy when using a cut-off estiated
+from a larger sample [@rothen2013a].
+
+A similar rationale than for colour-grapheme synesthesia has been used
+to characterize SSS. Brang et al.[-@brang2010], evaluated consistency as
+the distance between repetition (i.e. January and January) compared to
+the adjacent stimuli (i.e. February), the stimulus response was defined
+as consistent if within 1.96 z-scores. This criteria was however noted
+to potentially be to conservatory, since it detected synesthesia in 4 of
+81 self-reported synesthetes.
+
+The same rationale as for colour-grapheme synesthesia [@rothen2013a] has
+been applied to design a consistency test of SSS [@rothen2016]. For SSS,
+instead of a colour-picker, participant's task it to position each
+selected inducer on the computer's screen position of their concurrent
+experience with each inducer being usually repeated three times. Form
+this task, the area and perimeter between the coordinates of repeated
+inducers has been used as a measure of consistency [@rothen2016].
+Consistent SSS responses should lead to smaller area (i.e. closer
+response in space). A cut-off of an average triangle area covering
+\<.203 % of the total screen area to classify as SSS was suggestedm i.e.
+1596 pixels on a 1024 X 768 resolution display [see also @ward2018].
+Standard deviation of responses and permuting the responses to compare
+single responses to a chance level calculated from permutations as in
+Root [-@root2021] have been compare in [@ward]. A measure of consistency
+between the x and y coordinates is then compared. The total area between
+the responses of same inducer has been suggested to be used
+[@rothen2016].
+
+[@ward2018]
+
+One general caveat for consistency tasks, is that synesthetic forms are
+idiosyncratic. In other words, the inducer-concurrent pairs might lead
+to form. Other problems with this type of consistency tests is that (1)
+it might favor one form of SSS, such as those with linear spatial forms
+[@ward]. (2) some participant not knowing the responses might click on
+the same position, leading to high consistencies [see @rothen2016]. (3)
+
+Moreover, this kind of criteria might bias the diagnosis to include
+synesthetes with straight lines which leads to less variability than
+more complex forms[@Ward].
+
+## Present study
+
+The goal of this registered report is to compare different consistency
+features on their ability to classify SSS from controls using Receiver
+Operator Characteristics (ROC). In the present *Phase I* we merge
+already available datasets to replicate systematic consistency test
+methods from the literature to additional new features. These new
+features are designed to take advantage of two properties of synesthetic
+responses First, the importance of ordinality between the inducers (i.e.
+Monday -\> Tuesday -\> Wednesday, ect). Some studies have systematically
+investigated ordinality, but using adjacent inducers (i.e. the distances
+between Monday, Tuesday and Wednesday as in [@brang2010]. Other have
+used the angle formed by adjacent inducers [@eagleman2009a].
+
+Second, thee particular synthetic forms of the sequential spatial
+location. These forms might have geometrical properties. For example
+months of the year might be represented circularly (as already described
+by [@galton1880] for numbers).
+
+To take advantage of sequential and geometrical synesthetic forms, we
+harnessed a geo-spatial package[@pebesma2018] to extract geometrical
+features from participant x and y coordinate responses. This packages
+allows for example to build string or polygons for each repetition and
+compare different geometrical features. Those individual geometrical
+features are then compared using Receiver Operator Characteristics (ROC)
+between individuals grouped as synesthets and control. In the present
+*phase I*,we compare ROC on three merged derivation datasets using the
+same task on SSS [@rothen2016, @ward; @vanpetersen2020a]. In future
+*phase II*, we compare whether the features selected to diagnose SSS in
+*phase I,* on a validation dataset that is not yet acquired (registered
+report on the open science foundation: <https://osf.io/9efjb/>**).**
+
+The rationale here is that synesthetic responses should have geometrical
+feature that differ from controls. For example, several SSS
+representations for months are circular.
+
+# General Methods
+
+*Phase I: present analyses*. We merged three available datasets and
+compared available diagnostic criteria across datasets using Receiver
+Operator Characteristics (ROC) for different approaches. First, we
+attempt at reproducing the diagnostic criteria on stimulus level
+consistency such as area and perimeter. Second, we explore a new
+approach consisting of comparing geometrical features across
+repetitions. Third, we apply second order approaches such as permutation
+tests. On one hand we reproduce Root et al. [-@root2021] permutation
+test that was developed for colour-grapheme synesthesia applied to SSS,
+as in ward [-@ward]). On the other hand we apply permutations across
+repetitions to obtain a permuted measure of consistency. In other words,
+we shuffle the presentation order and compute the geometrical feature in
+non chronological order. Finally we use General Linear Model's (GLM) to
+attempt to fit the best diagnostic curve combining different criteria.
+
+*Phase II: future analyses.* On a future dataset to be collected using
+the same task, we will compare the predictive power of the selected
+features using ROC.
+
+## Materials
+
+A the exception of [@rothen2016] (see
+<https://osf.io/6hq94/files/osfstorage>), the data from [@ward;
+@vanpetersen2020a] were collected online. The 29 inducers were: the 12
+months of a year, 7 days of the week and 10 numbers (i.e. hindo-arabic
+numerals from 0 to 9). [@vanpetersen2020a] Also presented 50 and 100
+numerals, which we excluded here. [@ward] data is collected using the
+Syntoolkit.
+
+## Procedure
+
+The details for the task's administration of each dataset are described
+in each respective article: [@ward] conducted the task online and
+[@rothen2016; @vanpetersen2020a] in laboratory. Each stimuli is
+presented randomly and sequentially centrally on the screen. Participant
+are instructed to click on the screen position where they visualize
+them.
+
+Stimulus included here are 7 weekdays (Monday to Sunday), 12 months
+(January to December) and 9 numbers (0 to 9). For Ward's data the
+stimulus were presented in randomized order with the constraint that no
+stimulus was repeated until all unique stimuli (N = 29) had been
+presented once.
+
+Importantly, while the three datasets included in *phase I* include
+three repetitions per stimuli, the *phase II* will use four repetition
+per stimuli.
+
+# *Phase I.* Methods
+
+## *Phase I.* Participants
+
+We merged four datasets: @rothen2016,[@ward] (from:
+[https://osf.io/p5xsd/files/osfstorage](#0){.uri}) ,[@vanpetersen2020]
+and additional data gently provided by private communications with Pr.
+Ward, see @tbl-mytb2. To match the other datasets, stimuli form
+[@vanpetersen2020] are translated from Dutch to English and for the
+stimuli, only numbers from 0 to 9 are kept (excluding 50 and 100).
+
+```{r Load data}
+# In the following I upload and merge the data from Ward, Rothen and Van Peters. Data is stored into a full dataset ds (i.e. 1 row per trial) and a dataset per participant ds_Quest (i.e. 1 row per participant).
+
+###  Ward Data
+ds_syn       <- read_excel("raw_synaesthetes_consistency_anon.xlsx")
+ds_syn$group <- "Syn"
+ds_ctl       <- read_excel("raw_controls_consistency_anon.xlsx")
+ds_ctl$group <- "Ctl"
+
+ds_Q_syn       <- read_excel("raw_synaesthetes_questionnaire_anon.xlsx")
+ds_Q_syn$group <- "Syn"
+ds_Q_ctl       <- read_excel("raw_controls_questionnaire_anon.xlsx")
+ds_Q_ctl$group <- "Ctl"
+
+# Merge wards datafiles:
+ds <- merge(ds_syn,ds_ctl, all = TRUE)
+ds_Q <- merge(ds_Q_syn,ds_Q_ctl, all = TRUE)
+
+# Ward only uses those who completed the Questionnaire (i.e. N = 215+252 = 467)
+ds <- ds %>% 
+  filter(session_id %in% unique(ds_Q$session_id))
+ 
+### Rothen Data
+
+ds_Rothen <- read.csv("~/Documents/SpaceSequenceSynDiagnostic/SpaceSequenceSynDiagnostic/rawdata.txt", sep="")
+
+### Rename variables to match datasets
+
+# sum(ds_Q$consistency_score != ds_Q$consistency) # Duplicate variable
+ds_Q$consistency <- NULL
+ds_Q$...36 <- NULL
+ds_Q$...37 <- NULL
+ds_Q$mean_simulation_Z <- NULL
+ds_Q$SD_simulation <- NULL
+ds_Q$`z-score`  <- NULL
+
+rm(ds_syn,ds_ctl,ds_Q_syn,ds_Q_ctl)
+
+ds$ID <- ds$session_id
+ds_Q$ID <- ds_Q$session_id
+
+ds_Q$dataSource <- "Ward"
+ds$dataSource   <- "Ward"
+
+# From Rothen:
+names(ds_Rothen)[names(ds_Rothen) == "Group"] <- "group"
+ds_Rothen$group <- as.factor(ds_Rothen$group)
+levels(ds_Rothen$group) <- c("Ctl","Syn")
+names(ds_Rothen)[names(ds_Rothen) == "Inducer"] <- "stimulus"
+names(ds_Rothen)[names(ds_Rothen) == "X"] <- "x"
+names(ds_Rothen)[names(ds_Rothen) == "Y"] <- "y"
+ds_Rothen$SynQuest <- ds_Rothen$group == "Syn"
+
+ds_Rothen$dataSource <- "Rothen"
+
+# From the paper (all the same since lab based):
+ds_Rothen$width  <- 1024
+ds_Rothen$height <- 768
+```
+
+```{r Merge1 Rothen and Ward data}
+## 0.2 Merge data:
+# remove non matching colnames: 
+
+ColNames_ds <- colnames(ds_Rothen)[colnames(ds_Rothen) %in% colnames(ds)]
+
+ds <- ds %>%
+  select(all_of(ColNames_ds))
+ds_Rothen <- ds_Rothen %>%
+  select(all_of(ColNames_ds))
+
+# Data:
+ds   <- merge(ds,ds_Rothen, all = TRUE)
+
+# Because there is no questionnaire in Nicola's data:
+ds$SynQuest[ds$dataSource == "Rothen"] = "NaN"
+
+# Questionnaire:
+ID <- unique((ds_Rothen$ID))
+ds_Q_Rothen <- as.data.frame(ID)
+ds_Q_Rothen$dataSource <- "Rothen"
+ds_Q_Rothen <- merge(ds_Q_Rothen, ds_Rothen %>% group_by(ID) %>% select(ID, dataSource, group) %>% filter(row_number() == 1), by = c("ID","dataSource"))
+
+# Append rows:
+ds_Q$ID <- as.character(ds_Q$ID)
+ds_Q <-  bind_rows(ds_Q,ds_Q_Rothen)
+
+# Clear up:
+rm(ds_Q_Rothen, ds_Rothen)
+
+## 0.3 Wrangle dataset
+
+# Add Condition, i.e. stim type:
+ds$Cond <- NaN
+ds$Cond[ds$stimulus %in% c("1","2","3","4","5","6","7","8","9","0")] <- "number"
+ds$Cond[ds$stimulus %in% c("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday")] <- "weekday"
+ds$Cond[ds$stimulus %in% c("January", "February", "March", "April", "May","June","July","August","September","October","November","December")] <- "month"
+```
+
+```{r MergeVanPeters}
+### ADD Van Petersen Cortex data
+
+filedir <- "~/Documents/SpaceSequenceSynDiagnostic/VanPetersen/Cortex/di.dcc.DSC_2018.00019_653/Consistency test/Preprocessed data/"
+fn <- paste0(filedir,dir(filedir))
+
+ds_PeterCor <- read_excel(fn[1],
+                                col_types = c("text", "numeric", "text", 
+                                              "text", "numeric", "numeric", "numeric", 
+                                              "numeric", "numeric", "numeric", 
+                                              "numeric", "numeric", "text", "text", 
+                                              "text", "numeric", "numeric", "numeric"))
+
+for(i in 2:length(fn)){
+  ds_i <- read_excel(fn[i],
+                     col_types = c("text", "numeric", "text", 
+                                   "text", "numeric", "numeric", "numeric", 
+                                   "numeric", "numeric", "numeric", 
+                                   "numeric", "numeric", "text", "text", 
+                                   "text", "numeric", "numeric", "numeric"))
+    ds_PeterCor <- merge(ds_PeterCor, ds_i, all = TRUE)
+}
+
+# Here information about group:
+ds_PeterCor_Q <- read_excel("~/Documents/SpaceSequenceSynDiagnostic/VanPetersen/Cortex/di.dcc.DSC_2018.00019_653/Consistency test/Final data files/Consistency_scores.xlsx")
+
+names(ds_PeterCor_Q)[names(ds_PeterCor_Q) == "PPcode"] <- "ID"
+names(ds_PeterCor)[names(ds_PeterCor) == "Code"] <- "ID"
+
+# Exclude and Match ID's:
+# IDExcl <- unique(ds_PeterCor$ID[is.na(ds_PeterCor$MouseClick.RESPCursorX)])
+# ds_PeterCor <- ds_PeterCor %>%
+#     filter(!ID %in% IDExcl)
+
+ID_IN <- intersect(ds_PeterCor$ID, ds_PeterCor_Q$ID)
+ds_PeterCor <- ds_PeterCor %>%
+    filter(ID %in% ID_IN)
+ds_PeterCor_Q <- ds_PeterCor_Q %>%
+    filter(ID %in% ID_IN)
+
+# Merge data with group and all dataset: 
+ds_PeterCor <- ds_PeterCor_Q %>%
+  left_join(ds_PeterCor, by = "ID")
+
+# Rename to match:
+names(ds_PeterCor)[names(ds_PeterCor) == "Group"] <- "group"
+ds_PeterCor[ds_PeterCor$group == "SSS",]$group <- "Syn"
+ds_PeterCor[ds_PeterCor$group == "control",]$group <- "Ctl"
+names(ds_PeterCor)[names(ds_PeterCor) == "MouseClick.RESPCursorY"] <- "y"
+names(ds_PeterCor)[names(ds_PeterCor) == "MouseClick.RESPCursorX"] <- "x"
+names(ds_PeterCor)[names(ds_PeterCor) == "word"] <- "stimulus" # Will need to translate to english!
+names(ds_PeterCor)[names(ds_PeterCor) == "BlockList.Cycle"] <- "repetition"
+
+ds_PeterCor$width  <- 1920 # "screen with display resolution set to 1920 x 1080, controlled by a Dell computer running Windows 7."
+ds_PeterCor$height <- 1080
+ds_PeterCor$dataSource <- "PeterCor"
+
+ds_PeterCor <- ds_PeterCor %>%
+  select(all_of(ColNames_ds))
+
+# Translate, weekdays:
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "maandag"]   <- "Monday"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "dinsdag"]   <- "Tuesday"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "woensdag"]  <- "Wednesday"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "donderdag"] <- "Thursday"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "vrijdag"]   <- "Friday"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "zaterdag"]  <- "Saturday"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "zondag"]    <- "Sunday"
+
+# Translate, Monthc:
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "januari"]   <- "January"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "februari"]  <- "February"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "maart"]     <- "March"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "april"]     <- "April"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "mei"]       <- "May"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "juni"]      <- "June"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "juli"]      <- "July"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "augustus"]  <- "August"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "september"] <- "September"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "oktober"]   <- "October"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "november"]  <- "November"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "december"] <- "December"
+
+# They added 2 numbers that are not in the other datasets:
+ds_PeterCor <- ds_PeterCor %>%
+    filter(stimulus != "50") %>%
+    filter(stimulus != "100")
+
+# MERGE  
+ds   <- merge(ds,ds_PeterCor, all = TRUE)
+
+# Questionnaire:
+names(ds_PeterCor_Q)[names(ds_PeterCor_Q) == "Group"] <- "group"
+ds_PeterCor_Q[ds_PeterCor_Q$group == "SSS",]$group <- "Syn"
+ds_PeterCor_Q[ds_PeterCor_Q$group == "control",]$group <- "Ctl"
+
+ds_PeterCor_Q$dataSource <- "PeterCor"
+
+ds_PeterCor_Q <- ds_PeterCor_Q %>%
+  select(ID, group, `Consistency All`, `Consistency Days`, `Consistency Months`,`Consistency Numbers`, dataSource)
+
+# Append rows:
+ds_Q <-  bind_rows(ds_Q,ds_PeterCor_Q)
+
+# Tidy workspace:
+rm(ds_PeterCor_Q,ds_PeterCor,ds_i, ID, fn,ColNames_ds,i,ID_IN)
+```
+
+```{r MergeWard2}
+# This data was provided by Jamie by mail. The data is prepared in a separeate file
+# Preserve "?" in the colnames: 
+ds_Ward2 <- read.csv2("~/Documents/SpaceSequenceSynDiagnostic/SpaceSequenceSynDiagnostic/WardData2.csv", fileEncoding = "UTF-8", check.names = FALSE)
+ds_Ward2$ID <- ds_Ward2$session_id 
+ds_Ward2$dataSource <- "Ward2"
+
+# Add Cond
+ds_Ward2$Cond <- NaN
+ds_Ward2$Cond[ds_Ward2$stimulus %in% c("1","2","3","4","5","6","7","8","9","0")] <- "number"
+ds_Ward2$Cond[ds_Ward2$stimulus %in% c("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday")] <- "weekday"
+ds_Ward2$Cond[ds_Ward2$stimulus %in% c("January", "February", "March", "April", "May","June","July","August","September","October","November","December")] <- "month"
+
+# Now I somehow need to define the groups
+# If a response in the questionnaire then syn, if not then control.
+ds_Ward2$group <- NaN
+ds_Ward2$group[is.na(ds_Ward2$`Q1 . Some people routinely think about sequences as arranged in a particular spatial configuration (as in the examples below), do you think this might apply to you? (1=strongly agree, 5= strongly disagree)`)] <- "Ctl"
+ds_Ward2$group[!is.na(ds_Ward2$`Q1 . Some people routinely think about sequences as arranged in a particular spatial configuration (as in the examples below), do you think this might apply to you? (1=strongly agree, 5= strongly disagree)`)] <- "Syn"
+
+colNWard2 <- colnames(ds_Ward2)
+
+ds_Ward2_Q <- ds_Ward2 %>%  
+  select(c(ID, dataSource, colNWard2[colNWard2 %in% colnames(ds_Q)])) %>% 
+  group_by(ID) %>%
+  filter(row_number() == 1)
+
+ds_Ward2_Q <- as.data.frame(ds_Ward2_Q)
+ds_Ward2_Q$`questionnaire score` <- ds_Ward2_Q[,4] +  
+  rowSums(ds_Ward2_Q[,21:24]) +
+  rowSums(6 - ds_Ward2_Q[,25:28])
+
+# ds_Ward2_Q <- ds_Ward2 %>%  
+#   select(colNWard2[colNWard2 %in% colnames(ds)])
+# ds_Ward2_Q$SynQuest <- NaN
+
+
+# Merge
+ds         <- merge(ds,ds_Ward2, all = TRUE)
+ds_Q       <- merge(ds_Q,ds_Ward2_Q,all = TRUE)
+
+rm(ds_Ward2,ds_Ward2_Q)
+```
+
+```{r Wrangle data}
+# Now we can enrich our dataset and process  several checks
+# Add Condition, i.e. stim type:
+ds$Cond <- NaN
+ds$Cond[ds$stimulus %in% c("1","2","3","4","5","6","7","8","9","0")] <- "number"
+ds$Cond[ds$stimulus %in% c("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday")] <- "weekday"
+ds$Cond[ds$stimulus %in% c("January", "February", "March", "April", "May","June","July","August","September","October","November","December")] <- "month"
+
+# Add stimulus repetition number
+ds <- ds %>%
+  group_by(ID, stimulus) %>%
+  arrange(ID, stimulus, .by_group = TRUE) %>%
+  mutate(repetition = row_number()) %>%
+  ungroup()
+
+# few trials that have more than 3 repetitions somehow:
+ds <- ds %>% filter(repetition <= 3)
+
+# Factorialize group variable to avoid confusions:
+ds$group   <- as.factor(ds$group)
+ds_Q$group <- as.factor(ds_Q$group)
+```
+
+```{r, FilterTrials}
+# This is potentially a critical part for the results. Need to decide:
+# (1) how to treat same coordinate responses, i.e. when ID clicks on the same position (see also Rothen and Ward)
+# (2) how to treat missing data (i.e. NA & NaN)
+
+# For (1), since z-score might fail (i.e. if all same coordinates) -->  turn same coordinates to NaN
+# For (2), since sf does not accept missing data -->  we exclude those responses.
+# This leads to some stimuli having only 2 repetitions (i.e. ID %in% 4_JB) AND some ID having to few pairs.
+# Since polygons need at least 4 coordinate pairs. --> check enough data per repetition
+
+# Important. To reproduce Rothen, the X = -1 and Y = -1 need to be interpreted as missing data (NaN):
+ds$x[ds$x == -1] <- NaN
+ds$y[ds$y == -1] <- NaN
+
+# Detect ID has the same coordinates across Conditions:
+ds <- ds %>%
+    group_by(ID, Cond) %>% 
+    mutate(SameCoord_x = length(unique(x[!is.na(x)])) == 1,SameCoord_y = length(unique(y[!is.na(y)])) == 1)
+
+# NaNification:
+ds$x[ds$SameCoord_x] <- NaN
+ds$y[ds$SameCoord_y] <- NaN
+ds$x[is.na(ds$x)]    <- NaN  # In VanPeters, some NA data all as NaN
+ds$y[is.na(ds$y)]    <- NaN 
+
+N1 <- length(unique(ds$ID)) # Track if ID loss
+
+# Remove NaN from the dataset:
+All_n <- length(ds$x) # Track trial loss
+ds <- ds %>%
+  filter(!is.na(x))
+ds <- ds %>%
+  filter(!is.na(y))
+All_n2 <- length(ds$x)
+
+N2 <- length(unique(ds$ID))  # Track if ID loss
+
+# Check that each stimulus has 3 repetitions (3+2+1 = 6).
+ds <- ds %>%
+    ungroup() %>%
+    group_by(ID, stimulus) %>%
+    mutate(SumRep = sum(repetition)== 6)
+
+ds <- ds[ds$SumRep,]
+All_n3<- length(ds$x)
+
+# Counts how many full conditions each ID has (should be 3):
+tmp2 <- ds %>%
+  ungroup() %>%
+  group_by(ID, Cond, repetition) %>%
+  filter(row_number() == 1) %>%
+  summarize(ntrials = length(x)) %>%
+  ungroup() %>%
+  group_by(ID) %>%
+  summarize(nCond = sum(ntrials)/3)
+
+# Remove ID's with less than 3 responses per condition:
+# ds <- ds %>%
+#   filter(!ID %in% tmp$ID[tmp$totCond < 3])
+
+# Later on, we make polygons. These need at least 4 points. Hence we exclude ID's with less than 4 responses per condition:
+tmp <- ds %>%
+  ungroup() %>%
+  group_by(ID, Cond, repetition) %>%
+  summarize(ntrials = length(x))
+
+ds <- ds %>%
+  filter(!ID %in% tmp$ID[tmp$ntrials < 4])
+
+N3 <- length(unique(ds$ID))
+
+# tmp2 <- ds %>%
+#   ungroup() %>%
+#   group_by(ID, Cond, repetition) %>%
+#   mutate(nTrials = length(x)) %>%
+#   filter(nTrials < 4) %>%
+#   select(ID, Cond, stimulus, repetition,x,y,nTrials)
+# 
+# ds <- ds %>%
+#   filter(!ID %in% tmp2$ID[tmp2$nTrials < 4])
+# 
+# N4 <- length(unique(ds$ID))
+
+# Match ID to ds_Q:
+IDlist <- unique(ds$ID)
+ds_Q <- ds_Q %>%
+  filter(ID %in% IDlist)
+
+# This ID apparently clicked in 2 positions:
+# ds %>% filter(ID %in% 44141) %>% ggplot(aes(x =x)) + geom_hist()
+```
+
+We kept `r N3` from the initial `r N1` participants. First, we excluded
+`r All_n - All_n2` empty trials including trials flagged for having the
+same x or y coordinates across conditions and repetitions, causing the
+depletion of `r N1-N2` participants[as in @rothen2016a; @ward2018].
+`r N2-N3` participants were excluded for having less than 4 coordinate
+points since this would impeach computing polygons, see
+@sec-category-level-additional-features. As a consequence,
+`r sum(tmp2$totCond < 3)` participants did not have coordinates in all
+conditions, for example no coordinates for numbers. Then, x and y
+coordinates were then separately normalized (z-score) per participant.
+
+```{r Add_zs}
+## 0.4 Standardize/scale coordinates
+ds <- ds %>%
+  group_by(ID) %>% # Not by Cond, so to avoid NaN's
+  mutate(x_zs = scale(x)) %>%
+  mutate(y_zs = scale(y))
+```
+
+```{r ManualAdjust}
+
+# Manually adjust pixels of invalid screen size
+# Note: 29 since 29 stimuli
+ds$height[ds$ID == 29324] <- 1080
+ds$width[ds$ID == 32190 ] <- 1440
+
+# This ID has unexpected changing screen settings, consider exclusion:
+ds$width[ds$ID == 33168 ]  <- 308
+ds$height[ds$ID == 33168 ] <- 149
+
+ds$width[ds$ID == 35556 ]  <- 1439
+ds$height[ds$ID == 35556 ] <- 734
+
+ds$width[ds$ID == 48114 ]  <- 1593
+ds$height[ds$ID == 48114 ] <- 671
+
+ds$width[ds$ID == 59854]  <- 1366
+ds$height[ds$ID == 59854] <- 663
+
+ds$width[ds$ID == 63127]  <- 1920
+ds$height[ds$ID == 63127] <- 880
+
+
+ds$Screen_area <- ds$width*ds$height
+
+```
+
+From the final sample of N = `r length(ds_Q$ID)`,
+`r sum(ds_Q$group == "Syn")` were synesthetes and
+`r sum(ds_Q$group == "Ctl")` controls. @tbl-mytb2 breaks down the number
+of synesthetes and control contributed by each dataset.
+
+Since not all the data is directly associated to demographics, we resume
+in @tbl-mytb1 gthe original sample's reported descriptives.
+
+Regarding the synesthes, we can only describe their profile from the
+data by Pr. Ward (i.e. from
+`r sum(ds_Q$dataSource %in% c("Ward","Ward2"))` cases. These profiles
+are described only for the stimulus class that are used in the
+consistency test (i.e. number, weekdays and month), see @fig-myplot1.
+
+| Source |   | Synesthetes |   |   |   | Controls |   |   |
+|--------|--------|--------|--------|--------|--------|--------|--------|--------|
+|  | Original |  |  | Included |  |  |  | Included |
+|  | N | Age | n fem ales | N | N | Age | n females |  |
+| [@rothen2016] | 33 | 23.1 | 24 | 37 | 37 | 28.2 | 27 | 37 |
+| [@vanpetersen2020] | 23 | 23.22 | 20 | 21 | 21 | 21.57 | 19 | 13 |
+| [@wardb] | 252 | 37.21 | 202 | 249 | 215 | 19.90 | 178 | 204 |
+| Ward 2 |  |  |  | 88 |  |  |  | 17 |
+|  |  |  |  |  |  |  |  |  |
+| Merged |  |  |  | 395 |  |  |  | 271 |
+
+: My Caption {#tbl-mytb1 apa-note="Note below table"
+data-quarto-disable-processing="true"}
+
+```{r}
+#| label: tbl-mytb2
+#| tbl-cap: Summary of data sources
+#| ft.align: left
+#| apa-note: Sources are
+
+
+knitr::kable(ds_Q %>%
+    group_by(group, dataSource) %>%
+    summarize(N = length(ID)) %>%
+    pivot_wider(names_from = group, values_from = N))
+```
+
+```{r}
+#| label: fig-myplot1
+#| fig-cap: "Venn diagram of the types of self-reported SSS"
+#| apa-note: "Only the subsample from Ward is included here"
+
+# Load library
+library(ggVennDiagram)
+na.rm <- function(x){x <- x[!is.na(x)]}
+
+ID_number <- na.rm(ds_Q$ID[ds_Q$`Q2_numbers (1=present, 0=absent)` == 1] )
+ID_days   <- na.rm(ds_Q$ID[ds_Q$`Q2_days  (1=present, 0=absent)` == 1] )
+ID_month  <- na.rm(ds_Q$ID[ds_Q$`Q2_months  (1=present, 0=absent)`== 1] )
+
+# Well you could add x2 for 
+# ID_lette  <- na.rm(ds_Q$ID[ds_Q$`Q2_letters (1=present, 0=absent)`== 1] )
+# ID_temp   <- na.rm(ds_Q$ID[ds_Q$`Q2_temperature (1=present, 0=absent)`== 1] )
+# ID_heigh  <- na.rm(ds_Q$ID[ds_Q$`Q2_height (1=present, 0=absent)` == 1]) ID_weight <- na.rm(ds_Q$ID[ds_Q$`Q2_weight (1=present, 0=absent)` == 1])
+
+
+x <- list(Numbers = ID_number, Day =  ID_days, Month =ID_month)
+# x2 <- list(Numbers = ID_number, Day =  ID_days, Month =ID_month, letters = ID_lette, temperature = ID_temp, height = ID_heigh, weight = ID_weight)
+
+ggVennDiagram(x) + 
+  scale_fill_gradient(low="grey",high = "violet") 
+
+# Clean up your env:
+rm(ID_number,ID_days,ID_month, tmp, x, colNWard2,N1,N2,N3,N4)
+```
+
+## *Phase I.* Procedure
+
+The median display resolution was `r median(ds$width)` X
+`r median(ds$height)`, with a maximum of `r max(ds$width)` X
+`r max(ds$height)` and a minimum of `r min(ds$width)` X
+`r min(ds$height)` .
+
+## *Phase I.* Analysis {#sec-phase-i.-analysis}
+
+First, we reproduce consistency methods found in the literature using
+the same task ([@rothen2016; @ward; @vanpetersen2020a; @root2021]) and
+compare the results. These methods are on the stimulus level, hence they
+asses the consistency for each stimulus *within* the repetitions.
+
+Second, we extract features on the form level. We harness a geography
+package to compute geometry based features. Informed on the ordinality
+of the stimulus (i.e. monday, tuesday, ect), we construct segments and
+polygon by conditions and repetitions. These methods are on the form or
+category level. The rationale here is to see whether when considering
+the stimuli as ordered coordinates, i.e. as segments or polygon, they
+are consistent *between* repetitions.
+
+Since these methods are also relying on repetition order (i.e. the
+segment for numbers are constructed with repetition 1 - vs. 2 vs. 3,
+that is their chronological order of experimental presentation), we also
+compute the best AUC features by permuting repetitions. We predict that
+permuted averaged features should lead to better classifications.
+Because synesthete's within stimulus consistency should lead to similar
+forms interdependently from the chronological order of stimulus
+presentation.
+
+Finally, we also intent a corelational approach.
+
+### Stimulus level: area and perimeter between repetitions {#sec-stimulus-level-area-and-perimeter-between-repetitions}
+
+Conceptually, the more consistent responses to the same stimuli should
+have smaller coordinate distance. This distance can be computed as the
+area or the perimeter formed by the x,y coordinate between the
+repetitions (i.e. (x1, y1), (x2, y2), (x3, y3)). With three repetitions,
+the area is calculated as in using the formula @eq-area and the
+perimeter @eq-perim.
+
+$$
+Area = (x1y2 +x2y3 + x3y1 – x1y3 – x2y1 – x3y2) / 2
+$$ {#eq-area}
+
+$$
+Perimeter = \sqrt{(x2 - x1)^2 + (y2 – y1)^2} + \sqrt{(x3 - x2)^2 + (y3 –y2)^2} + \sqrt{(x1 - x3)^2 + (y1 – y3)^2}
+$$ {#eq-perim}
+
+We compute the area in term of % of the screen size to be able to
+compare with the consistency results in [@rothen2016] and [@ward2018].
+In addition, since the screen sizes differ between experimental settings
+and individual response's spread vary, we computed the area on
+individually z-score transformed x,y coordinates. The area of each
+stimuli is then averaged for each participants.
+
+```{r, triangleArea_fun}
+# Define area calculation function
+triangle_area <- function(x, y) {
+  if(length(x) != 3 | length(y) != 3) return(NA)
+  area <- abs(
+    x[1]*y[2] + x[2]*y[3] + x[3]*y[1] -
+    x[1]*y[3] - x[2]*y[1] - x[3]*y[2]
+  ) / 2
+  return(area)
+}
+
+```
+
+```{r, area_Consitency}
+# Same with z-scores:
+ds <- ds %>%  
+  group_by(ID, stimulus) %>%
+  mutate(rep_area = triangle_area(x, y)) %>%
+  ungroup()
+
+# Mean area = (Summed area / 29) * 100 / Screen area
+# Merge
+tmp_perID2 <- ds %>% 
+    ungroup() %>% 
+    group_by(ID) %>% 
+    summarize(Area_perc = sum(rep_area, na.rm = TRUE)/(sum(!is.na(rep_area)))*100, Screen_area = unique(Screen_area))  %>%
+  select(ID, Area_perc,Screen_area)
+
+tmp_perID2$Area_perc <- tmp_perID2$Area_perc/tmp_perID2$Screen_area
+
+tmp_perID2 <- tmp_perID2 %>% select(ID, Area_perc)
+
+ds_Q <- merge(ds_Q,tmp_perID2,by = "ID")
+
+feature_direction <- c("moreCtl")
+rm(tmp_perID2)
+```
+
+```{r, area_zsConsitency}
+# Same with z-scores:
+ds <- ds %>%  
+  group_by(ID, stimulus) %>%
+  mutate(rep_area_zs = triangle_area(x_zs, y_zs)) %>%
+  ungroup()
+
+# Merge
+tmp_perID2 <- ds %>% ungroup() %>% 
+  group_by(ID) %>% 
+  summarize(Area_zs = mean(rep_area_zs, na.rm = TRUE))  %>%
+  select(ID, Area_zs)
+
+ds_Q <- merge(ds_Q,tmp_perID2,by = "ID")
+rm(tmp_perID2)
+
+feature_direction <- c(feature_direction,"moreCtl")
+```
+
+```{r, perimFun}
+### Perimeter function: 
+triangle_perimeter <- function(x, y) {
+  if(length(x) != 3 | length(y) != 3) return(NA)
+  # Side lengths
+  a <- sqrt((x[2] - x[1])^2 + (y[2] - y[1])^2)
+  b <- sqrt((x[3] - x[2])^2 + (y[3] - y[2])^2)
+  c <- sqrt((x[1] - x[3])^2 + (y[1] - y[3])^2)
+  perimeter <- a + b + c
+  # if(is.na(permiter)){
+  #   break
+  #   warning("NaN")
+  # }
+  return(perimeter)
+}
+```
+
+```{r, perim}
+## Compute triangle perimeter by group:
+ds <- ds %>%  
+  group_by(ID, stimulus) %>%
+  mutate(triangle_perim_zs = triangle_perimeter(x_zs, y_zs)) %>%
+  ungroup()
+
+## Summarize By ID:
+tmp_ID <- ds %>%
+  ungroup() %>% group_by(ID,group) %>%
+  summarize(Perimeter_zs = mean(triangle_perim_zs, na.rm = TRUE)) %>%
+  select(ID, Perimeter_zs)
+
+## Merge
+ds_Q <- merge(ds_Q,tmp_ID,by = "ID")
+feature_direction <- c(feature_direction,"moreCtl")
+```
+
+```{r someQuirksOfArea}
+#| eval: false
+#| include: false
+# Note that there are `r sum(round(ds_Q$Area_perc,5) == 0)` participants with an area of 0. These are either perfect synesthetes or "cheaters".
+#
+ID_area_zero <- ds_Q$ID[round(ds_Q$Area_zs,10) == 0]
+
+ds %>% filter(ID %in% ID_area_zero) %>%  ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+    geom_polygon(alpha = 0.4) + facet_wrap(~ID +Cond)  +
+    geom_path(aes(x = x_zs, y = y_zs, group = repetition), alpha = 0.2) +
+    theme_minimal()
+# Well they all score above the median of 17, so with the information at hand, these are synesthetes.
+ tmp <- ds_Q %>% filter(ID %in% ID_area_zero) %>% select(ID,`questionnaire score`)
+```
+
+Next we replicate [@root2021] permuted consistency method. For each
+individual, the x and y coordinates are randomly permuted and the areas
+are calculated. After 1000 permutations per individual, a z-score is
+calculated with the observed means compared to the permuted
+distribution, see @eq-zpermRoot. $$
+Zscore = [(Observed) – (Mean Permuted)] / (SD Permuted)
+$$ {#eq-zpermRoot}
+
+The permuted distribution would be the theoretical individual chance
+level distribution and hence the z-score reflects where the observed
+area lies from the chance level.
+
+```{r RootPerm}
+#| eval: false
+#| include: false
+# Code retrieved from OSF (adapted here):
+
+### Create a simulated distribution of consistency.  Note that each time this is run it will give a slightly different answer due to the randomisation
+
+IDlist <- unique(ds$ID)
+
+simulated_consistency <- data.frame() 
+observed_consistency <- data.frame() 
+
+n <- 1000  # Total iterations
+bar_width <- 50
+update_points <- round(seq(1, length(IDlist), length.out = 200))
+
+for(ID_n in 1:length(IDlist)) {
+  
+  if (ID_n %in% update_points || length(IDlist) == n) {
+    percent <- ID_n / length(IDlist)
+    num_hashes <- round(percent * bar_width)
+    bar <- paste0("[", 
+                  paste(rep("#", num_hashes), collapse = ""), 
+                  paste(rep("-", bar_width - num_hashes), collapse = ""), 
+                  "]")
+    cat(sprintf("\r%s %3d%%", bar, round(percent * 100)))
+    flush.console()
+  }
+
+  ds_ID <- ds %>%
+    filter(ID %in% IDlist[ID_n]) %>%
+    select(ID,x,y, stimulus, Screen_area)
+  
+  observed_consistency[ID_n,1] <- unique(ds_ID$ID)
+  observed_consistency[ID_n,2] <- ds_Q %>% filter(ID %in% IDlist[ID_n]) %>% select(Area_zs) # unique(ds_ID$Consistency)
+  
+  ### calculate the x and y standard deviations (no longer used, but calculated by Ward et al. 2018); Note the syntoolkit software calculated population SD (using N) but R will use sample SD (using N-1).  The values returned are very similar.
+  
+  # observed_consistency[ID_n,3] <- unique(sd (ds_ID$x) / ds_ID$width)
+  # observed_consistency[ID_n,4] <- unique(sd (ds_ID$y) / ds_ID$height)
+  # 
+  
+  for (N_shuffle in 1:1000) {
+    
+    ## shuffle the data
+    # shuffled      <- ds_ID[sample(nrow(ds_ID)),]
+    # shuffled      <- shuffled %>% group_by(stimulus) %>% mutate(rep2 = 1:length(stimulus)) 
+    # shuffled$rep2 <- rep(1:86,3) # rep(1:length(unique(ds_ID$stimulus)),3)
+    ds_ID$stim_shuffled <- sample(ds_ID$stimulus)
+    shuffled <- ds_ID
+    
+    Stim_list <- unique(shuffled$stim_shuffled)
+    
+    shuffled <- shuffled %>%
+      group_by(stim_shuffled) %>%
+      mutate(area = triangle_area(x, y))
+    
+    simulated_consistency[N_shuffle,1] = sum((na.rm(shuffled$area))/(length(unique(shuffled$stim_shuffled))))*100/min((shuffled$Screen_area)) # Few ID have changed screen size during session.
+      }
+  
+  ## calculate the p-value and z-score of the observed consistency
+  observed_consistency[ID_n,3] <- mean(simulated_consistency[,1])
+  observed_consistency[ID_n,4] <- sd(simulated_consistency[,1])
+  observed_consistency[ID_n,5] <- (observed_consistency[ID_n,2] - observed_consistency[ID_n,3]) / (observed_consistency[ID_n,4])
+  
+  # Circumvent issue that some ID have area of 0. Since can't divide by 0 for the z-score.
+  if(observed_consistency[ID_n,3] == 0){
+    observed_consistency[ID_n,5] <- 0
+  }
+  
+  if(!is.finite(observed_consistency[ID_n,5])){
+      break()
+      warning("z-score leads to non numeric results")
+    }
+}
+
+colnames(observed_consistency) <- c('ID', 'Area_zs', 'mean_perm', 'SD_perm', 'z-score')
+
+write.csv2(observed_consistency, "permuted_area_Root.csv")
+```
+
+```{r, RootPermAdd}
+ds_perm_cons <- read.csv2("permuted_area_Root.csv")
+ds_perm_cons$perm_zs <- ds_perm_cons$z.score
+
+## ATTENTION; RECOMPUTE THE PERMUTATION WITH THE ACTUAL DATASET then remove this
+ds_perm_cons <- ds_perm_cons %>% filter(ID %in% ds_Q$ID)
+ds_Q   <- ds_Q %>% filter(ID %in% ds_perm_cons$ID)
+
+ds_Q <- right_join(ds_Q, 
+                   ds_perm_cons %>% select(ID, perm_zs),
+                   by = "ID")
+feature_direction <- c(feature_direction,rep("moreCtl",1))
+
+rm(ds_perm_cons, tmp_ID,tmp2)
+```
+
+### Category level: additional features {#sec-category-level-additional-features}
+
+Taking the stimuli as an ordered sequence we can consider them as a
+geometrical segments (i.e. open geometrical form) and polygons (i.e.
+closed geometrical form), similarly as originally described in
+@galton1880. From there we can extract several geometrical properties.
+First, we extract the number of *self-intersections* of each segments.
+Conceptually, SSS should have less chance to produce that self-intersect
+than control. The number of self-intersections are added separately for
+each repetitions and conditions and averaged per participants.
+
+```{r, selfInter_fun}
+
+# Define function:
+count_self_intersections <- function(x, y, verbose = TRUE) {
+  n <- length(x)
+  if (n < 4) {
+    if (verbose) cat("Need at least 4 points to check for self-intersection.\n")
+    return(0)
+  }
+
+  # Orientation function
+  orientation <- function(p, q, r) {
+    val <- (q[2] - p[2]) * (r[1] - q[1]) - (q[1] - p[1]) * (r[2] - q[2])
+    if (is.na(val)) return(NA)
+    if (val == 0) return(0)
+    if (val > 0) return(1) else return(2)
+  }
+
+  # Check if q lies on segment pr
+  on_segment <- function(p, q, r) {
+    if (any(is.na(c(p, q, r)))) return(FALSE)
+    q[1] <= max(p[1], r[1]) && q[1] >= min(p[1], r[1]) &&
+      q[2] <= max(p[2], r[2]) && q[2] >= min(p[2], r[2])
+  }
+
+  # Main intersection check
+  segments_intersect <- function(p1, p2, p3, p4) {
+    o1 <- orientation(p1, p2, p3)
+    o2 <- orientation(p1, p2, p4)
+    o3 <- orientation(p3, p4, p1)
+    o4 <- orientation(p3, p4, p2)
+
+    if (any(is.na(c(o1, o2, o3, o4)))) return(FALSE)
+
+    # General case
+    if (o1 != o2 && o3 != o4) return(TRUE)
+
+    # Special colinear cases
+    if (o1 == 0 && on_segment(p1, p3, p2)) return(TRUE)
+    if (o2 == 0 && on_segment(p1, p4, p2)) return(TRUE)
+    if (o3 == 0 && on_segment(p3, p1, p4)) return(TRUE)
+    if (o4 == 0 && on_segment(p3, p2, p4)) return(TRUE)
+
+    return(FALSE)
+  }
+
+  count <- 0
+  for (i in 1:(n - 2)) {
+    for (j in (i + 2):(n - 1)) {
+      if (j == i + 1) next  # skip adjacent segments
+
+      p1 <- c(x[i], y[i])
+      p2 <- c(x[i + 1], y[i + 1])
+      p3 <- c(x[j], y[j])
+      p4 <- c(x[j + 1], y[j + 1])
+
+      if (segments_intersect(p1, p2, p3, p4)) {
+        count <- count + 1
+        if (verbose) {
+          cat(sprintf("Intersection #%d: segments (%d-%d) and (%d-%d)\n", count, i, i+1, j, j+1))
+        }
+      }
+    }
+  }
+
+  if (verbose) cat("Total crossings:", count, "\n")
+  return(count)
+}
+
+```
+
+```{r, Self_Intersections}
+# Number of intersections for each ID X Cond X repetition
+# Important! The dataset must be correctly informed about stimulus order.
+ds <- ds %>% 
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% 
+  arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
+  ungroup() %>%
+  group_by(ID, Cond,repetition) %>%
+  mutate(nLineCross = (count_self_intersections(x,y, verbose = FALSE))) %>%
+  arrange(ID) # ensure ds remains ordered by ID
+```
+
+```{r, selfIntertodsQ}
+# Average self-intersections per ID by Cond X repetition
+tmp <- ds %>%
+    group_by(ID,Cond,repetition) %>%
+    filter(row_number() == 1) %>% # keep only 1 row per IDXCondXrep
+    ungroup() %>% group_by(ID) %>% # Average per ID
+    summarise(SelfInter = mean(nLineCross)) %>%
+    select(ID, SelfInter) 
+
+ds <- merge(ds, tmp,by = "ID")
+
+ds_Q <- right_join(ds_Q, 
+           (ds %>% 
+                ungroup() %>% 
+                group_by(ID) %>% 
+                filter(row_number() == 1) %>%
+                select(ID, SelfInter)), by = "ID")
+
+
+feature_direction <- c(feature_direction,"moreCtl")
+```
+
+The next geometrical features are extracted using the simple feature
+`sf` package [@pebesma2018] to generate ordered segments and polygons
+based on the individually z-score transformed x and y coordinates. `sf`
+has originally been developed for geography.
+
+```{r, ds_segm}
+
+# Turn off spherical geometry:
+sf::sf_use_s2(FALSE)
+
+# Explicitly enforce item order (i.e. ordinality):
+ds_segm <- ds %>%
+  group_by(ID, stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% 
+  arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
+  ungroup() %>%
+  arrange(ID) %>%
+  filter(!is.nan(x_zs), !is.nan(y_zs)) %>% # sf hates NaN! Not needed anymore,
+  mutate(
+    group = as.character(group),
+    ID     = as.character(ID),
+    Cond      = as.character(Cond),
+    repetition     = as.integer(repetition),
+    dataSource = as.character(dataSource)
+  ) %>%
+  # arrange(ID, Cond, repetition,group) %>%
+  group_by(ID, Cond, repetition,group) %>%
+  summarise(
+    geometry = st_sfc(st_linestring(as.matrix(cbind(x_zs, y_zs)))), # preserves order
+    .groups = "drop"
+  ) %>%
+  st_as_sf(crs = NA)
+```
+
+We calculate the polygon's area and perimeter of the polygons and
+average per participants.
+
+```{r, poly area}
+ds_poly          <- st_cast(ds_segm, "POLYGON")
+
+# To diagnose error: not enough coordinates to form polygon
+# n_coords <- vapply(
+#     st_geometry(ds_segm),
+#     function(g) nrow(st_coordinates(g)),
+#     integer(1)
+# )
+# 
+# # Add that info to the data
+# ds_segm_with_n <- ds_segm %>%
+#     mutate(n_coords = n_coords)
+# 
+# # Look at the ones that will break st_cast (fewer than 4 points)
+# bad_geoms <- ds_segm_with_n %>%
+#     filter(n_coords < 4)
+
+ds_poly$area     <- st_area(ds_poly)
+
+ds_poly <- ds_poly %>%
+  group_by(ID) %>%
+  mutate(areaPoly_GA = mean(area, na.rm = TRUE))
+
+ds_Q <- right_join(ds_Q, 
+                   ds_poly %>% st_drop_geometry() %>% ungroup() %>% group_by(ID) %>% filter(row_number() == 1) %>% select(ID, areaPoly_GA),
+                   by = "ID")
+
+feature_direction <- c(feature_direction,"moreSyn")
+```
+
+```{r, polyPeri}
+ds_poly$perimeter    <- st_perimeter(ds_poly)
+
+ds_poly <- ds_poly %>%
+  group_by(ID) %>%
+  mutate(perim_GA = mean(perimeter, na.rm = TRUE))
+
+ds_Q <- right_join(ds_Q, 
+                   ds_poly %>% st_drop_geometry() %>% ungroup() %>% group_by(ID) %>% filter(row_number() == 1) %>% select(ID, perim_GA),
+                   by = "ID")
+
+feature_direction <- c(feature_direction,"moreCtl")
+```
+
+Then we use the second order functions provided by the **`sf`** package
+to check for topological features from the polygons. These tests return
+a boolean. First we test each polygon for simplicity, a simple polygon
+being described as not having self-intersections or self-tangencies.
+
+```{r, polyisSimple}
+# Might depend on cast:
+# ds_poly          <- st_cast(ds_segm, "POLYGON", group_or_split = TRUE)
+
+ds_poly$isSimple <- st_is_simple(ds_poly)
+
+ds_poly <- ds_poly %>%
+  group_by(ID) %>%
+  mutate(isSimple_GA = mean(isSimple, na.rm = TRUE))
+
+ds_Q <- right_join(ds_Q, 
+                   ds_poly %>% st_drop_geometry() %>% ungroup() %>% group_by(ID) %>% filter(row_number() == 1) %>% select(ID, isSimple_GA),
+                   by = "ID")
+
+feature_direction <- c(feature_direction,"moreSyn")
+```
+
+Then we test for topological validity, this function tests if a polygon
+is *is well-formed and valid in 2D according to the* Open Geopsatial
+Consotrtium *rules (see* <https://postgis.net/docs/ST_IsValid.html> and
+<https://postgis.net/docs/using_postgis_dbmanagement.html#OGC_Validity>).
+
+```{r, topoValid}
+ds_poly$isValidStruct <- st_is_valid(ds_poly, geos_method = "valid_structure")
+
+ds_poly <- ds_poly %>%
+  group_by(ID) %>%
+  mutate(isValidStruct_M = mean(isValidStruct, na.rm = TRUE))
+
+ds_Q <- right_join(ds_Q, 
+                   ds_poly %>% st_drop_geometry() %>% ungroup() %>% group_by(ID) %>% filter(row_number() == 1) %>% select(ID, isValidStruct_M),
+                   by = "ID")
+
+feature_direction <- c(feature_direction,"moreSyn")
+```
+
+Finally, we also attempted a correlational approach. Here we correlate
+the coordinates.
+
+```{r, corrXY}
+#| warning: false
+
+# Note 
+Correl <- ds %>%
+  group_by(ID, Cond) %>%
+  summarise(
+    corr = cor(x,y)
+  )
+
+tmp <- Correl %>% 
+  group_by(ID) %>%
+  summarise(Corr_XY_M = mean(corr, na.rm = TRUE)) 
+
+ds_Q <- right_join(ds_Q,  tmp %>%  ungroup() %>% arrange(ID), by = "ID")
+
+feature_direction <- c(feature_direction,rep("moreCtl",1))
+
+#### Correlate between repetitions
+
+CorrMat <- ds %>%
+    select(x,y,ID,Cond,stimulus,repetition) %>%
+    group_by(ID, Cond) %>%
+    pivot_wider(
+        names_from = repetition,
+        values_from = c(x, y),
+        names_prefix = "rep"
+    ) %>%
+    summarize(GA_cor = {
+        m <- select(cur_data(), starts_with(c("x","y")))
+        if (ncol(m) < 2) return(NA_real_)
+        cm <- cor(m, use = "pairwise.complete.obs")
+        mean(cm[lower.tri(cm)], na.rm = TRUE)
+    })
+
+CorrMat_sum <-  CorrMat %>% ungroup() %>% group_by(ID) %>% summarize(Corr_M = mean(GA_cor, na.rm = TRUE)) %>% select(ID, Corr_M)
+
+ds_Q <- right_join(ds_Q, CorrMat_sum %>%  ungroup() %>% arrange(ID), by = "ID")
+
+feature_direction <- c(feature_direction,rep("moreSyn",1))
+```
+
+### Category level: additional improvements {#sec-category-level-additional-improvements}
+
+Until now the form based features are computed by chronologically
+ordered repetitions. For example, Monday is repeated three times per ID.
+The coordinates for Monday presented the first time will always be used
+to form the segment/polygon with the Tuesday presented the first time.
+However, for consistency, this should be independent from chronological
+order. To circumvent this, we can permute the repetitions per
+conditions. I predict the permuted averages of the same features should
+give rise to better AUC.
+
+```{r permuteAcrossRep}
+#| eval: false
+#| include: false
+
+# All possible permutations per participant would be:
+# 3 sets: weekdays (7) * numerals (10) * months (12)= 840
+# 3 repetitions: 3! = 6
+# 850*6 = 5040 possibilities. Since 100 permutation take about 30 minutes it would take a long time. Alredy with 1000 permutation should take 3 hours -.-'.
+
+# Takes about 40 minutes on my machine. So pre-saved the output. 
+set.seed(42)
+
+
+ds <- ds %>%
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>%
+  arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
+  ungroup() %>%
+  group_by(ID, group, Cond, repetition) %>%
+  mutate(StimOrder = 1:length(stimulus))
+
+
+# First define output matrix:
+n_perms <- 500
+perm_names <- paste0("n_perm", sprintf("%03d", 1:n_perms))  # X001 … X100
+
+ds_perm <-  as.data.frame(
+  matrix(NA_real_, nrow = length(unique(ds$ID)), ncol = n_perms,
+         dimnames = list(unique(ds$ID), perm_names))
+)
+
+ID_list <- unique(ds$ID)
+total = length(ID_list)*n_perms
+pb <- txtProgressBar(min = 0, max = total, style = 3)
+k <- 0
+
+
+for(Perm_n in 1:n_perms){
+  perm_here <- perm_names[Perm_n]
+  for(ID_n in 1:length(unique(ds$ID))){
+    
+     
+    ################ Extract data per ID: ################
+    ds_ID <- ds %>%
+      filter(ID %in% ID_list[ID_n]) %>%
+      select(ID, group, stimulus, Cond, nLineCross, repetition, StimOrder,x_zs,y_zs,SelfInter)
+    
+     ################ Apply permutation (sample) across repetitions################
+     ds_ID <- ds_ID %>%
+      group_by(stimulus) %>%
+      mutate(repetition_perm = sample(repetition)) 
+    
+    ################ Pass to sf ################
+    ds_ID_segm <- ds_ID %>%
+      group_by(ID, stimulus) %>%
+      arrange(stimulus) %>%
+      arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% 
+      arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
+      filter(!is.nan(x_zs), !is.nan(y_zs)) %>% # sf hates NaN! Not needed anymore, NaN's are managed above in the code.
+      ungroup() %>%
+      arrange(ID) %>%
+      mutate(
+        group = as.character(group),
+        ID     = as.character(ID),
+        Cond      = as.character(Cond),
+        repetition_perm     = as.integer(repetition_perm)
+      ) %>%
+      group_by(ID, Cond, repetition_perm,group) %>%
+      summarise(
+        geometry = st_sfc(st_linestring(as.matrix(cbind(x_zs, y_zs)))), # preserves order
+        .groups = "drop"
+      ) %>%
+      st_as_sf(crs = NA) 
+    
+    ################ Convert to poly and compute validity ################
+    ds_ID_poly               <- st_cast(ds_ID_segm, "POLYGON")
+    ds_ID_poly$isValidStructPerm <- st_is_valid(ds_ID_poly, geos_method = "valid_structure")
+    
+    ds_ID_poly <- ds_ID_poly  %>%
+      mutate(isValidStructPerm = mean(isValidStructPerm, na.rm = TRUE)) %>%
+      filter(row_number() == 1)
+    
+    ################ save the perumted results ################
+        if(!rownames(ds_perm[ID_n,]) == ID_list[ID_n]){
+      warning("ID names do not match")
+    }
+    
+    ds_perm[ID_n,Perm_n] <- ds_ID_poly$isValidStructPerm
+    k <- k + 1
+    setTxtProgressBar(pb, k)
+  }
+}
+
+# Now average the permutations: 
+
+ds_perm$ID <-rownames(ds_perm)
+ds_perm$group <- ds_perm$ID  %in% ds_Q$ID[ds_Q$group == "Ctl"] # is true if Ctl
+ds_perm$group[ds_perm$group]  <- "Ctl"
+ds_perm$group[ds_perm$group == "FALSE"] <- "Syn"
+
+write.csv2(ds_perm, "permuted_isValid.csv")
+
+```
+
+```{r, AveragePermute}
+ds_perm <- read.csv2("permuted_isValid.csv")
+
+## ATTENTION; RECOMPUTE THE PERMUTATION WITH THE ACTUAL DATASET then remove this
+ds_perm <- ds_perm %>% filter(ID %in% ds_Q$ID)
+ds_Q   <- ds_Q %>% filter(ID %in% ds_perm$ID)
+# read.csv2("permuted_isValid.csv")
+ds_Perm_perID <-  ds_perm %>% 
+  rowwise() %>% 
+  mutate(isValid_perm_M = mean(c_across(n_perm001:n_perm100)), isValid_perm_Med = median(c_across(n_perm001:n_perm100))) %>% 
+  select (ID, group, isValid_perm_M, isValid_perm_Med) # removed isValid_Med_perm_ID since median always underperformed the average
+
+
+ds_Q <- right_join(ds_Q, 
+                   ds_Perm_perID %>% st_drop_geometry() %>% ungroup() %>% group_by(ID) %>% arrange(ID) %>% filter(row_number() == 1) %>% select(ID, isValid_perm_M),
+                   by = "ID")
+feature_direction <- c(feature_direction,rep("moreSyn",1))
+```
+
+Finally, we used General Linear Model (GLM) on the two features with the
+best AUC and add the prediction as an additional feature. A GLM could
+provide a formula where multiple features could be combined in order to
+optimize AUC.
+
+```{r, GLM}
+Model3 <- glm(group ~  Area_zs +isValid_perm_M, data = ds_Q, family = binomial)
+pred3 = predict(Model3)
+ds_Q$GLM_Valid_areazs <- pred3
+
+feature_direction <- c(feature_direction,rep("moreSyn",1))
+```
+
+# *Phase I.* Results
+
+Descriptively @tbl-mytb01
+
+```{r}
+#| label: tbl-mytb01
+#| tbl-cap: "Descriptives of each features"
+#| ft.align: left
+
+feat_cols <- colnames(ds_Q[,42:length(colnames(ds_Q))])
+
+fmt_ms <- function(x, digits = 3) {
+    m    <- mean(x, na.rm = TRUE)
+    Med  <- median(x, na.rm = TRUE)
+    sd   <- stats::sd(x, na.rm = TRUE)
+    paste0(
+      formatC(m,  format = "f", digits = digits),
+      " (*",
+      formatC(sd, format = "f", digits = digits),
+      "*)"
+    )
+}
+
+papaja::apa_table(ds_Q %>%
+    select(c(group, dataSource, feat_cols)) %>%
+    pivot_longer(cols = all_of(feat_cols),
+                 names_to = "Feature",
+                 values_to = "Value") %>%
+    group_by(group, dataSource, Feature) %>%
+    summarise(`M (SD)` = fmt_ms(Value), .groups = "drop") %>%
+    pivot_wider(names_from = group,
+                values_from = `M (SD)`) %>%
+    arrange(match(Feature, feat_cols)))
+
+```
+
+Each feature in classifying SSS from controls was compared with Receiver
+Operator Characteristics (ROC) analyses. Area Under the Curve (AUC) is
+used to determine which feature is best at classifying SSS from
+Controls. In Addition, we also use discrimination power (@eq-DP).
+
+$$ 
+DP = \frac{sqrt{(3)}}{\pi} (log(X) + log(Y))
+$$ {#eq-DP}
+
+where: $X = sensitivity/(1−sensitivity)$ and
+$Y = specificity/ (1−specificity)$
+
+Optimal cutoff's are calculated using Youden's criterias.
+
+```{r, defineDPfun}
+DP <- function(sensitivity, specificity){
+  sensitivity = sensitivity/100
+  specificity = specificity/100
+  return(sqrt(3/pi)*(log(sensitivity/(1-sensitivity)) + log(specificity/(1-specificity))))
+}
+```
+
+```{r, InitializeROC_fun}
+## Define function to compute ROC:
+Comp_ROC <- function(data, group_col, feature, ID, Ord){
+  # Ord: must be: moreSyn or moreCtl. Wheter feature value is moer in Syn or ctl.
+  if(!setequal(levels(data[[group_col]]), c("Syn","Ctl"))){
+    return(warning("group name must inculde: Syn Ctl"))
+    break
+  }
+  
+  if (Ord == "moreSyn") {
+    Dirhere <- "<"
+  } else if (Ord == "moreCtl") {
+    Dirhere <- ">"
+  } else {
+    return(warning("Ord must be moreSyn or moreCtl"))  
+  }
+  
+  ################ ROC analyses ################ 
+  
+  ROC_here <- pROC::roc(data[[group_col]] ~ data[[feature]], data, 
+                  direction= Dirhere,
+                  percent=TRUE,
+                  # arguments for ci
+                  ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+                  # arguments for plot
+                  # plot=FALSE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+                  # print.auc=TRUE, show.thres=TRUE, print.thres = "best", print.thres.best.method="youden"
+                  )
+  
+  # Best threshold using Youden's J
+  best_coords <- pROC::coords(ROC_here, "best", 
+                              ret = c("accuracy","threshold", "sensitivity","specificity","ppv","npv"), 
+                              best.method = "youden")
+  
+
+  auc_val <- as.numeric(pROC::auc(ROC_here))
+  ci_auc  <- ci.auc(ROC_here)
+  ciobj   <- pROC::ci.se(ROC_here, # CI of sensitivity
+               specificities=seq(0, 100, 5)) # over a select set of specificities
+  roc_power <- power.roc.test(ROC_here)
+  
+  new_row <- data.frame(
+    Feature   = feature,
+    AUC        = round(auc_val, 4),
+    DP         = DP(as.numeric(best_coords[["sensitivity"]]),as.numeric(best_coords[["specificity"]])),
+    threshold  = as.numeric(best_coords[["threshold"]]),
+    sensitivity= as.numeric(best_coords[["sensitivity"]]),
+    specificity= as.numeric(best_coords[["specificity"]]),
+    # ppv        = as.numeric(best_coords[["ppv"]]),
+    # npv        = as.numeric(best_coords[["npv"]])
+    ci_low     = as.numeric(ci_auc[1]),
+    ci_high    = as.numeric(ci_auc[3]),
+    power = as.numeric(roc_power$power),
+    stringsAsFactors = FALSE
+  )
+  
+  ################ Contingency table ################ 
+  
+  if (Ord == "moreSyn") {
+    data$diagnosis <- ifelse(data[[feature]] >= best_coords$threshold,  "Test : Syn", "Test : Ctl")
+  } else if (Ord == "moreCtl") {
+    data$diagnosis <- ifelse(data[[feature]] >= best_coords$threshold,  "Test : Ctl","Test : Syn")
+  } else {
+    warning("Ord must be moreSyn or moreCtl")  
+  }
+  
+  tab_counts <- table(data[[group_col]], data$diagnosis)
+  
+  tab_percent <- prop.table(tab_counts, margin = 1) * 100
+  
+  result <- matrix(
+    paste0(tab_counts, " (", round(tab_percent, 1), "%)"),
+    nrow = nrow(tab_counts),
+    dimnames = dimnames(tab_counts)
+  )
+  
+  ################ General description ################ 
+  # Attention, na removed  
+  Descr_table <- data %>%
+    group_by(!!sym(group_col)) %>%
+    summarize(n = length(unique(!!sym(ID))), Mean = mean(!!sym(feature), na.rm = TRUE), SD = sd(!!sym(feature), na.rm = TRUE))
+
+  ################ Return outputs ################ 
+  return(list(ROC_properties = new_row, Coningency_table =result, Descr_table = Descr_table, ROC_curve = ROC_here, CI = ciobj))
+
+}
+```
+
+```{r compROCallFeat}
+#| message: false
+#| warning: false
+
+# tmp <- ds_Q %>% select(feature_list) %>% rowwise() %>%
+#     mutate(sum_na = sum(is.na(c_across(everything())))) %>% filter(sum_na != 0)
+
+all_cols <- colnames(ds_Q)
+feature_list      <- all_cols[42:length(all_cols)]
+
+if(length(feature_list) != length(feature_direction)){
+  warning("Attention unmatch feature list and direction")
+  message("Attention unmatch feature list and direction")
+}
+Feats <- as.matrix(t(rbind(feature_list,feature_direction)))
+
+# Now we will loop through features:
+# INITIALIZE ROC_curves
+ROC_curves <- list()
+ROC_contingency <- list()
+# ROC_CI <- list()
+
+# Initialize dataframe to collect relevant ROC values:
+All_ROC <- data.frame(Feature=character(),
+                      AUC         = character(),
+                      threshold   = integer(),
+                      sensitivity = integer(),
+                      specificity = integer(),
+                      ppv         = integer(),
+                      npv         = integer(),
+                      high_ci     = integer(),
+                      low_ci      = integer(),
+                      # power       = integer(),
+                      stringsAsFactors=FALSE)
+
+# Loop by features:
+for(fit_n in 1:length(Feats[,1])){
+  ROC_here <- Comp_ROC(ds_Q, "group", Feats[[fit_n,1]],"ID", Feats[[fit_n,2]])
+  
+  ROC_curves      <- c(ROC_curves,list(ROC_here$ROC_curve,ROC_here$ROC_properties$Feature))
+  All_ROC         <- rbind(All_ROC, ROC_here$ROC_properties)
+  # ROC_CI          <- rbind(ROC_CI, ROC_here$CI_Obj)
+  ROC_contingency <- c(ROC_contingency,list(ROC_here$Coningency_table,ROC_here$ROC_properties$Feature))
+}
+
+```
+
+The results from the ROC analysis for each features are summarized in
+@tbl-mytb3,sorted by the highest AUC and @fig-myplot2. The results
+suggest that best AUC with the permuted validity score (AUC = 80.09,
+cut-off = 0.17) and then the average normalized perimeter between the
+repetitions of each stimuli (AUC = 78.50, cut-off = 1.92 z-scores).
+Interestingly, while the permuted validity cut-off leads to higher
+specificity (77.50 vs. 74.29), the opposite is true for the sensitivity
+criteria (73.60 vs. 70.40).
+
+```{r, summaryROC}
+#| label: tbl-mytb3
+#| tbl-cap: "Summary of ROC analysis"
+#| ft.align: left
+
+library(kableExtra)
+
+All_ROC_round <- All_ROC %>% 
+    mutate_if(is.numeric, round,2)
+All_ROC_round <- All_ROC_round[order(All_ROC_round$AUC, decreasing = TRUE), ]
+
+SortFeat <- All_ROC_round$Feature # Pass further the AUC sorted features
+
+papaja::apa_table(All_ROC_round)
+```
+
+```{r summaryplot}
+#| label: fig-myplot2
+#| fig-cap: "All the ROC curves for each features"
+#| apa-note: "ROC curves for each features"
+
+
+nFeat <- length(ROC_curves)
+Odd_idx  <- seq(1,nFeat,by=2)
+Pair_idx <- seq(2,nFeat,by=2)
+
+ROC_listed <- list()
+Feattype <- c()
+for(i in 1:nFeat){
+  ROC_listed[[i]] <- ROC_curves[[Odd_idx[i]]]
+}
+
+ggroc(ROC_listed) +
+  geom_segment(aes(x = 0, xend = 100, y = 100, yend = 0),
+               color="grey", size = 0.01) +
+  scale_color_manual(labels = Feattype,values =pals::cols25(nFeat)) + # pals::brewer.pastel1(nFeat)
+  theme_apa()+
+  theme(legend.position="bottom")
+```
+
+```{r plotdensity}
+#| label: fig-myplot3
+#| fig-cap: "Density plots of all the features comparing SSS and controls"
+#| apa-note: "all feature's score have been z-score transformed in order to be compared"
+
+library(ggridges)
+ds_Q_zs <- ds_Q %>%
+  select(feature_list, group,ID) %>%
+  mutate_at(feature_list,scale) 
+
+ds_Q_zs <- ds_Q_zs %>% 
+  pivot_longer(cols = !c(group,ID),
+               names_to = "Feature",
+               values_to = "zs")
+
+ds_Q_zs$Feature <- as.factor(ds_Q_zs$Feature)
+# So the features are sorted by AUC ;)
+ds_Q_zs$Feature <- factor(ds_Q_zs$Feature, levels = rev(All_ROC_round$Feature))
+
+ggplot(ds_Q_zs, aes(x = zs, y = Feature, fill = group, color  = group,point_color = group)) + 
+  geom_density_ridges(alpha = 0.5, 
+                      jittered_points = TRUE, 
+                      position = position_points_jitter(width = 0.05, height = 0), point_shape = '|') +
+  xlim(-3, 3) +
+  theme_apa() +
+  labs(title = "zs densities across criteria", 
+       caption = "Note: x axis is treamed between -3 and 3 z-scores")
+```
+
+For the concern that some criteria might bias towards types of
+synesthesia, we compared the groups by sub-type of SSS (i.e. weekdays,
+months and numbers) with the classifications using the cut-offs for
+permuted validity and perimeter. @fig-myplot4 shows the venn diagram
+including only data from Ward (since we don't have the details from the
+other datasets). This suggests that 11% of the subsample in
+
+```{r}
+#| label: fig-myplot4
+#| fig-cap: "Avocado Venn Diagramm of self-report and tests"
+#| apa-note: "Only data from Ward is included here"
+
+AllList       <- list(Group = ds_Q$ID[ds_Q$group == "Syn"])
+AllList$Numb  <- ds_Q$ID[ds_Q$`Q2_numbers (1=present, 0=absent)` == 1]
+AllList$Days  <- ds_Q$ID[ds_Q$`Q2_days  (1=present, 0=absent)` == 1]
+AllList$Month <-ds_Q$ID[ds_Q$`Q2_months  (1=present, 0=absent)` == 1]
+
+for(feat_i in 2:length(All_ROC_round$Feature) ){
+  feat_here <- All_ROC_round$Feature[feat_i] 
+  if(feat_i %in% c(2)){ # Sorry for the lazy programming here 
+  ds_Q[[paste0("pass_",feat_here)]]  <- ds_Q[[feat_here]] >= All_ROC_round$threshold[feat_i]
+  AllList[[feat_here]] <- (ds_Q$ID[ds_Q[[feat_here]] >= All_ROC_round$threshold[feat_i]])
+  } else {
+     ds_Q[[paste0("pass_",feat_here)]]  <- ds_Q[[feat_here]] <= All_ROC_round$threshold[feat_i]
+  AllList[[feat_here]] <- (ds_Q$ID[ds_Q[[feat_here]] <= All_ROC_round$threshold[feat_i]])
+  }
+}
+
+# Load library
+library(ggVennDiagram)
+ 
+# ggVennDiagram(AllList[c(2:6)], set_color = c("black","black","black","brown","brown")) +
+#   scale_fill_gradient(low = "white", high = "darkgreen") 
+#   
+ggVennDiagram(AllList[c(2:6)], set_color = c("darkgreen","darkgreen","darkgreen","black","black")) +
+  scale_fill_gradient(low = "white", high = "#944729") 
+  
+```
+
+Further analyses aimed at estimating the reliability of features when
+sub sampling the dataset with different slices. First @sec-sm1 we
+recalculated the ROC by sub sampling the data from the most extreme
+groups. The extreme groups were defined by the percentiles on the
+questionnaire sores, hence only the data from Ward is included there. We
+computed AUC, sensitivity and sensibility for the 10-90 %, 20-80 %,
+30-70 %, 40-60 % subsampled participants depending on the dsistribution
+of the syneshtesia questionnaire [see @ward2018]. The results for AUC
+@fig-myplot5, sensitivity @fig-myplot6 and specificity @fig-myplot7.
+
+However we also found differences across the datasets, see @fig-myplot9
+for AUC, @fig-myplot10 for sensitivity and @fig-myplot11 for
+specificity.
+
+To confirm that the results are not circular, we correlated
+questionnaire scores with the features results, see
+@sec-sm2-correlation-with-self-report, @fig-myplot8
+
+Finally, descriptively we also wanted to see whether one of the main
+criteria would be more beneficial for one form of SSS or the other, see
+
+# *Phase II* Methods {#sec-phase-ii-methods}
+
+Additional data using the same task will be collected in the future. The
+procedure will be the same as for the previously decribed task only that
+this time there will be four repetitions. We aim at extracting the same
+criteria on this new dataset and compare whether we can accurately
+predict the groups based on the thresholds described here.
+
+# *Phase II* Materials:
+
+Materials are more details on the procedure are described here
+<https://osf.io/pjb6e/?view_only=d467ebf4c1f94076ae4ac61298255065>.
+
+# *Phase II* Planned population
+
+[**https://osf.io/6h8dx**](https://osf.io/6h8dx)
+
+# Discussion
+
+Shifting from investigating consistency across stimulus position to
+across repetitions have led to some improvement in ROC. The best
+criteria was a GLM
+
+From the different features we extracted, topological validity across
+the repetitions appeared to be the one leading to the largest Area Under
+the Curve.
+
+## Limitations {#sec-limitations}
+
+Although an optimal tool to discriminate SSS might be particularly
+relevant for experimental purposes, it is important to consider some
+limitations. These consistency tools are designed with a limited set of
+sequential stimuli (i.e. months, weeks and the first ten natural
+numbers). <!--# Diversity --> Other sequences might also be represented
+in particular spatial positions such as temperature, ect.
+<!--# Continuum --> Another point is that rather than categorical,
+synesthesia might be present on a continuum in the general population.
+In that case diagnostic cutoffs might not be relevant, rather a score
+would be necessary [@price2013]. <!--# Cirularity --> Finally, there
+might also be an issue of circularity - as with many diagnostics : how
+synesthesia is defined determines how synestetes are detected which are
+the groups on which synesthesia is defined [@simner2012].
+<!--# External validity --> This is particularly relevant when the two
+diagnostic criteria on which validity are compared are self-reports
+(i.e. being conscious) and consistency.
+
+The heterogeneity of methods used to detect SSS, combined with the
+heterogeneity of SSS complicates the task to estimate general population
+prevalence of SSS [@jonas2014; @brang2010; @sagiv2006]. For the present
+stake, the circularity issue makes it difficult since consistency
+diagnostic tools are designed to best classify control from synesthetes
+and hence depend on how those groups are initially defined. For example
+@sec-SM3byds suggests that the best AUC is given by different features
+depending on the different datasets.
+
+Numerals. While weekdays and months are finite sets, numerals are
+infinite. It is possible that some criteria could improve wen taking a
+larger set of numerals into account, in particular since there many
+descriptively interesting form occur at different decimals (in
+hindo-arabic decimal number system), see examples in [@galton1880] .
+
+SSS with 3D representations might also be under-diagnosed since the test
+is in 2D. However it seems that most SSS are relatively good at
+transposing 3D to 2D, which might be also explain by a more general
+advantage in visuo-spatial memory for SSS [@brang2010].
+
+Overlapping responses. A methodological issue concerns participants that
+give the same responses across conditions. These responses are a
+complication since we can't infer whether those conditions did not give
+rise to a synesthetic response in a synthesete or whether it is from a
+control that was confused about the instructions. On a methodological
+level, those responses can critically bias the diagnostic criteria. On
+one side excluding those responses would imbalance the number of
+responses by participant, on the other side including these responses
+might bias the diagnostic.
+
+Future studies could use machine learning and/or neural network in an
+attempt to fin the best criteria for classifying synesthetes from
+control. This approach however need to have a clear explanability, since
+the main use of a criteria is experimental. Ideally, we would need an
+algorithm which could give individual probability to have SSS on which a
+threshold would help to
+
+See also [@root2025].
+
+## Conclusions {#sec-conclusions}
+
+The feature that led to the best AUC was topological validity. If
+confirmed, this might lead to interesting conclusions about how SSS map
+ordinal stimuli in space. The parallel between maps and neuroscience has
+a long history (i.e. retinotopy, sonotopy or somatotopy), hence it seems
+that the automatic spatial associations in SSS follow to some extend
+some topological rules [@eagleman2009a].
+
+The optimal criterion needs to be informed about the order between
+inducers (i.e. to construct the polygons) and interestingly suggests
+that synthetic inducer are structurally mapped following topological
+rules analogous to geographical space structures. Hence suggesting a
+spatial nature for the synthetic forms of space sequence synesthetes.
+
+Interestingly, ordinality is very important an important semantic
+property of numbers (REF). Moreover that numbers are acquired
+sequentially (i.e. 1 is learned before 2) (REF). Hence the importance of
+ordinality in SSS is coherent with developmental accounts of Synesthesia
+[@price2013].
+
+# References
+
+::: {#refs}
+:::
+
+# Appendix phase I {#sec-supplementary-material-phase-i}
+
+To additionally test the validity of the criteria, we computed the ROC
+again by subsampling the groups based on the questionnaire scores so to
+have more extreme groups. This was done only on the data from Ward,
+since the other did not include a questionnaire in the data.
+
+## Appendix 1 Subsambled data by questionnaire quantiles (10% steps) {#sec-sm1}
+
+In the following, we compare the data sampled by the questionnaire
+score. Based on the distribution of the questionnaire score, we sampled
+the 10 % with the lowest and 10 % with the highest scores. Those are
+then compared with the 20 and 20 % and so on until 40 and 40 %. The
+rationale of this procedure is that AUC, sensitivity and specificity
+should remain stable across percentiles for a feature to be valid, see
+@fig-myplot5. In other words the ROC should remain unchanged if we take
+extreme groups compared to less extreme ones.
+
+```{r}
+#| label: fig-myplot5
+#| fig-cap: "Lineplots of AUC by percentile"
+#| apa-note: "Each point represents an increasing percentiles"
+
+ds_Q2 <- ds_Q %>% filter(dataSource %in% c("Ward","Ward2")) %>% filter(!is.na(`questionnaire score`))
+
+p <- seq(0,1,0.05)
+quant <- quantile(ds_Q2$`questionnaire score`, probs = p)
+quant <- as.numeric(quant)
+
+AUC_perctils <- vector("list", length(quant)/2)
+
+
+for(quant_n in 1:(length(quant)/2)){
+  
+  All_ROC <- data.frame(Feature=character(),
+                        AUC = character(),
+                        threshold=integer(),
+                        sensitivity=integer(),
+                        specificity=integer(),
+                        ppv = integer(),
+                        npv = integer(),
+                        high_ci = integer(),
+                        low_ci = integer(),
+                        stringsAsFactors=FALSE)
+  
+  ds_Q2_quant_n <- ds_Q2 %>% 
+  filter(`questionnaire score` <= quant[quant_n] | `questionnaire score` >= quant[length(quant)-quant_n])
+  
+  # hist(ds_Q2_quant_n$`questionnaire score`)
+  
+  # Loop by features:
+  for(fit_n in 1:length(Feats[,1])){
+    ROC_here <- Comp_ROC(ds_Q2_quant_n, "group", Feats[[fit_n,1]],"ID",Feats[[fit_n,2]])
+    
+    ROC_curves      <- c(ROC_curves,list(ROC_here$ROC_curve,ROC_here$ROC_properties$Feature))
+    All_ROC         <- rbind(All_ROC, ROC_here$ROC_properties)
+    ROC_contingency <- c(ROC_contingency,list(ROC_here$Coningency_table,ROC_here$ROC_properties$Feature))
+  }
+  
+  All_ROC_round <- All_ROC %>% 
+    mutate_if(is.numeric, round,2)
+  All_ROC_round <- All_ROC_round[order(All_ROC_round$AUC, decreasing = TRUE), ]
+  
+  AUC_perctils[[quant_n]] <- data.frame(
+    Feature = All_ROC_round$Feature,
+    AUC = All_ROC_round$AUC,
+    Sensitivity = All_ROC_round$sensitivity,
+    Specificity = All_ROC_round$specificity,
+    Quant_min = quant[quant_n],
+    Quant_max = quant[length(quant)-quant_n],
+    quant_n = quant_n
+  )
+
+    # print(knitr::kable(All_ROC_round))
+}
+
+AUC_perctils <- do.call(rbind, AUC_perctils)
+
+
+ggplot(AUC_perctils, aes(x = quant_n, y = AUC, group = Feature, colour = Feature)) +
+  geom_path() +
+  geom_point() +
+  scale_color_manual(values =pals::cols25(nFeat)) + #
+  theme_apa() +
+  theme(legend.position="bottom")
+
+```
+
+```{r}
+#| label: fig-myplot6
+#| fig-cap: "Lineplots of Sensitivity by percentile"
+#| apa-note: "Each point represents an increasing percentiles"
+
+
+ggplot(AUC_perctils, aes(x = quant_n, y = Sensitivity, group = Feature, colour = Feature)) +
+  geom_path() +
+  geom_point() +
+  scale_color_manual(values =pals::cols25(nFeat)) + #
+  theme_apa() +
+  theme(legend.position="bottom")
+```
+
+```{r}
+#| label: fig-myplot7
+#| fig-cap: "Lineplots of Specificity by percentile"
+#| apa-note: "Each point represents an increasing percentiles"
+
+
+ggplot(AUC_perctils, aes(x = quant_n, y = Specificity, group = Feature, colour = Feature)) +
+  geom_path() +
+  geom_point() +
+  scale_color_manual(values =pals::cols25(nFeat)) + #
+  theme_apa() +
+  theme(legend.position="bottom")
+```
+
+## Appendix 2 Correlation with self-report {#sec-sm2-correlation-with-self-report}
+
+The best criterion should also best correlate with SSS self-reported
+questionnaire score.\
+Works only with Ward's aggregated data, see @fig-myplot6.
+
+```{r}
+#| label: fig-myplot8
+#| message: false
+#| warning: false
+#| apa-note: Only data from Ward is included here
+#| fig-cap: Correlation with self-reported questionnaire
+#| fig-height: 9
+#| fig-width: 9
+
+library(corrplot)
+
+
+# Or shorter version (no details on questionaire):
+sel_dsQ <- ds_Q %>%
+  select(c(`questionnaire score`,feature_list)) %>%
+  filter(!is.na(`questionnaire score`))  %>%
+  select_if(~ !any(is.na(.)))
+
+# colnames(sel_dsQ) <- stringi::stri_sub(colnames(sel_dsQ), from = 1,length = 10)
+# sel_dsQ <- sel_dsQ %>% 
+#   relocate(QuestScore, .after =questionna)
+
+cols <- colnames(sel_dsQ)
+cols[cols %in% SortFeat] <- SortFeat
+
+sel_dsQ <- sel_dsQ[, cols]
+  
+sel_CorMat <- cor(sel_dsQ)
+sel_CorMat_test <- cor.mtest(sel_dsQ)
+
+
+corrplot(abs(sel_CorMat), method = 'circle', is.corr = FALSE, col.lim = c(0,1),col = COL1("YlOrRd"), diag=FALSE, type = 'lower', addCoef.col ='black')
+
+# corrplot::corrplot(abs(sel_CorMat), p.mat = sel_CorMat_test$p, method = 'color', is.corr = FALSE, type = 'upper', col.lim=c(0, 1), insig='blank')
+```
+
+## Appendix 3 By dataset {#sec-SM3byds}
+
+Here we compare the ROC for each specific data sample. Although the
+different authors have used a similar method, there might be a
+recruitment bias or other.
+
+@fig-myplot9
+
+@fig-myplot10
+
+@fig-myplot11
+
+```{r }
+
+dataSources <- unique(ds$dataSource)
+AUC_ds <- vector("list", length(dataSources))
+
+
+for(i in 1:length(dataSources)){
+  
+  ds_here <- ds_Q %>% filter(dataSource %in% dataSources[i])
+  
+  # INITIALIZE ROC_curves
+  ROC_curves <- list()
+  ROC_contingency <- list()
+  
+  # Initialize dataframe to collect relevant ROC values:
+  Per_ds_ROC <- data.frame(Feature=character(),
+                        AUC = character(),
+                        threshold=integer(),
+                        sensitivity=integer(),
+                        specificity=integer(),
+                        ppv = integer(),
+                        npv = integer(),
+                        high_ci = integer(),
+                        low_ci = integer(),
+                        stringsAsFactors=FALSE)
+  
+  # Loop by features:
+  for(fit_n in 1:length(Feats[,1])){
+    ROC_here <- Comp_ROC(ds_here, "group", Feats[[fit_n,1]],"ID", Feats[[fit_n,2]])
+    
+    ROC_curves      <- c(ROC_curves,list(ROC_here$ROC_curve,ROC_here$ROC_properties$Feature))
+    Per_ds_ROC      <- rbind(Per_ds_ROC, ROC_here$ROC_properties)
+    ROC_contingency <- c(ROC_contingency,list(ROC_here$Coningency_table,
+                                              ROC_here$ROC_properties$Feature))
+  }
+  
+  Per_ds_round <- Per_ds_ROC %>% 
+    mutate_if(is.numeric, round,2)
+  
+  Per_ds_round <- Per_ds_round[order(Per_ds_round$AUC, decreasing = TRUE), ]
+  
+  
+   AUC_ds[[i]] <- data.frame(
+    Feature = Per_ds_round$Feature,
+    AUC = Per_ds_round$AUC,
+    Sensitivity = Per_ds_round$sensitivity,
+    Specificity = Per_ds_round$specificity,
+    dataSource = dataSources[i],
+    N = length(ds_here$ID)
+  )
+  # To savagely output the full tables:
+  # cat("\n\n\n\n\n\n\n\n### Table", i, dataSources[i], "\n\n")
+  # print(knitr::kable(Per_ds_round), caption = as.character(dataSources[i]))
+  
+}
+
+
+AUC_ds <- do.call(rbind, AUC_ds)
+
+
+```
+
+```{r}
+#| label: fig-myplot9
+#| apa-note: "AUC"
+#| fig-cap: "Lineplots of AUC by data source"
+
+ggplot(AUC_ds, aes(x = dataSource, y = AUC, group = Feature, colour = Feature)) +
+  geom_point() +
+  geom_line() +
+  scale_color_manual(values =pals::cols25(nFeat)) + 
+  theme_apa() +
+  theme(legend.position="bottom") 
+```
+
+```{r}
+#| label: fig-myplot10
+#| apa-note:  "Sensitivity"
+#| fig-cap: "Lineplots of Sensitivity by data source"
+
+ggplot(AUC_ds, aes(x = dataSource, y = Sensitivity, group = Feature, colour = Feature)) +
+  geom_point() +
+  geom_line() +
+  scale_color_manual(values =pals::cols25(nFeat)) + 
+  theme_apa() +
+  theme(legend.position="bottom")  
+```
+
+```{r}
+#| label: fig-myplot11
+#| apa-note:  "Specificity"
+#| fig-cap: "Lineplots of Specificity by data source"
+
+ggplot(AUC_ds, aes(x = dataSource, y = Specificity, group = Feature, colour = Feature)) +
+  geom_point() +
+  geom_line() +
+  scale_color_manual(values =pals::cols25(nFeat)) + 
+  theme_apa() +
+  theme(legend.position="bottom")  
+```
+
+## Appendix 4 Reliability {#sec-sm4-reliability}
+
+```{r}
+#| output: asis
+#| label: apa-tables
+
+IDlist <- unique(ds_Q$ID)
+IDsample50 <- sample(IDlist, length(IDlist)*0.5)
+
+
+IDlist <- list(IDsample50,IDlist[!IDlist %in% IDsample50])
+
+for(i in 1:2){
+  
+  ds_here <- ds_Q %>% filter(ID %in% IDlist[[i]])
+
+  
+  # Now we will loop through features:
+  # INITIALIZE ROC_curves
+  ROC_curves <- list()
+  ROC_contingency <- list()
+  
+  # Initialize dataframe to collect relevant ROC values:
+  All_ROC <- data.frame(Feature=character(),
+                        AUC = character(),
+                        threshold=integer(),
+                        sensitivity=integer(),
+                        specificity=integer(),
+                        ppv = integer(),
+                        npv = integer(),
+                        high_ci = integer(),
+                        low_ci = integer(),
+                        stringsAsFactors=FALSE)
+  
+  # Loop by features:
+  for(fit_n in 1:length(Feats[,1])){
+    ROC_here <- Comp_ROC(ds_here, "group", Feats[[fit_n,1]],"ID", Feats[[fit_n,2]])
+    
+    ROC_curves      <- c(ROC_curves,list(ROC_here$ROC_curve,ROC_here$ROC_properties$Feature))
+    All_ROC         <- rbind(All_ROC, ROC_here$ROC_properties)
+    ROC_contingency <- c(ROC_contingency,list(ROC_here$Coningency_table,ROC_here$ROC_properties$Feature))
+  }
+  
+  All_ROC_round <- All_ROC %>% 
+    mutate_if(is.numeric, round,2)
+  All_ROC_round <- All_ROC_round[order(All_ROC_round$AUC, decreasing = TRUE), ]
+  
+  
+  print(knitr::kable(All_ROC_round))
+
+}
+
+```
+
+## Appendix 5 Plot all {#sec-sm5-plot-all}
+
+This exports many pdf's. It plots each ID and condition z-score x and y
+coordinates. Since each coordinate is repeated 3 times, these are
+represented by triangles. The line paths connect average coordinates to
+visualize forms (stimulus are ordered, i.e. 1 to 9, monday to sunday,
+january to december). Finally in the top right corner, each dots
+indicates if the ID would pass / fails depending on the criteria.
+
+```{r}
+# Match ds and ds_Q criteria
+
+ds <- left_join(ds, 
+          ds_Q %>% select("ID",starts_with("pass")), 
+          by = "ID")
+
+# To add a form by the middle
+ds <- ds %>% group_by(ID,stimulus) %>% mutate(X_mean_zs = mean(x_zs), Y_mean_zs = mean(y_zs))
+
+ds$passGroup <- ds$group == "Syn"
+
+```
+
+```{r}
+#| eval: false
+#| include: false
+# Multiple pages
+library(ggforce)
+
+IDlist <- unique(ds$ID)
+
+# Set the number of rows & columns per pages
+N_rows = 5
+N_cols = 9
+
+for(i in 1:(round(length(IDlist)/(N_rows*N_cols)*3)+1)){
+  
+ ds %>% 
+    # filter(ID  %in% c(28779,29027,29043)) %>%
+    group_by(stimulus) %>%
+    arrange(stimulus) %>%
+    arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>% # Start ggplot
+    ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+    geom_text(aes(x = 4, y = 4.5, label = dataSource), size = 1) + 
+    geom_text(aes(x = 3.7, y = 5.5, label = c("Criteria:  Ques   Perim  Area    Area_zs     validPerm")), size = 2) + 
+    geom_point(aes(x = 5 -2, y = 5, color = passGroup), size = 0.5) + 
+    geom_point(aes(x = 5 -1.5, y = 5, color =pass_Perimeter_zs), size = 0.5) + 
+    geom_point(aes(x = 5 -1., y = 5, color =pass_Area), size = 0.5) +
+    geom_point(aes(x = 5 -0.5, y = 5, color =pass_Area_zs), size = 0.5) +
+    geom_point(aes(x = 5 + 0.2, y = 5, color =pass_isValid_perm_M), size = 0.5) + # SynLine is developed later in the code.
+    geom_polygon(alpha = 0.4) +
+    geom_text(aes(x = X_mean_zs+0.1, y = Y_mean_zs+0.1), colour = "black", size = 0.5) +
+    geom_path(aes(x = X_mean_zs, y = Y_mean_zs, group = 1)) +
+    geom_path(aes(x = x_zs, y = y_zs, group = repetition), alpha = 0.2) +
+    geom_text(aes(x = x_zs+0.1, y = y_zs+0.1), size = 0.5, alpha = 0.5) +
+    facet_wrap_paginate( ~ ID+ Cond, ncol = N_cols, nrow = N_rows, page = i)  +
+    theme_minimal()
+    ggsave(paste0("Figures_SM/Syn_Categories",i,".pdf"),width = N_cols*2, height = N_rows*2)
+}
+```

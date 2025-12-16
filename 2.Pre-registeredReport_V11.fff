@@ -1,0 +1,58 @@
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+[!htbp]
+
+{\caption{{Venn diagram of the types of self-reported
+SSS}{\label{fig-myplot1}}}}
+
+\pandocbounded{\includegraphics[keepaspectratio]{2.Pre-registeredReport_V11_files/figure-pdf/fig-myplot1-1.pdf}}
+
+\vspace{-20pt}
+\noindent \emph{Note.} Only~the subsample from Ward is included here
+
+\end{figure*}
+\efloatseparator
+ 
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+[!htbp]
+
+{\caption{{All the ROC curves for each features}{\label{fig-myplot2}}}}
+
+\pandocbounded{\includegraphics[keepaspectratio]{2.Pre-registeredReport_V11_files/figure-pdf/fig-myplot2-1.pdf}}
+
+\vspace{-20pt}
+\noindent \emph{Note.} ROC~curves for each features
+
+\end{figure*}
+\efloatseparator
+ 
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+[!htbp]
+
+{\caption{{Density plots of all the features comparing SSS and
+controls}{\label{fig-myplot3}}}}
+
+\pandocbounded{\includegraphics[keepaspectratio]{2.Pre-registeredReport_V11_files/figure-pdf/fig-myplot3-1.pdf}}
+
+\vspace{-20pt}
+\noindent \emph{Note.} all~feature's score have been z-score transformed
+in order to be compared
+
+\end{figure*}
+\efloatseparator
+ 
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+[!htbp]
+
+{\caption{{Avocado Venn Diagramm of self-report and
+tests}{\label{fig-myplot4}}}}
+
+\pandocbounded{\includegraphics[keepaspectratio]{2.Pre-registeredReport_V11_files/figure-pdf/fig-myplot4-1.pdf}}
+
+\vspace{-20pt}
+\noindent \emph{Note.} Only~data from Ward is included here
+
+\end{figure*}

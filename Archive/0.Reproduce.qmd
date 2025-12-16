@@ -1,0 +1,827 @@
+---
+title: "Reproduce results"
+
+author:
+  - "Rémy Lachelin"
+date: today
+
+format:
+  pdf:
+    toc: true
+  html:
+    toc: true
+    page-layout: article
+#  live-html
+# engine: knitr
+
+link-citations: true
+link-bibliography: true
+bibliography: references.bib
+---
+
+# Analysis:
+
+Reproduction of the results in:
+
+-   Rothen [@rothen2016].
+Data can be found here: <https://osf.io/6hq94/files/osfstorage> and here:
+<https://reshare.ukdataservice.ac.uk/852530/>
+
+```{r, setup, include=FALSE}
+knitr::opts_chunk$set(
+  fig.width = 10, fig.height = 8, echo = F
+)
+```
+
+```{r, packages, message=FALSE, warning=FALSE}
+# Import
+library(readr)
+library(readxl)
+# Wrangle
+library(tidyr)
+library(dplyr)
+# Visuals for export
+library(ggplot2)
+library(papaja)
+# Specific libraries
+library(pROC) # See https://www.r-bloggers.com/2019/02/some-r-packages-for-roc-curves/
+```
+
+# Rothen 2016
+
+```{r, LoadData}
+## Load data
+ds_Rothen <- read.csv("~/Documents/SpaceSequenceSynDiagnostic/SpaceSequenceSynDiagnostic/rawdata.txt", sep="")
+rawdata <- read_table("rawdata.txt")
+ds_Rothen_aggregated <- read_excel("final_data_four_methods.xlsx")
+
+# Not per se necessary, but keeps same nomenclatures across datsets
+names(ds_Rothen)[names(ds_Rothen) == "Group"] <- "group"
+ds_Rothen$group <- as.factor(ds_Rothen$group)
+levels(ds_Rothen$group) <- c("Ctl","Syn")
+names(ds_Rothen)[names(ds_Rothen) == "Inducer"] <- "stimulus"
+names(ds_Rothen)[names(ds_Rothen) == "X"] <- "x"
+names(ds_Rothen)[names(ds_Rothen) == "Y"] <- "y"
+ds_Rothen$SynQuest <- ds_Rothen$group == "Syn"
+
+ds_Rothen$dataSource <- "Rothen"
+
+# From the paper (all the same since lab based):
+ds_Rothen$width <- 1024
+ds_Rothen$height <- 768
+
+```
+
+This is what we aim to replicate [@rothen2016]:
+
+![](Rothen_2016.png)
+
+```{r}
+## Define function to compute ROC:
+Comp_ROC <- function(data, group_col, feature, ID){
+  
+  ################ ROC analyses ################ 
+  
+  ROC_here <- pROC::roc(data[[group_col]] ~ data[[feature]], data, 
+                  percent=TRUE,
+                  # arguments for ci
+                  ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+                  # arguments for plot
+                  plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+                  print.auc=TRUE, show.thres=TRUE)
+  
+  # Best threshold using Youden's J
+  best_coords <- pROC::coords(ROC_here, "best", 
+                              ret = c("threshold", "sensitivity","specificity","ppv","npv"), 
+                              best.method = "youden")
+  
+
+  auc_val <- as.numeric(pROC::auc(ROC_here))
+  ci_auc  <- ci.auc(ROC_here)
+  
+  new_row <- data.frame(
+    Feature   = feature,
+    AUC        = round(auc_val, 4),
+    threshold  = as.numeric(best_coords[["threshold"]]),
+    sensitivity= as.numeric(best_coords[["sensitivity"]]),
+    specificity= as.numeric(best_coords[["specificity"]]),
+    ppv        = as.numeric(best_coords[["ppv"]]),
+    npv        = as.numeric(best_coords[["npv"]]),
+    ci_low     = as.numeric(ci_auc[1]),
+    ci_high    = as.numeric(ci_auc[3]),
+    stringsAsFactors = FALSE
+  )
+
+  ################ Contingency table ################ 
+  
+  data$diagnosis <- ifelse(data[[feature]] >= best_coords$threshold,  "Ctl","Syn")
+  tab_counts <- table(data[[group_col]], data$diagnosis)
+  
+  tab_percent <- prop.table(tab_counts, margin = 1) * 100
+  
+  result <- matrix(
+    paste0(tab_counts, " (", round(tab_percent, 1), "%)"),
+    nrow = nrow(tab_counts),
+    dimnames = dimnames(tab_counts)
+  )
+  
+  ################ General description ################ 
+  
+  Descr_table <- data %>%
+    group_by(!!sym(group_col)) %>%
+    summarize(n = length(unique(!!sym(ID))), Mean = mean(!!sym(feature)), SD = sd(!!sym(feature)))
+
+  ################ Return tables ################ 
+  return(list(ROC_properties = new_row, Coningency_table =result, Descr_table = Descr_table,ROC = ROC_here))
+
+}
+```
+
+## Area ($pixel^2$):
+
+**Definition**: Calculating consistency Each stimulus is represented by three xy coordinates - (x1, y1), (x2, y2), (x3, y3) - from the three repetitions. For each stimulus, the area of the triangle bounded by the coordinates is calculated as follows:\
+$Area = (x1y2 + x2y3 + x3y1 – x1y3 – x2y1 – x3y2) / 2$
+
+```{r}
+### Define triangle_area funciton:
+triangle_area <- function(x, y) {
+  if(length(x) != 3 | length(y) != 3) return(NA)
+  area <- abs(
+    x[1]*y[2] + x[2]*y[3] + x[3]*y[1] -
+    x[1]*y[3] - x[2]*y[1] - x[3]*y[2]
+  ) / 2
+  return(area)
+}
+
+# Is it the same as:
+# Math.abs((result[0]['x'] * result[1]['y'])
+#                     + (result[1]['x'] * result[2]['y'])
+#                     + (result[2]['x'] * result[0]['y'])
+#                     - (result[0]['x'] * result[2]['y'])
+#                     - (result[1]['x'] * result[0]['y'])
+#                     - (result[2]['x'] * result[1]['y'])) / 2
+```
+
+```{r}
+
+## Compute triangle area by group:
+ds_Rothen <- ds_Rothen %>%  
+  group_by(ID, stimulus) %>%
+  mutate(triangle_area = triangle_area(x, y)) %>%
+  ungroup()
+
+## Summarize By ID:
+ds_rothen_ID <- ds_Rothen %>%
+  ungroup() %>% group_by(ID,group) %>%
+  summarize(triangle_area_GA = mean(triangle_area)) 
+ 
+Out_area <- Comp_ROC(ds_rothen_ID, "group", "triangle_area_GA","ID")
+
+knitr::kable(Out_area$ROC_properties)
+knitr::kable(Out_area$Descr_table)
+knitr::kable(Out_area$Coningency_table)
+```
+
+```{r}
+# Then would need to replicate it for 
+# ds_Rothen %>%
+#   group_by(ID) %>%
+#   mutate(Ycent = (Y > 300 & < 500))
+
+```
+
+## Maximum length ($pixel$):
+
+```{r}
+### maximum lenth function: 
+triangle_maxLen <- function(x, y) {
+  if(length(x) != 3 | length(y) != 3) return(NA)
+  # Side lengths
+  a <- sqrt((x[2] - x[1])^2 + (y[2] - y[1])^2)
+  b <- sqrt((x[3] - x[2])^2 + (y[3] - y[2])^2)
+  c <- sqrt((x[1] - x[3])^2 + (y[1] - y[3])^2)
+  maxLen <- max(c(a, b, c))
+  return(maxLen)
+}
+```
+
+```{r}
+## Compute max length by group:
+ds_Rothen <- ds_Rothen %>%  
+  group_by(ID, stimulus) %>%
+  mutate(triangle_maxLen = triangle_maxLen(x, y)) %>%
+  ungroup()
+
+## Summarize By ID:
+ds_rothen_ID <- ds_Rothen %>%
+  ungroup() %>% group_by(ID,group) %>%
+  summarize(triangle_maxLen_GA = mean(triangle_maxLen)) 
+ 
+Out_MaxLen <- Comp_ROC(ds_rothen_ID, "group", "triangle_maxLen_GA","ID")
+
+knitr::kable(Out_MaxLen$ROC_properties)
+knitr::kable(Out_MaxLen$Descr_table)
+knitr::kable(Out_MaxLen$Coningency_table)
+```
+
+## Perimeter ($pixel$):
+
+```{r}
+### Perimeter function: 
+triangle_perimeter <- function(x, y) {
+  if(length(x) != 3 | length(y) != 3) return(NA)
+  # Side lengths
+  a <- sqrt((x[2] - x[1])^2 + (y[2] - y[1])^2)
+  b <- sqrt((x[3] - x[2])^2 + (y[3] - y[2])^2)
+  c <- sqrt((x[1] - x[3])^2 + (y[1] - y[3])^2)
+  perimeter <- a + b + c
+  return(perimeter)
+}
+```
+
+```{r}
+## Compute triangle perimeter by group:
+ds_Rothen <- ds_Rothen %>%  
+  group_by(ID, stimulus) %>%
+  mutate(triangle_perim = triangle_perimeter(x, y)) %>%
+  ungroup()
+
+## Summarize By ID:
+ds_rothen_ID <- ds_Rothen %>%
+  ungroup() %>% group_by(ID,group) %>%
+  summarize(triangle_perim_GA = mean(triangle_perim)) 
+ 
+Out_Perim <- Comp_ROC(ds_rothen_ID, "group", "triangle_perim_GA","ID")
+
+knitr::kable(Out_Perim$ROC_properties)
+knitr::kable(Out_Perim$Descr_table)
+knitr::kable(Out_Perim$Coningency_table)
+```
+
+# Comparison
+
+------------------------------------------------------------------------
+
+### Summary Rothen vs Repro
+
+|   | Descriptive | DP | AUC | Mean (syn) | Mean (con) | SD (syn) | SD (con) | Sensitivity | Specificity | Cut-off |
+|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
+| Rothen | Area | 1.57 | 0.76 | 1079 | 7031 | 1365 | 11149 | 88 | 70 | 1,596 |
+| Repro |  |  | 0.75 | **1312** | 7031 | **1829** | 11303 | **85** | 70 | 1,575 |
+|  |  |  |  |  |  |  |  |  |  |  |
+| Rothen | Max. length | 1.20 | 0.77 | 96 | 194 | 42 | 130 | 79 | 70 | 110 |
+| Repro |  |  | 0.77 | 96 | 194 | 49 | 132 | 79 | 70 | 109 |
+|  |  |  |  |  |  |  |  |  |  |  |
+| Rothen | Perimeter (Euclidean sum) | 1.18 | 0.77 | 202 | 415 | 87 | 284 | 76 | 73 | 221 |
+| Repro |  |  | 0.78 | 201 | 415 | **99** | 288 | 79 | 70 | 234 |
+|  |  |  |  |  |  |  |  |  |  |  |
+|  | Nearest neighbor | 0.93 | 0.76 | 66 | 42 | 21 | 22 | 67 | 73 | 56 |
+
+\
+
+## Original table:
+
+------------------------------------------------------------------------
+
+### Summary Statistics Table
+
+| Descriptive | DP | AUC | Mean (syn) | Mean (con) | SD (syn) | SD (con) | Sensitivity | Specificity | Cut-off | N syn / con |
+|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
+|  |  |  |  |  |  |  |  |  |  |  |
+| Area | 1.57 | 0.76 | 1079 | 7031 | 1365 | 11149 | 88 | 70 | 1,596 | 33 / 37 |
+| Max. length | 1.20 | 0.77 | 96 | 194 | 42 | 130 | 79 | 70 | 110 | 33 / 37 |
+| Perimeter (Euclidean sum) | 1.18 | 0.77 | 202 | 415 | 87 | 284 | 76 | 73 | 221 | 33 / 37 |
+| Nearest neighbor | 0.93 | 0.76 | 66 | 42 | 21 | 22 | 67 | 73 | 56 | 33 / 37 |
+|  |  |  |  |  |  |  |  |  |  |  |
+| Area | 1.84 | 0.85 | 1164 | 8085 | 1403 | 11641 | 87 | 81 | 1,596 | 30 / 32 |
+| Perimeter (Euclidean sum) | 1.46 | 0.82 | 207 | 453 | 90 | 287 | 77 | 81 | 236 | 30 / 32 |
+| Max. length | 1.46 | 0.82 | 98 | 211 | 44 | 132 | 77 | 81 | 110 | 30 / 32 |
+| Nearest neighbor | 1.08 | 0.79 | 66 | 40 | 21 | 22 | 67 | 78 | 55 | 30 / 32 |
+
+## Reproduced table:
+
+```{r}
+TableOut <- as.data.frame(rbind(c(Out_area$Descr_table[2,],Out_area$Descr_table[1,],Out_area$ROC_properties),c(Out_MaxLen$Descr_table[2,],Out_MaxLen$Descr_table[1,],Out_MaxLen$ROC_properties),c(Out_Perim$Descr_table[2,],Out_Perim$Descr_table[1,],Out_Perim$ROC_properties)))
+knitr::kable(TableOut, digits = 1)
+```
+## Compare to aggregated data:
+Data found here:
+<https://reshare.ukdataservice.ac.uk/852530/>
+The ID's have been renamed across datasets -.-'. So to check for data matches, I sort the dataset.
+
+```{r}
+ds_rothen_ID <- ds_Rothen %>%
+  ungroup() %>% group_by(ID,group) %>%
+  summarize(triangle_area_GA = mean(triangle_area)) 
+
+# Some are off by almost 1000 pixel^2. Maybe we did not even use the same method??? tha's 31 pixels off.
+hist(sort(ds_rothen_ID$triangle_area_GA)-sort(ds_Rothen_aggregated$`area`))
+max(sort(ds_rothen_ID$triangle_area_GA)-sort(ds_Rothen_aggregated$`area`))
+
+# But the std is almost the same: sd(ds_Rothen_aggregated$`area`) vs sd(ds_rothen_ID$triangle_area_GA) !
+
+Comp_ROC(ds_rothen_ID, "group", "triangle_area_GA","ID") # tshold = 1574.552
+Comp_ROC(ds_Rothen_aggregated, "group", "area","subject") # tshold = 1574.552  
+
+# OK, so 1 synthese is in the Ctl when I compute it, while it is not in the original dataset. That can be 1. due to rounding leading to different averages (which could become significant in area since ^2) 2. to ties: depend on how ties are solved (i.e. if a participant area = threshold). 3. Difference in roc package (which could also explain 2.)
+
+# Also the same thresold!!! So maybe it's 2..
+
+ds_rothen_ID$isSSS          <- ds_rothen_ID$triangle_area_GA < 1574.552
+ds_Rothen_aggregated$isSSS  <- ds_Rothen_aggregated$area < 1574.552
+
+sum(ds_rothen_ID$isSSS)
+sum(ds_Rothen_aggregated$isSSS)
+
+# Uff, we are getting there:
+
+tmp1 <- ds_rothen_ID %>%
+  arrange(triangle_area_GA) %>%
+  select(ID, group, triangle_area_GA)
+
+tmp2 <- ds_Rothen_aggregated %>%
+  arrange(area) %>%
+  select(subject, group, area)
+
+To_Check <- bind_cols(tmp1,tmp2)
+
+# Realised now that the ID match: I just need to keeb the numbers in ds_rothen_ID$ID 
+ds_rothen_ID$subject <- as.numeric(gsub(".*?([0-9]+).*", "\\1", ds_rothen_ID$ID))
+# Got it!!!
+sum(!ds_rothen_ID$subject %in% ds_rothen_ID$subject )
+```
+
+# Compare ROC
+
+```{r}
+ggroc(list(Area = Out_area$ROC, MaxLen = Out_MaxLen$ROC, Perimeter = Out_Perim$ROC)) +ggtitle("Empirical ROC")
+
+SmMed = c("binormal", "density", "fitdistr", "logcondens",
+          "logcondens.smooth")
+for(i in 1:length(SmMed)){
+  SmMed_i <- SmMed[i]
+  gp <- ggroc(list(Area = smooth(Out_area$ROC, method = SmMed_i), 
+             MaxLen = smooth(Out_MaxLen$ROC, method = SmMed_i), 
+             Perimeter = smooth(Out_Perim$ROC, method = SmMed_i)
+  )
+  ) +  ggtitle(paste0("Smoothing method: ", SmMed_i))
+  print(gp)
+  
+}
+```
+
+# Test Rothen scritps:
+```{r}
+# This ID does not exist in the data -.-'
+# example_data <- readxl::read_excel("example_data.xls",skip = 1)
+# 
+# ds_Rothen %>%
+#   filter(ID %in% example_data$ID)
+ojs_define(data = ds_Rothen)
+```
+
+
+```{r}
+#| eval: false
+#| include: false
+<!-- data = FileAttachment("~/Documents/SpaceSequenceSynDiagnostic/SpaceSequenceSynDiagnostic/rawdata.csv").csv({ typed: true }) -->
+```
+## This is `space_calculations.js`:
+
+```{ojs}
+/**
+ * Created by james on 21/08/2019.
+ */
+
+function space_calculations(data) {
+    var ss_results = {};
+    var stimuli_list = [];
+    for (var i = 0; i < data.length; i += 1) {
+        var trial = data[i];
+        var stimulus = trial.stimulus;
+        if (!ss_results.hasOwnProperty(stimulus)) {
+            ss_results[stimulus] = [];
+            stimuli_list.push(stimulus);
+        }
+
+        ss_results[stimulus].push({
+            'x' : trial.x / trial.width,
+            'y' : trial.y / trial.height
+        })
+    }
+
+
+
+    var areas_sum = 0;
+    var areas_count = 0;
+    var x_scores = [];
+    var y_scores = [];
+
+    for (var i = 0; i < stimuli_list.length; i += 1 ) {
+        var stimulus = stimuli_list[i];
+        var result = ss_results[stimulus];
+
+        if (result.length == 3) {
+            areas_sum += Math.abs((result[0]['x'] * result[1]['y'])
+                    + (result[1]['x'] * result[2]['y'])
+                    + (result[2]['x'] * result[0]['y'])
+                    - (result[0]['x'] * result[2]['y'])
+                    - (result[1]['x'] * result[0]['y'])
+                    - (result[2]['x'] * result[1]['y'])) / 2;
+            areas_count += 1;
+            x_scores.push(result[0]['x']);
+            x_scores.push(result[1]['x']);
+            x_scores.push(result[2]['x']);
+            y_scores.push(result[0]['y']);
+            y_scores.push(result[1]['y']);
+            y_scores.push(result[2]['y']);
+        }
+    }
+
+
+
+
+    var ss_score = areas_count > 0 ? (100 * areas_sum) / areas_count : 0;
+    var x_sd = stats_standard_deviation(x_scores);
+    var y_sd = stats_standard_deviation(y_scores);
+    var x_mean = stats_average(x_scores);
+    var y_mean = stats_average(y_scores);
+    var pass_ss_test = ss_score < 0.203 && (x_sd > 0.075 || y_sd > 0.075) ? '1' : '0';
+    var straight_line = ss_score < 0.203 && y_sd < 0.1 && (y_mean > 0.45 && y_mean < 0.55) ? '1' : '0';
+
+    return {
+        'ss_score' : ss_score,
+        'pass_ss_test' : pass_ss_test,
+        'n_valid_scores' : areas_count,
+        'x_sd' : x_sd,
+        'y_sd' : y_sd,
+        'x_mean' : x_mean,
+        'y_mean' : y_mean,
+        'straight_line' : straight_line
+    };
+}
+
+function stats_average(arr) {
+    var total = 0;
+    for(var i = 0; i < arr.length; i++) {
+        total += arr[i];
+    }
+    return total / arr.length;
+}
+
+function stats_standard_deviation(a, sample) {
+    var n, mean, carry, val, d;
+    n = a.length;
+
+    if (n === 0) {
+        return -1;
+    }
+    if (sample && n === 1) {
+        return -1;
+    }
+
+    mean = stats_average(a);
+    carry = 0.0;
+    for (var i = 0; i < n; i += 1) {
+        val = a[i];
+        d = val - mean;
+        carry += (d * d);
+    }
+
+    if (sample) {
+        n -= 1;
+    }
+    return Math.sqrt(carry / n);
+}
+space_calculations(data)
+```
+
+## This is `viewer.js`
+```{ojs}
+
+$(document).ready(setup);
+
+function setup() {
+    var input = document.getElementById("file");
+
+    input.addEventListener("change", function () {
+        if (this.files && this.files[0]) {
+            var myFile = this.files[0];
+            var reader = new FileReader();
+
+            reader.addEventListener('load', function (e) {
+                Papa.parse(e.target.result, {
+                    header: true,
+                    complete: function(results) {
+                        console.log("Finished:", results.data);
+                        newData(results.data);
+                    }
+                });
+            });
+
+            reader.readAsBinaryString(myFile);
+        }
+    });
+
+
+
+
+    createChartType();
+
+}
+
+function createChartType() {
+    Chart.defaults.polygonScatter = Chart.defaults.scatter;
+
+    // I think the recommend using Chart.controllers.bubble.extend({ extensions here });
+    var custom = Chart.controllers.scatter.extend({
+        draw: function(ease) {
+            // Call super method first
+            Chart.controllers.scatter.prototype.draw.call(this, ease);
+
+
+            console.log('printing dataset');
+            console
+            // Now we can do some custom drawing for this dataset. Here we'll draw a red box around the first point in each dataset
+            var meta = this.getMeta();
+
+
+            if (meta.data.length > 0) {
+                var ctx = this.chart.chart.ctx;
+                ctx.save();
+                ctx.strokeStyle = meta.data[0]._options._borderColor;
+                ctx.fillStyle = meta.data[0]._options._backgroundColor;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                
+                ctx.moveTo(meta.data[0]._view.x, meta.data[0]._view.y);
+                if (meta.data.length > 1) {
+                    ctx.lineTo(meta.data[1]._view.x, meta.data[1]._view.y);
+                    if (meta.data.length > 2) {
+                        ctx.lineTo(meta.data[2]._view.x, meta.data[2]._view.y);
+                    }
+                }
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+            }
+
+
+        }
+    });
+
+    // Stores the controller so that the chart initialization routine can look it up with
+    // Chart.controllers[type]
+    Chart.controllers.polygonScatter = custom;
+}
+
+var loadedId = null;
+var loadedData = null;
+var stimuli = [];
+var participants = [];
+
+function newData(data) {
+
+    loadedData = data;
+    stimuli = [];
+    participants = [];
+
+    //count stimuli and participants
+    for (var i = 0; i < data.length; i += 1) {
+        var s = data[i].stimulus;
+        var p = data[i].session_id;
+
+        if (stimuli.indexOf(s) === -1 && s) { stimuli.push(s); }
+        if (participants.indexOf(p) === -1 && p) { participants.push(p); }
+    }
+
+    participants.sort();
+
+    $('#tags').autocomplete({
+        source: participants,
+        select: function(event, ui) {
+            $('#tags').val(ui.item.value);
+            updateGraphs();
+        }
+    });
+
+    $('#submit-id').click(updateGraphs);
+
+    $('#next').click(function() {
+        var i = participants.indexOf(loadedId);
+
+        if (i !== -1 && i < (participants.length - 1)) {
+            $('#tags').val(participants[i + 1]);
+            updateGraphs();
+        }
+    });
+
+    $('#back').click(function() {
+        var i = participants.indexOf(loadedId);
+
+        if (i !== -1 && i > 0) {
+            $('#tags').val(participants[i - 1]);
+            updateGraphs();
+        }
+    });
+
+    $('#tags').val(participants[0]);
+    updateGraphs();
+
+}
+
+function getParticipantData(id) {
+    var participantsData = [];
+    for (var i = 0; i < loadedData.length; i += 1) {
+        var p = loadedData[i].session_id;
+
+        if (p == id) {
+            participantsData.push(loadedData[i]);
+        }
+    }
+    return participantsData;
+}
+
+function updateGraphs() {
+    loadedId = $('#tags').val();
+    var data = getParticipantData(loadedId);
+
+    var calcs = space_calculations(data);
+
+    $('#ss_score').html(calcs.ss_score.toFixed(2));
+    $('#valid_points').html(calcs.n_valid_scores);
+    $('#x_mean').html(calcs.x_mean.toFixed(2));
+    $('#y_mean').html(calcs.y_mean.toFixed(2));
+    $('#x_sd').html(calcs.x_sd.toFixed(2));
+    $('#y_sd').html(calcs.y_sd.toFixed(2));
+    drawGraph(data);
+
+
+}
+
+function prepareDatasets(stim, colours, data) {
+    var datasets = [];
+    //prepare datasets
+    for (var i = 0; i < stim.length; i += 1) {
+        datasets.push({
+            label: stim[i],
+            data: [],
+            backgroundColor: colours[i],
+            borderColor: colours[i]
+        });
+    }
+
+    //populate data
+    for (var i = 0; i < data.length; i += 1) {
+        var index = stim.indexOf(data[i].stimulus);
+        if (index !== -1) {
+            datasets[index].data.push({
+                x: data[i].x / data[i].width,
+                y: data[i].y / data[i].height
+            })
+        }
+    }
+
+    return datasets;
+}
+
+var dayChart = null;
+var numberChart = null;
+var monthChart = null;
+
+function drawGraph(data) {
+
+    console.log('drawing');
+
+    var colours = ['#e61918', '#e68019', '#e6e619', '#b3e619', '#19e619', '#19e69e', '#19e6e6', '#197fe6', '#1919e6', '#8019e6', '#e619e6', '#e61972'];
+    var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    var days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+    var numbers = ['1','2','3','4','5','6','7','8','9'];
+
+
+    var options = {
+        animation: false,
+        scales: {
+            yAxes: [{
+                ticks: {
+                    min: 0,
+                    suggestedMax: 1
+                }
+            }],
+            xAxes: [{
+                ticks: {
+                    min: 0,
+                    suggestedMax: 1
+                }
+            }]
+        },
+        legend: {display: false}
+    };
+
+    if (!dayChart) {
+        var ctx = document.getElementById('days');
+        dayChart = new Chart(ctx, {
+            type: 'polygonScatter',
+            options: options,
+            data: {
+                datasets: prepareDatasets(days, colours, data)
+            }
+        });
+    } else {
+        dayChart.data.datasets = prepareDatasets(days, colours, data);
+        dayChart.update();
+    }
+
+    $('#dayslegend').html(dayChart.generateLegend()).find('li').click(function(event) {
+        var index = $(this).index();
+        legendClick(dayChart, index, $(this)[0]);
+    });
+
+
+    if (!numberChart) {
+        var ctx = document.getElementById('numbers');
+        numberChart = new Chart(ctx, {
+            type: 'polygonScatter',
+            options: options,
+            data: {
+                datasets: prepareDatasets(numbers, colours, data)
+            }
+        });
+    } else {
+        numberChart.data.datasets = prepareDatasets(numbers, colours, data);
+        numberChart.update();
+    }
+
+    $('#numberslegend').html(numberChart.generateLegend()).find('li').click(function(event) {
+        var index = $(this).index();
+        legendClick(numberChart, index, $(this)[0]);
+    });
+
+
+    if (!monthChart) {
+        var ctx = document.getElementById('months');
+        monthChart = new Chart(ctx, {
+            type: 'polygonScatter',
+            options: options,
+            data: {
+                datasets: prepareDatasets(months, colours, data)
+            }
+        });
+    } else {
+        monthChart.data.datasets = prepareDatasets(months, colours, data);
+        monthChart.update();
+    }
+
+    $('#monthslegend').html(monthChart.generateLegend()).find('li').click(function(event) {
+        var index = $(this).index();
+        legendClick(monthChart, index, $(this)[0]);
+    });
+
+}
+
+function legendClick(chart, index, target) {
+    var meta = chart.getDatasetMeta(index);
+
+    if (meta.hidden === null) {
+        meta.hidden = !chart.data.datasets[index].hidden;
+        target.classList.add('hide');
+    } else {
+        target.classList.remove('hide');
+        meta.hidden = null;
+    }
+    chart.update();
+}
+viewer(data)
+```
+
+
+# Supplementary
+## Test with Area ($zs$)
+Now use individual z-score transformed pixel. Give rise to better results.
+
+```{r}
+## Compute triangle area by group:
+ds_Rothen <- ds_Rothen %>%  
+  group_by(ID) %>%
+  mutate(x_zs = scale(x), y_zs = scale(y)) %>%
+  group_by(ID, stimulus) %>%
+  mutate(triangle_area_zs = triangle_area(x_zs, y_zs)) %>%
+  ungroup()
+
+## Summarize By ID:
+ds_rothen_ID <- ds_Rothen %>%
+  ungroup() %>% group_by(ID,group) %>%
+  summarize(triangle_area_GA_zs = mean(triangle_area_zs)) 
+ 
+Out_area <- Comp_ROC(ds_rothen_ID, "group", "triangle_area_GA_zs","ID")
+
+knitr::kable(Out_area$ROC_properties)
+knitr::kable(Out_area$Descr_table)
+knitr::kable(Out_area$Coningency_table)
+```
+
+# System info:
+
+```{r}
+sessionInfo()
+```

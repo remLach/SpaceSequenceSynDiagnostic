@@ -1,0 +1,28 @@
+---
+title: "MosaicPlotLab"
+output: html_notebook
+---
+
+Working example:
+```{r}
+ggplot(data = flights) +
+    geom_mosaic(aes(x = product(do_you_recline, rude_to_recline), fill = do_you_recline)) 
+```
+
+Adapt to data:
+
+```{r}
+
+tmp <- Comp_ROC(ds_Q, "group", "SD_ID_ysc","ID","moreSyn")
+
+ds_Q %>%
+    mutate(test_out = SD_ID_ysc > tmp$ROC_properties$threshold) %>%
+    ggplot() +
+    geom_mosaic(aes(x = product(test_out, group), fill = test_out)) +
+    scale_fill_manual(values = c("#66C2A5","#FC8D62")) +
+    geom_mosaic_text(aes(x = product(test_out, group), label = after_stat(.wt))) +
+    theme_minimal()
+  # geom_mosaic_text(aes(x = product(group), fill = test_out))
+
+```
+

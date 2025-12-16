@@ -1,0 +1,13 @@
+INFO [2025-12-04 19:41:49] $x
+INFO [2025-12-04 19:41:49] list(ID_number, ID_days, ID_month)
+INFO [2025-12-04 19:41:49] 
+INFO [2025-12-04 19:41:49] $category.names
+INFO [2025-12-04 19:41:49] c("Set 1", "Set 2 ", "Set 3")
+INFO [2025-12-04 19:41:49] 
+INFO [2025-12-04 19:41:49] $filename
+INFO [2025-12-04 19:41:49] [1] "#14_venn_diagramm.png"
+INFO [2025-12-04 19:41:49] 
+INFO [2025-12-04 19:41:49] $output
+INFO [2025-12-04 19:41:49] [1] TRUE
+INFO [2025-12-04 19:41:49] 
+ERROR [2025-12-04 19:41:49] NAs in dataset

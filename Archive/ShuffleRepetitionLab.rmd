@@ -1,0 +1,126 @@
+---
+title: "ShuffleRepetitionLab"
+output: html_notebook
+---
+
+Ok so I always count intersections within repetitions. Now I could shuffle trials across repetitions. For example weekdays:
+
+| repetition | Weekday | Shuffle1 | Shuffle 2 |
+|------------|---------|----------|----------|
+| 1          | M       | 3        |          |
+| 1          | T       | 1        |          |
+| 1          | W       | 1        |          |
+| 1          | T       | 1        |          |
+| 1          | F       | 1        |          |
+| 1          | S       | 1        |          |
+| 1          | S       | 1        |          |
+| 2          | M       | 1        |          |
+| 2          | T       | 2        |          |
+| 2          | W       | 2        |          |
+| 2          | T       | 2        |          |
+| 2          | F       | 2        |          |
+| 2          | S       | 2        |          |
+| 2          | S       | 2        |          |
+| 3          | M       | 2        |          |
+| 3          | T       | 3        |          |
+| 3          | W       | 3        |          |
+| 3          | T       | 3        |          |
+| 3          | F       | 3        |          |
+| 3          | S       | 3        |          |
+| 3          | S       | 3        |          |
+
+
+This works:
+```{r}
+
+ds <- ds %>%
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>%
+  arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
+  ungroup() %>%
+  group_by(ID, Cond, repetition) %>%
+  mutate(StimOrder = 1:length(stimulus))
+
+
+
+# First define output matrix:
+
+n_perms <- 100
+perm_names <- paste0("n_perm", sprintf("%03d", 1:n_perms))  # X001 … X100
+
+ds_perm <-  as.data.frame(
+  matrix(NA_real_, nrow = length(unique(ds$ID)), ncol = n_perms,
+         dimnames = list(unique(ds$ID), perm_names))
+)
+
+ID_list <- unique(ds$ID)
+total = length(ID_list)*n_perms
+pb <- txtProgressBar(min = 0, max = total, style = 3)
+k <- 0
+
+
+for(Perm_n in 1:n_perms){
+  perm_here <- perm_names[Perm_n]
+  for(ID_n in 1:length(unique(ds$ID))){
+    
+    ds_ID <- ds %>%
+      filter(ID %in% ID_list[ID_n]) %>%
+      select(ID, stimulus, Cond, nLineCross, repetition, StimOrder,x,y,SelfInter_persegm)
+    
+    ds_ID <- ds_ID %>%
+      group_by(stimulus) %>%
+      mutate(repetition_perm = sample(repetition)) %>%
+      group_by(repetition_perm,Cond) %>%
+      mutate(nLineCross_perm = (count_self_intersections(x,y, verbose = FALSE)))
+    
+    if(!rownames(ds_perm[ID_n,]) == ID_list[ID_n]){
+      warning("ID names do not match")
+    }
+    
+    Out <- ds_ID %>%
+      group_by(ID,Cond,repetition_perm) %>%
+      filter(row_number() == 1) %>%
+      ungroup() %>%
+      group_by(ID) %>%
+      mutate(SelfInter_persegm_perm = mean(nLineCross_perm)) %>%
+      filter(row_number() == 1) %>%
+      select(ID, SelfInter_persegm_perm) 
+    # ds_ID$SelfInter_persegm_perm <- Out$SelfInter_persegm_perm
+    
+    ds_perm[ID_n,Perm_n] <- Out$SelfInter_persegm_perm
+    k <- k + 1
+    setTxtProgressBar(pb, k)
+  }
+}
+```
+
+```{r}
+# To see the perumnations:
+ds_ID %>%
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% 
+  arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
+  ggplot(aes(x = x, y = y, group = stimulus, label = round(SelfInter_persegm_perm,1), fill = stimulus)) +
+  geom_path(aes(x = x, y = y, group = repetition_perm), alpha = 0.2) +
+  geom_text(aes(x = median(x), y = median(y))) +
+  geom_text(aes(label = nLineCross_perm, x = median(x), y = median(y)-100)) +
+  facet_grid(Cond ~ repetition_perm) +
+  theme_minimal()
+
+ds_ID %>%
+    group_by(stimulus) %>%
+    arrange(stimulus) %>%
+    arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% 
+    arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
+    ggplot(aes(x = x, y = y, group = stimulus, label = round(SelfInter_persegm,2), fill = stimulus)) +
+    geom_path(aes(x = x, y = y, group = repetition), alpha = 0.2) +
+    geom_text(aes(x = median(x), y = median(y))) +
+    geom_text(aes(label = nLineCross, x = median(x), y = median(y)-100)) +
+    facet_grid(Cond ~ repetition) +
+    theme_minimal()
+
+
+```
+

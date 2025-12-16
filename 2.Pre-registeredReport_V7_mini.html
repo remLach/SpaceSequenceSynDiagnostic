@@ -1,0 +1,1587 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Rémy Lachelin">
+<meta name="author" content="Chhavi Sachadva">
+<meta name="author" content="Nicolas Rothen">
+<meta name="keywords" content="Space sequence synesthesia, consistency">
+<meta name="description" content="MY PAPER’S TITLE">
+
+<title>Pre-registered report: Space Sequence Synesthesia Diagnostic using form mapping</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="2.Pre-registeredReport_V7_mini_files/libs/clipboard/clipboard.min.js"></script>
+<script src="2.Pre-registeredReport_V7_mini_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="2.Pre-registeredReport_V7_mini_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="2.Pre-registeredReport_V7_mini_files/libs/quarto-html/popper.min.js"></script>
+<script src="2.Pre-registeredReport_V7_mini_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="2.Pre-registeredReport_V7_mini_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="2.Pre-registeredReport_V7_mini_files/libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="2.Pre-registeredReport_V7_mini_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="2.Pre-registeredReport_V7_mini_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="2.Pre-registeredReport_V7_mini_files/libs/bootstrap/bootstrap-967bfc029c68e8d72ac0bafb67f2687c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="_extensions/wjschne/apaquarto/apa.css">
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#abstract" id="toc-abstract" class="nav-link active" data-scroll-target="#abstract">Abstract:</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#general-methods" id="toc-general-methods" class="nav-link" data-scroll-target="#general-methods">General Methods</a>
+  <ul class="collapse">
+  <li><a href="#materials" id="toc-materials" class="nav-link" data-scroll-target="#materials">Materials</a></li>
+  <li><a href="#procedure" id="toc-procedure" class="nav-link" data-scroll-target="#procedure">Procedure</a></li>
+  </ul></li>
+  <li><a href="#phase-i-methods" id="toc-phase-i-methods" class="nav-link" data-scroll-target="#phase-i-methods"><em>Phase I</em> Methods</a>
+  <ul class="collapse">
+  <li><a href="#phase-i-merge-and-prepare-data" id="toc-phase-i-merge-and-prepare-data" class="nav-link" data-scroll-target="#phase-i-merge-and-prepare-data"><em>Phase I</em>: Merge and prepare data</a></li>
+  <li><a href="#phase-i.-population" id="toc-phase-i.-population" class="nav-link" data-scroll-target="#phase-i.-population"><em>Phase I.</em> Population</a></li>
+  <li><a href="#phase-i.-analysis" id="toc-phase-i.-analysis" class="nav-link" data-scroll-target="#phase-i.-analysis"><em>Phase I</em>. Analysis</a></li>
+  </ul></li>
+  <li><a href="#phase-i.-results-reproduce" id="toc-phase-i.-results-reproduce" class="nav-link" data-scroll-target="#phase-i.-results-reproduce"><em>Phase I.</em> Results Reproduce</a></li>
+  <li><a href="#replicated-features" id="toc-replicated-features" class="nav-link" data-scroll-target="#replicated-features">Replicated features</a>
+  <ul class="collapse">
+  <li><a href="#triangle-area-consistency" id="toc-triangle-area-consistency" class="nav-link" data-scroll-target="#triangle-area-consistency">Triangle area Consistency</a></li>
+  <li><a href="#perimeter-pixel" id="toc-perimeter-pixel" class="nav-link" data-scroll-target="#perimeter-pixel">Perimeter (<span class="math inline">pixel</span>):</a></li>
+  <li><a href="#area-to-perimeter" id="toc-area-to-perimeter" class="nav-link" data-scroll-target="#area-to-perimeter">Area to Perimeter</a></li>
+  </ul></li>
+  <li><a href="#phase-i.-results-novel-features" id="toc-phase-i.-results-novel-features" class="nav-link" data-scroll-target="#phase-i.-results-novel-features"><em>Phase I.</em> Results: Novel features</a>
+  <ul class="collapse">
+  <li><a href="#spread" id="toc-spread" class="nav-link" data-scroll-target="#spread">Spread</a></li>
+  <li><a href="#segment-self-intersection" id="toc-segment-self-intersection" class="nav-link" data-scroll-target="#segment-self-intersection">Segment self-intersection</a></li>
+  <li><a href="#segments-with-sf" id="toc-segments-with-sf" class="nav-link" data-scroll-target="#segments-with-sf">Segments (with sf)</a></li>
+  <li><a href="#polygon-based-geometries" id="toc-polygon-based-geometries" class="nav-link" data-scroll-target="#polygon-based-geometries">Polygon based geometries</a>
+  <ul class="collapse">
+  <li><a href="#polygon-area" id="toc-polygon-area" class="nav-link" data-scroll-target="#polygon-area">Polygon area</a></li>
+  <li><a href="#polygon-perimeter" id="toc-polygon-perimeter" class="nav-link" data-scroll-target="#polygon-perimeter">Polygon perimeter</a></li>
+  <li><a href="#areaperimeter" id="toc-areaperimeter" class="nav-link" data-scroll-target="#areaperimeter">Area/perimeter</a></li>
+  <li><a href="#polygon-simplicity" id="toc-polygon-simplicity" class="nav-link" data-scroll-target="#polygon-simplicity">Polygon simplicity</a></li>
+  <li><a href="#topological-validity-structure" id="toc-topological-validity-structure" class="nav-link" data-scroll-target="#topological-validity-structure">Topological validity Structure</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#permutations" id="toc-permutations" class="nav-link" data-scroll-target="#permutations">Permutations</a></li>
+  <li><a href="#combine-valid-and-area-criteria" id="toc-combine-valid-and-area-criteria" class="nav-link" data-scroll-target="#combine-valid-and-area-criteria">Combine valid and area criteria</a></li>
+  <li><a href="#correlations" id="toc-correlations" class="nav-link" data-scroll-target="#correlations">Correlations</a>
+  <ul class="collapse">
+  <li><a href="#permute-correlations" id="toc-permute-correlations" class="nav-link" data-scroll-target="#permute-correlations">Permute correlations</a></li>
+  </ul></li>
+  <li><a href="#compare-all-features" id="toc-compare-all-features" class="nav-link" data-scroll-target="#compare-all-features">Compare all features:</a>
+  <ul class="collapse">
+  <li><a href="#compute-all-roc" id="toc-compute-all-roc" class="nav-link" data-scroll-target="#compute-all-roc">Compute all ROC</a></li>
+  </ul></li>
+  <li><a href="#summaries" id="toc-summaries" class="nav-link" data-scroll-target="#summaries">Summaries</a>
+  <ul class="collapse">
+  <li><a href="#summary-table" id="toc-summary-table" class="nav-link" data-scroll-target="#summary-table">Summary table:</a></li>
+  <li><a href="#summary-plot" id="toc-summary-plot" class="nav-link" data-scroll-target="#summary-plot">Summary plot</a></li>
+  <li><a href="#by-questionnaire-score" id="toc-by-questionnaire-score" class="nav-link" data-scroll-target="#by-questionnaire-score">By questionnaire score</a></li>
+  </ul></li>
+  <li><a href="#phase-ii-methods" id="toc-phase-ii-methods" class="nav-link" data-scroll-target="#phase-ii-methods"><em>Phase II</em> Methods</a></li>
+  <li><a href="#phase-ii-materials" id="toc-phase-ii-materials" class="nav-link" data-scroll-target="#phase-ii-materials"><em>Phase II</em> Materials:</a></li>
+  <li><a href="#phase-ii-planned-population" id="toc-phase-ii-planned-population" class="nav-link" data-scroll-target="#phase-ii-planned-population"><em>Phase II</em> Planned population</a></li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="2.Pre-registeredReport_V7_mini.pdf"><i class="bi bi-file-pdf"></i>PDF (apaquarto)</a></li><li><a href="2.Pre-registeredReport_V7_mini.pdf"><i class="bi bi-file-pdf"></i>Typst (apaquarto)</a></li></ul></div></nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+</div>
+<main class="content" id="quarto-document-content">
+
+
+
+
+<br>
+
+<br>
+
+<section id="title" class="level1 title unnumbered unlisted">
+<h1 class="title unnumbered unlisted">Pre-registered report: Space Sequence Synesthesia Diagnostic using form mapping</h1>
+<div class="Author">
+<br>
+
+<p>Rémy Lachelin, Chhavi Sachadva, and Nicolas Rothen</p>
+<p>Psychology, Uni Distance Suisse</p>
+</div>
+<br>
+
+<br>
+
+</section>
+<section id="author-note" class="level1 unnumbered unlisted AuthorNote">
+<h1 class="unnumbered unlisted AuthorNote">Author Note</h1>
+<p>Rémy Lachelin <img src="_extensions/wjschne/apaquarto/ORCID-iD_icon-vector.svg" id="orchid" class="img-fluid" style="width:4.23mm" alt="Orcid ID Logo: A green circle with white letters ID"> <a href="https://orcid.org/0000-0000-0000-0000">https://orcid.org/0000-0000-0000-0000</a></p>
+<p>Chhavi Sachadva <img src="_extensions/wjschne/apaquarto/ORCID-iD_icon-vector.svg" id="orchid" class="img-fluid" style="width:4.23mm" alt="Orcid ID Logo: A green circle with white letters ID"> <a href="https://orcid.org/0000-0000-0000-0000">https://orcid.org/0000-0000-0000-0000</a></p>
+<p>Nicolas Rothen <img src="_extensions/wjschne/apaquarto/ORCID-iD_icon-vector.svg" id="orchid" class="img-fluid" style="width:4.23mm" alt="Orcid ID Logo: A green circle with white letters ID"> <a href="https://orcid.org/0000-0000-0000-0000">https://orcid.org/0000-0000-0000-0000</a></p>
+<p>Correspondence concerning this article should be addressed to Rémy Lachelin, Psychology, Uni Distance Suisse, Brig road, Brig, Valais 0, Email: <a href="mailto:remy.lachlein@fernuni.ch">remy.lachlein@fernuni.ch</a></p>
+<br>
+</section>
+<section id="abstract" class="level1 unnumbered unlisted AuthorNote">
+<h1 class="unnumbered unlisted AuthorNote">Abstract</h1>
+<div class="AbstractFirstParagraph">
+<p>This is my abstract.</p>
+</div>
+<p><em>Keywords</em>: Space sequence synesthesia, consistency</p>
+<br>
+</section>
+<section id="firstheader" class="level1 title unnumbered unlisted">
+<h1 class="title unnumbered unlisted">Pre-registered report: Space Sequence Synesthesia Diagnostic using form mapping</h1>
+</section>
+<section id="abstract" class="level1">
+<h1>Abstract:</h1>
+<p>Space sequence synesthesia is the phenomenon of representing ordered visual symbols in particular spatial positions. Not everyone has space sequence synesthesia. Existent tools to detect space sequence synethesia are based on self-reports (i.e.&nbsp;questionnaire) and response consistency. Consistency can be derived on the stimulus level, i.e.&nbsp;spatial deviation in time, or on the form level, i.e.&nbsp;geometrical properties. In this pre-registered report, available data from 467 participants is used to explore new tools to discriminate syntheses from controls. Conceptually, the novel criteria aim at taking advantage of the inducer’s ordinality that create synesthetic forms. For this aim, we harness a geography package to extract geometrical features to use as a test for synethesia. Reciever Operator Characteristics are used to select the features that best classify the groups. In a second phase, we will test the predictive power of the new diagnostic features on an additional dataset that has yet to be collected.</p>
+</section>
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>Sequence Space Synesthesia (SSS) is defined as representing ordered sequences in particular spatial positions. For example, numbers (the <em>inducers</em>) are perceived as arranged particular positions in space (the <em>concurrent</em>), also called number forms <span class="citation" data-cites="galton1880">(<a href="#ref-galton1880" role="doc-biblioref">Galton, 1880</a>)</span>. In addition to numbers, SSS might also perceive weekdays and months in particular arrangement in space.</p>
+<p>Estimated prevalence for SSS in the general population spans between 4.4 % <span class="citation" data-cites="brang2013">(<a href="#ref-brang2013" role="doc-biblioref">Brang et al., 2013</a>)</span> and 14.2 % <span class="citation" data-cites="seron1992">(<a href="#ref-seron1992" role="doc-biblioref">Seron et al., 1992</a>)</span>, see also <span class="citation" data-cites="ward2018 sagiv2006">(<a href="#ref-sagiv2006" role="doc-biblioref">Sagiv et al., 2006</a>; <a href="#ref-ward2018" role="doc-biblioref">Ward et al., 2018</a>)</span>. Hence a reliable diagnostic tool to detect SSS would also be useful to investigate SSS. SSS forms are idiosyncratic, meaning they each individual might have a different form. Idiosyncrasy makes it difficult to diagnose SSS.</p>
+<p>Diagnostic depends on the definition of the conditions under investigation. A strict definition of Synestheesia requires five different criteria <span class="citation" data-cites="deroy2013">(<a href="#ref-deroy2013" role="doc-biblioref">Deroy &amp; Spence, 2013</a>)</span>. <em>Automaticity</em>: the <em>inducer</em> automatically triggers the <em>concurrent</em>. For example 10 might automatically be the number in the highest position. <em>Unidirectionality</em>: while the <em>inducer</em> triggers the concurrent, the concurrent does not trigger the inducer. Hence the highest position does not trigger the number 10. <em>Consciousness</em>: The concurrent is consciously perceived. <em>Developmentally early</em>: the experience was already present during childhood. <em>Consistency</em>: the inducer-concurrent pair remains stable in time. For example, the particular position triggered by 10 is stable in time. Consistency is a well suited charachteristic of synesthesia to develop a diagnostic tool. For esample a consistency test is used to diagnose grapheme-colour synesthesia <span class="citation" data-cites="rothen2013a">(<a href="#ref-rothen2013a" role="doc-biblioref">Rothen et al., 2013a</a>)</span>. While the original groups of synesthetes are mostly generated by self-reports.</p>
+<p>Hence given consistency, similar concurrent responses triggered by the same inducers can be used as a marker for authentic SSS. Consistency test have become golden standart for colour-grapheme synesthesia, where an inducer is presented (i.e.&nbsp;letters of the alphabet) and the participant is requested to selected the concurrent colour, using a colour picker. Individual consistency is then calculated as the distance between repeated colour responses to the same inducers. Interestingly, the best colour space to detect colour-grapheme synesthesia is CIE*LUV, a colour space developed to be isoform to human perception <span class="citation" data-cites="rothen2013">(<a href="#ref-rothen2013" role="doc-biblioref">Rothen et al., 2013b</a>)</span>. Analogously to grapheme-colour synesthetes, consistency test can be used to diagnose SSS. In that tasks, it is repeatedly asked to report the position of the inducers on a screen. The total area between the responses of same inducer (i.e.&nbsp;a triangle if repeated three times) is then used as characteristic to diagnose SSS. The rationale being that consistent responses would lead to smaller area than inconsistent ones <span class="citation" data-cites="rothen2016">(<a href="#ref-rothen2016" role="doc-biblioref">Rothen et al., 2016</a>)</span>. This method resembles how number forms are describe in the single case study <span class="citation" data-cites="piazza2006">(<a href="#ref-piazza2006" role="doc-biblioref">Piazza et al., 2006</a>)</span>, see Experiment 1.</p>
+<p>However disciminating synesthesia using total area has several limitations. For example high consistency by non-synesthetes can be achieved by giving all responses on the same screen position (i.e.&nbsp;false positive). Moreover, this kind of criteria might bias the diagnosis to include synesthetes with straight lines which leads to less variability than more complex forms<span class="citation" data-cites="Ward">(<a href="#ref-Ward" role="doc-biblioref"><strong>Ward?</strong></a>)</span>.</p>
+<p>The goal of the present registered report is to first identify new features characterizing synesthetes responses based on already available datasets and test the best working features on a future dataset. The new features are designed to take advantage of two properties of synesthetic responses that have not been included in precedent consistency tests. First, sequentiality on top of single inducer responses the ordered position between subsequent induces is important. For example the relative position of August and the other months. From numerical cognition, ordinality has been acknowledged to be an important semantic property of numbers, also given their sequential acquisition (i.e.&nbsp;1 is learned before 2). Second, thee particular synthetic forms of the sequential spatial location. These forms might have geometrical properties. For example months of the year might be represented circularly (as already described by <span class="citation" data-cites="galton1880">(<a href="#ref-galton1880" role="doc-biblioref">Galton, 1880</a>)</span> for numbers).</p>
+<p>To take advantage of sequential and geometrical synesthetic forms, we harnessed a geo-spatial package<span class="citation" data-cites="pebesma2018">(<a href="#ref-pebesma2018" role="doc-biblioref">Pebesma, 2018</a>)</span> to extract geometrical features from participant x and y coordinate responses. This packages allows for example to build string or polygons for each repetition and compare different geometrical features. Those individual geometrical features are then compared using Receiver Operator Characteristics (ROC) between individuals grouped as synesthets and control. In the present <em>phase I</em>,we compare ROC on three merged derivation datasets using the same task on SSS <span class="citation" data-cites="rothen2016 vanpetersen2020a">Ward (<a href="#ref-ward" role="doc-biblioref">n.d.-a</a>)</span>. In future <em>phase II</em>, we compare whether the features selected to diagnose SSS in <em>phase I,</em> on a validation dataset that is not yet acquired (registered report on the open science foundation: <a href="https://osf.io/9efjb/" class="uri">https://osf.io/9efjb/</a><strong>).</strong></p>
+</section>
+<section id="general-methods" class="level1">
+<h1>General Methods</h1>
+<p><em>Phase I: present analyses</em>. We merge three available dataset and compared available diagnostic criteria across datasets using Receiver Operator Characteristics (ROC) for different approaches. A first approach of diagnostic criteria based on a stimulus level consistency. The rationale being that synesthetes should produce more consistent (i.e.&nbsp;less variable) across repetitions. Such criteria include area between repetitions<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, standard deviation of responses <span class="citation" data-cites="ward">(<a href="#ref-ward" role="doc-biblioref">Ward, n.d.-a</a>)</span> or permuting the responses to compare each responses to a permuted chance level Root <span class="citation" data-cites="root2021">(<a href="#ref-root2021" role="doc-biblioref">Root et al., 2021</a>)</span>. The second suggested approach is to look at the geometrical form generated by the responses across repetitions. The rationale here is that synesthetic responses should have geometrical feature that differ from controls. For example, several SSS representations for months are circular. For the form</p>
+<p>Third, we compare whether the features lead to similar ROC characteristics across the different sets (i.e.&nbsp;for months, weeks and numbers). Fourth, we compute new candidate geometrical features that could be used to diagnose SS. Finally we summarize and compare all ROC and select the best features that class synesthetes from control with the merged dataset.</p>
+<p><em>Phase II: future analyses.</em> On a future dataset to be collected using the same task, we will compare the predictive power of the selected features using ROC.</p>
+<section id="materials" class="level2">
+<h2 data-anchor-id="materials">Materials</h2>
+<p>A the exception of <span class="citation" data-cites="rothen2016">(<a href="#ref-rothen2016" role="doc-biblioref">Rothen et al., 2016</a>)</span> (see <a href="https://osf.io/6hq94/files/osfstorage" class="uri">https://osf.io/6hq94/files/osfstorage</a>), the data from <span class="citation" data-cites="ward vanpetersen2020a">(<a href="#ref-vanpetersen2020a" role="doc-biblioref">Van Petersen et al., 2020a</a>; <a href="#ref-ward" role="doc-biblioref">Ward, n.d.-a</a>)</span> were collected online. The 29 inducers were: the 12 months of a year, 7 days of the week and 10 numbers (i.e.&nbsp;hindo-arabic numerals from 0 to 9). <span class="citation" data-cites="vanpetersen2020a">(<a href="#ref-vanpetersen2020a" role="doc-biblioref">Van Petersen et al., 2020a</a>)</span> Also presented 50 and 100 numerals, which we excluded here. <span class="citation" data-cites="ward">(<a href="#ref-ward" role="doc-biblioref">Ward, n.d.-a</a>)</span> data is collected using the Syntoolkit.</p>
+</section>
+<section id="procedure" class="level2">
+<h2 data-anchor-id="procedure">Procedure</h2>
+<p>The details for each procedure is described in each respective article <span class="citation" data-cites="rothen2016 ward vanpetersen2020a">(<a href="#ref-rothen2016" role="doc-biblioref">Rothen et al., 2016</a>; <a href="#ref-vanpetersen2020a" role="doc-biblioref">Van Petersen et al., 2020a</a>; <a href="#ref-ward" role="doc-biblioref">Ward, n.d.-a</a>)</span>, here we describe the common task.</p>
+<p>Each participant is presented with one one inducer at a time at the center of a otherwise white screen. The participant is instructed to click at the screen position that they visualize them. Inducers order is randomized and each inducer is repeated three times.</p>
+<p><em>The order of the stimuli was randomized, but such that no stimulus was repeated until the previous batch of unique stimuli (N = 29) had been presented.</em></p>
+<p>Importantly, while the three datasets inclucded in <em>phase I</em> include three repetitions per stimuli, the <em>phase II</em> will use four repetition per stimuli. Hence the cut-offs will be designed to be scalable to different number of repetitions and stimulus.</p>
+</section>
+</section>
+<section id="phase-i-methods" class="level1">
+<h1><em>Phase I</em> Methods</h1>
+<section id="phase-i-merge-and-prepare-data" class="level2">
+<h2 data-anchor-id="phase-i-merge-and-prepare-data"><em>Phase I</em>: Merge and prepare data</h2>
+<p>We merged three datasets: <span class="citation" data-cites="rothen2016">Rothen et al. (<a href="#ref-rothen2016" role="doc-biblioref">2016</a>)</span>],<span class="citation" data-cites="ward">(<a href="#ref-ward" role="doc-biblioref">Ward, n.d.-a</a>)</span> (from: <a href="#0" class="uri">https://osf.io/p5xsd/files/osfstorage</a>) and <span class="citation" data-cites="vanpetersen2020">(<a href="#ref-vanpetersen2020" role="doc-biblioref">Van Petersen et al., 2020b</a>)</span>. To match the other datasets, stimuli form <span class="citation" data-cites="vanpetersen2020">(<a href="#ref-vanpetersen2020" role="doc-biblioref">Van Petersen et al., 2020b</a>)</span> are translated from dutch to English and for the stimuli, only numbers from 0 to 9 are kept (excluding 50 and 100). The x and y coordinates were then separately normalized (z-score) per participant.</p>
+<p>Invalid responses were additinally set as NaN if a participan’ts coordinate were the same across conditions and repetitions. Then, we excluded 35 participants who had less than 50 % of valid responses per conditions and repetitions. We also manually adjusted the screen size from some participants since those values changed across the experiment.</p>
+</section>
+<section id="phase-i.-population" class="level2">
+<h2 data-anchor-id="phase-i.-population"><em>Phase I.</em> Population</h2>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">dataSource</th>
+<th style="text-align: right;">Ctl</th>
+<th style="text-align: right;">Syn</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">PeterCor</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">13</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Rothen</td>
+<td style="text-align: right;">37</td>
+<td style="text-align: right;">22</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ward</td>
+<td style="text-align: right;">204</td>
+<td style="text-align: right;">249</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>For all the three datasets, the synesthetes were self-reported.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Source</th>
+<th></th>
+<th>Synesthetes</th>
+<th></th>
+<th></th>
+<th>Controls</th>
+<th></th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>N</td>
+<td>Age</td>
+<td>n females</td>
+<td>N</td>
+<td>Age</td>
+<td>n females</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><span class="citation" data-cites="rothen2016">(<a href="#ref-rothen2016" role="doc-biblioref">Rothen et al., 2016</a>)</span></td>
+<td>33</td>
+<td>23.1</td>
+<td>24</td>
+<td>37</td>
+<td>28.2</td>
+<td>27</td>
+<td>70</td>
+</tr>
+<tr class="odd">
+<td><span class="citation" data-cites="vanpetersen2020">(<a href="#ref-vanpetersen2020" role="doc-biblioref">Van Petersen et al., 2020b</a>)</span></td>
+<td>23</td>
+<td>23.22</td>
+<td>20</td>
+<td>21</td>
+<td>21.57</td>
+<td>19</td>
+<td>44</td>
+</tr>
+<tr class="even">
+<td><span class="citation" data-cites="wardb">(<a href="#ref-wardb" role="doc-biblioref">Ward, n.d.-b</a>)</span></td>
+<td>252</td>
+<td>37.21</td>
+<td>202</td>
+<td>215</td>
+<td>19.90</td>
+<td>178</td>
+<td>467</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Merged</td>
+<td>308</td>
+<td></td>
+<td></td>
+<td>273</td>
+<td></td>
+<td></td>
+<td>557</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="phase-i.-analysis" class="level2">
+<h2 data-anchor-id="phase-i.-analysis"><em>Phase I</em>. Analysis</h2>
+<p>First, we replicate consistency methods found in the literature using the same task (<span class="citation" data-cites="rothen2016 ward vanpetersen2020a root2021">(<a href="#ref-root2021" role="doc-biblioref">Root et al., 2021</a>; <a href="#ref-rothen2016" role="doc-biblioref">Rothen et al., 2016</a>; <a href="#ref-vanpetersen2020a" role="doc-biblioref">Van Petersen et al., 2020a</a>; <a href="#ref-ward" role="doc-biblioref">Ward, n.d.-a</a>)</span>) and compare the results.</p>
+<p>Second, we extract features based on the form. (C) We harness a geography package to compute segment based features (D) We compute polygon based features. (E) Convex Hull (F) Angles.</p>
+</section>
+</section>
+<section id="phase-i.-results-reproduce" class="level1">
+<h1><em>Phase I.</em> Results Reproduce</h1>
+</section>
+<section id="replicated-features" class="level1">
+<h1>Replicated features</h1>
+<section id="triangle-area-consistency" class="level2">
+<h2 data-anchor-id="triangle-area-consistency">Triangle area Consistency</h2>
+<p><strong>Definition</strong>: Calculating consistency. Each stimulus is represented by three xy coordinates - (x1, y1), (x2, y2), (x3, y3) - from the three repetitions. For each stimulus, the area of the triangle bounded by the coordinates is calculated as follows:<br>
+<span class="math inline">Area = (x1y2 + x2y3 + x3y1 – x1y3 – x2y1 – x3y2) / 2</span></p>
+</section>
+<section id="perimeter-pixel" class="level2">
+<h2 data-anchor-id="perimeter-pixel">Perimeter (<span class="math inline">pixel</span>):</h2>
+</section>
+<section id="area-to-perimeter" class="level2">
+<h2 data-anchor-id="area-to-perimeter">Area to Perimeter</h2>
+</section>
+</section>
+<section id="phase-i.-results-novel-features" class="level1">
+<h1><em>Phase I.</em> Results: Novel features</h1>
+<section id="spread" class="level2">
+<h2 data-anchor-id="spread">Spread</h2>
+</section>
+<section id="segment-self-intersection" class="level2">
+<h2 data-anchor-id="segment-self-intersection">Segment self-intersection</h2>
+<p>We calculated the number of self intersection for each segments sperately for repetitions and conditions. For each participant we then compute the average of self intersections per conditions and repetitions.</p>
+</section>
+<section id="segments-with-sf" class="level2">
+<h2 data-anchor-id="segments-with-sf">Segments (with sf)</h2>
+<p>We will take advantage of the <code>sf</code> package and connect the x and y coordinates of ordered inducer with a segment. Sf hates NaN’s. Either convert them to 0 (as originally) or remove them. I’ll start converting to 0.</p>
+</section>
+<section id="polygon-based-geometries" class="level2">
+<h2 data-anchor-id="polygon-based-geometries">Polygon based geometries</h2>
+<section id="polygon-area" class="level3">
+<h3 data-anchor-id="polygon-area">Polygon area</h3>
+</section>
+<section id="polygon-perimeter" class="level3">
+<h3 data-anchor-id="polygon-perimeter">Polygon perimeter</h3>
+</section>
+<section id="areaperimeter" class="level3">
+<h3 data-anchor-id="areaperimeter">Area/perimeter</h3>
+</section>
+<section id="polygon-simplicity" class="level3">
+<h3 data-anchor-id="polygon-simplicity">Polygon simplicity</h3>
+</section>
+<section id="topological-validity-structure" class="level3">
+<h3 data-anchor-id="topological-validity-structure">Topological validity Structure</h3>
+<p>From the package description: <em>“For projected geometries, st_make_valid uses the lwgeom_makevalid method also used by the PostGIS command ST_makevalid if the GEOS version linked to is smaller than 3.8.0, and otherwise the version shipped in GEOS; for geometries having ellipsoidal coordinates s2::s2_rebuild is being used.”</em> From <a href="https://postgis.net/docs/ST_IsValid.html" class="uri">https://postgis.net/docs/ST_IsValid.html</a>: <em>value is well-formed and valid in 2D according to the OGC rules.</em> (Open Geopsatial Consotrtium)</p>
+</section>
+</section>
+</section>
+<section id="permutations" class="level1">
+<h1>Permutations</h1>
+<p>Until now the form based features are computed by chronologically ordered repetitions. For example, Monday is repeated three times per ID. The coordinates for Monday presented the first time will always be used to form the segment/polygon with the Tuesday presented the first time. However, for consistency, this should be independent from chronological order. To circumvent this, we can permute the repetitions per conditions. I predict the permuted averages of the same features should give rise to better AUC. Since these are time consuming I will only apply permutations on the criteria that are at stake:<br>
+topological validity.</p>
+</section>
+<section id="combine-valid-and-area-criteria" class="level1">
+<h1>Combine valid and area criteria</h1>
+<p>What if we combined consistency and permuted topological validity?</p>
+</section>
+<section id="correlations" class="level1">
+<h1>Correlations</h1>
+<section id="permute-correlations" class="level2">
+<h2 data-anchor-id="permute-correlations">Permute correlations</h2>
+</section>
+</section>
+<section id="compare-all-features" class="level1">
+<h1>Compare all features:</h1>
+<section id="compute-all-roc" class="level2">
+<h2 data-anchor-id="compute-all-roc">Compute all ROC</h2>
+</section>
+</section>
+<section id="summaries" class="level1">
+<h1>Summaries</h1>
+<section id="summary-table" class="level2">
+<h2 data-anchor-id="summary-table">Summary table:</h2>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>(#tab:summaryROC)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Feature</th>
+<th style="text-align: left;">AUC</th>
+<th style="text-align: left;">threshold</th>
+<th style="text-align: left;">sensitivity</th>
+<th style="text-align: left;">specificity</th>
+<th style="text-align: left;">ppv</th>
+<th style="text-align: left;">npv</th>
+<th style="text-align: left;">ci_low</th>
+<th style="text-align: left;">ci_high</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">GLMValid_area_zs</td>
+<td style="text-align: left;">81.85</td>
+<td style="text-align: left;">-0.24</td>
+<td style="text-align: left;">80.28</td>
+<td style="text-align: left;">72.90</td>
+<td style="text-align: left;">76.25</td>
+<td style="text-align: left;">77.33</td>
+<td style="text-align: left;">78.30</td>
+<td style="text-align: left;">85.40</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">isValid_M_perm_ID</td>
+<td style="text-align: left;">81.17</td>
+<td style="text-align: left;">0.14</td>
+<td style="text-align: left;">73.94</td>
+<td style="text-align: left;">76.34</td>
+<td style="text-align: left;">77.21</td>
+<td style="text-align: left;">72.99</td>
+<td style="text-align: left;">77.57</td>
+<td style="text-align: left;">84.77</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">triangle_perim_GA_zs</td>
+<td style="text-align: left;">80.47</td>
+<td style="text-align: left;">1.92</td>
+<td style="text-align: left;">74.38</td>
+<td style="text-align: left;">76.72</td>
+<td style="text-align: left;">77.41</td>
+<td style="text-align: left;">73.63</td>
+<td style="text-align: left;">76.66</td>
+<td style="text-align: left;">84.27</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">isValid_Med_perm_ID</td>
+<td style="text-align: left;">79.41</td>
+<td style="text-align: left;">0.17</td>
+<td style="text-align: left;">66.90</td>
+<td style="text-align: left;">80.15</td>
+<td style="text-align: left;">78.51</td>
+<td style="text-align: left;">69.08</td>
+<td style="text-align: left;">75.75</td>
+<td style="text-align: left;">83.07</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Corr_M_perm_ID</td>
+<td style="text-align: left;">78.68</td>
+<td style="text-align: left;">0.51</td>
+<td style="text-align: left;">76.41</td>
+<td style="text-align: left;">71.04</td>
+<td style="text-align: left;">74.32</td>
+<td style="text-align: left;">73.31</td>
+<td style="text-align: left;">74.80</td>
+<td style="text-align: left;">82.55</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Corr_Med_perm_ID</td>
+<td style="text-align: left;">78.68</td>
+<td style="text-align: left;">0.48</td>
+<td style="text-align: left;">79.23</td>
+<td style="text-align: left;">67.95</td>
+<td style="text-align: left;">73.05</td>
+<td style="text-align: left;">74.89</td>
+<td style="text-align: left;">74.81</td>
+<td style="text-align: left;">82.55</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">GA_corr</td>
+<td style="text-align: left;">77.78</td>
+<td style="text-align: left;">0.59</td>
+<td style="text-align: left;">74.20</td>
+<td style="text-align: left;">70.92</td>
+<td style="text-align: left;">74.20</td>
+<td style="text-align: left;">70.92</td>
+<td style="text-align: left;">73.81</td>
+<td style="text-align: left;">81.76</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">isValidStruct_GA</td>
+<td style="text-align: left;">77.77</td>
+<td style="text-align: left;">0.17</td>
+<td style="text-align: left;">71.83</td>
+<td style="text-align: left;">74.43</td>
+<td style="text-align: left;">75.28</td>
+<td style="text-align: left;">70.91</td>
+<td style="text-align: left;">73.95</td>
+<td style="text-align: left;">81.59</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">areatoPerim_GA</td>
+<td style="text-align: left;">75.59</td>
+<td style="text-align: left;">0.14</td>
+<td style="text-align: left;">58.80</td>
+<td style="text-align: left;">84.35</td>
+<td style="text-align: left;">80.29</td>
+<td style="text-align: left;">65.38</td>
+<td style="text-align: left;">71.55</td>
+<td style="text-align: left;">79.63</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SelfInter_persegm</td>
+<td style="text-align: left;">73.20</td>
+<td style="text-align: left;">1.17</td>
+<td style="text-align: left;">79.58</td>
+<td style="text-align: left;">61.07</td>
+<td style="text-align: left;">68.90</td>
+<td style="text-align: left;">73.39</td>
+<td style="text-align: left;">68.91</td>
+<td style="text-align: left;">77.49</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">rep_area_GAzs</td>
+<td style="text-align: left;">72.35</td>
+<td style="text-align: left;">0.08</td>
+<td style="text-align: left;">76.41</td>
+<td style="text-align: left;">67.56</td>
+<td style="text-align: left;">71.85</td>
+<td style="text-align: left;">72.54</td>
+<td style="text-align: left;">67.85</td>
+<td style="text-align: left;">76.86</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">areaPoly_GA</td>
+<td style="text-align: left;">70.53</td>
+<td style="text-align: left;">1.29</td>
+<td style="text-align: left;">61.62</td>
+<td style="text-align: left;">69.47</td>
+<td style="text-align: left;">68.63</td>
+<td style="text-align: left;">62.54</td>
+<td style="text-align: left;">66.22</td>
+<td style="text-align: left;">74.84</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">isSimple_GA</td>
+<td style="text-align: left;">70.41</td>
+<td style="text-align: left;">0.28</td>
+<td style="text-align: left;">59.86</td>
+<td style="text-align: left;">72.14</td>
+<td style="text-align: left;">69.96</td>
+<td style="text-align: left;">62.38</td>
+<td style="text-align: left;">66.10</td>
+<td style="text-align: left;">74.71</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">M_spread_y</td>
+<td style="text-align: left;">67.80</td>
+<td style="text-align: left;">85.30</td>
+<td style="text-align: left;">75.35</td>
+<td style="text-align: left;">62.21</td>
+<td style="text-align: left;">68.37</td>
+<td style="text-align: left;">69.96</td>
+<td style="text-align: left;">63.13</td>
+<td style="text-align: left;">72.47</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">repAreatoPerim</td>
+<td style="text-align: left;">66.44</td>
+<td style="text-align: left;">29.53</td>
+<td style="text-align: left;">69.75</td>
+<td style="text-align: left;">61.45</td>
+<td style="text-align: left;">65.99</td>
+<td style="text-align: left;">65.45</td>
+<td style="text-align: left;">61.68</td>
+<td style="text-align: left;">71.20</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">M_spread_x</td>
+<td style="text-align: left;">63.51</td>
+<td style="text-align: left;">124.58</td>
+<td style="text-align: left;">91.90</td>
+<td style="text-align: left;">40.84</td>
+<td style="text-align: left;">62.74</td>
+<td style="text-align: left;">82.31</td>
+<td style="text-align: left;">58.74</td>
+<td style="text-align: left;">68.28</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">perim_GA</td>
+<td style="text-align: left;">61.22</td>
+<td style="text-align: left;">9.65</td>
+<td style="text-align: left;">79.23</td>
+<td style="text-align: left;">49.24</td>
+<td style="text-align: left;">62.85</td>
+<td style="text-align: left;">68.62</td>
+<td style="text-align: left;">56.31</td>
+<td style="text-align: left;">66.12</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">M_corr</td>
+<td style="text-align: left;">59.18</td>
+<td style="text-align: left;">0.20</td>
+<td style="text-align: left;">83.10</td>
+<td style="text-align: left;">37.40</td>
+<td style="text-align: left;">59.00</td>
+<td style="text-align: left;">67.12</td>
+<td style="text-align: left;">54.30</td>
+<td style="text-align: left;">64.05</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">rep_area</td>
+<td style="text-align: left;">50.40</td>
+<td style="text-align: left;">2,338.97</td>
+<td style="text-align: left;">75.35</td>
+<td style="text-align: left;">40.46</td>
+<td style="text-align: left;">57.84</td>
+<td style="text-align: left;">60.23</td>
+<td style="text-align: left;">45.31</td>
+<td style="text-align: left;">55.49</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="summary-plot" class="level2">
+<h2 data-anchor-id="summary-plot">Summary plot</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_V7_mini_files/figure-html/summaryplot-1.svg" class="img-fluid figure-img" width="624"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="by-questionnaire-score" class="level2">
+<h2 data-anchor-id="by-questionnaire-score">By questionnaire score</h2>
+<section id="roc-for-subsambled-data-from-ward" class="level4">
+<h4 data-anchor-id="roc-for-subsambled-data-from-ward">ROC for subsambled data (from Ward).</h4>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>(#tab:unnamed-chunk-11)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Feature</th>
+<th style="text-align: left;">AUC</th>
+<th style="text-align: left;">threshold</th>
+<th style="text-align: left;">sensitivity</th>
+<th style="text-align: left;">specificity</th>
+<th style="text-align: left;">ppv</th>
+<th style="text-align: left;">npv</th>
+<th style="text-align: left;">ci_low</th>
+<th style="text-align: left;">ci_high</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">triangle_perim_GA_zs</td>
+<td style="text-align: left;">83.77</td>
+<td style="text-align: left;">2.02</td>
+<td style="text-align: left;">75.90</td>
+<td style="text-align: left;">80.88</td>
+<td style="text-align: left;">82.89</td>
+<td style="text-align: left;">73.33</td>
+<td style="text-align: left;">79.94</td>
+<td style="text-align: left;">87.60</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">GLMValid_area_zs</td>
+<td style="text-align: left;">81.86</td>
+<td style="text-align: left;">-0.24</td>
+<td style="text-align: left;">79.12</td>
+<td style="text-align: left;">75.49</td>
+<td style="text-align: left;">79.76</td>
+<td style="text-align: left;">74.76</td>
+<td style="text-align: left;">77.93</td>
+<td style="text-align: left;">85.79</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">isValid_M_perm_ID</td>
+<td style="text-align: left;">81.23</td>
+<td style="text-align: left;">0.12</td>
+<td style="text-align: left;">76.31</td>
+<td style="text-align: left;">76.47</td>
+<td style="text-align: left;">79.83</td>
+<td style="text-align: left;">72.56</td>
+<td style="text-align: left;">77.23</td>
+<td style="text-align: left;">85.23</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Corr_Med_perm_ID</td>
+<td style="text-align: left;">80.34</td>
+<td style="text-align: left;">0.48</td>
+<td style="text-align: left;">77.91</td>
+<td style="text-align: left;">71.64</td>
+<td style="text-align: left;">77.29</td>
+<td style="text-align: left;">72.36</td>
+<td style="text-align: left;">76.19</td>
+<td style="text-align: left;">84.48</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Corr_M_perm_ID</td>
+<td style="text-align: left;">80.33</td>
+<td style="text-align: left;">0.38</td>
+<td style="text-align: left;">86.75</td>
+<td style="text-align: left;">62.69</td>
+<td style="text-align: left;">74.23</td>
+<td style="text-align: left;">79.25</td>
+<td style="text-align: left;">76.18</td>
+<td style="text-align: left;">84.47</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">isValid_Med_perm_ID</td>
+<td style="text-align: left;">79.30</td>
+<td style="text-align: left;">0.17</td>
+<td style="text-align: left;">65.86</td>
+<td style="text-align: left;">81.86</td>
+<td style="text-align: left;">81.59</td>
+<td style="text-align: left;">66.27</td>
+<td style="text-align: left;">75.27</td>
+<td style="text-align: left;">83.33</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">GA_corr</td>
+<td style="text-align: left;">79.25</td>
+<td style="text-align: left;">0.52</td>
+<td style="text-align: left;">81.05</td>
+<td style="text-align: left;">66.84</td>
+<td style="text-align: left;">75.85</td>
+<td style="text-align: left;">73.30</td>
+<td style="text-align: left;">74.96</td>
+<td style="text-align: left;">83.54</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">isValidStruct_GA</td>
+<td style="text-align: left;">77.46</td>
+<td style="text-align: left;">0.17</td>
+<td style="text-align: left;">70.28</td>
+<td style="text-align: left;">76.96</td>
+<td style="text-align: left;">78.83</td>
+<td style="text-align: left;">67.97</td>
+<td style="text-align: left;">73.25</td>
+<td style="text-align: left;">81.67</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">SelfInter_persegm</td>
+<td style="text-align: left;">76.53</td>
+<td style="text-align: left;">4.83</td>
+<td style="text-align: left;">92.77</td>
+<td style="text-align: left;">52.45</td>
+<td style="text-align: left;">70.43</td>
+<td style="text-align: left;">85.60</td>
+<td style="text-align: left;">71.95</td>
+<td style="text-align: left;">81.11</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">areatoPerim_GA</td>
+<td style="text-align: left;">76.00</td>
+<td style="text-align: left;">0.14</td>
+<td style="text-align: left;">57.83</td>
+<td style="text-align: left;">84.80</td>
+<td style="text-align: left;">82.29</td>
+<td style="text-align: left;">62.23</td>
+<td style="text-align: left;">71.59</td>
+<td style="text-align: left;">80.40</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">M_spread_y</td>
+<td style="text-align: left;">74.98</td>
+<td style="text-align: left;">77.57</td>
+<td style="text-align: left;">77.91</td>
+<td style="text-align: left;">68.14</td>
+<td style="text-align: left;">74.90</td>
+<td style="text-align: left;">71.65</td>
+<td style="text-align: left;">70.28</td>
+<td style="text-align: left;">79.67</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">rep_area_GAzs</td>
+<td style="text-align: left;">73.30</td>
+<td style="text-align: left;">0.08</td>
+<td style="text-align: left;">75.10</td>
+<td style="text-align: left;">69.61</td>
+<td style="text-align: left;">75.10</td>
+<td style="text-align: left;">69.61</td>
+<td style="text-align: left;">68.30</td>
+<td style="text-align: left;">78.29</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">areaPoly_GA</td>
+<td style="text-align: left;">70.54</td>
+<td style="text-align: left;">1.11</td>
+<td style="text-align: left;">66.27</td>
+<td style="text-align: left;">63.73</td>
+<td style="text-align: left;">69.04</td>
+<td style="text-align: left;">60.75</td>
+<td style="text-align: left;">65.78</td>
+<td style="text-align: left;">75.29</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">M_spread_x</td>
+<td style="text-align: left;">68.66</td>
+<td style="text-align: left;">124.58</td>
+<td style="text-align: left;">91.16</td>
+<td style="text-align: left;">49.51</td>
+<td style="text-align: left;">68.79</td>
+<td style="text-align: left;">82.11</td>
+<td style="text-align: left;">63.56</td>
+<td style="text-align: left;">73.77</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">isSimple_GA</td>
+<td style="text-align: left;">67.65</td>
+<td style="text-align: left;">0.17</td>
+<td style="text-align: left;">72.29</td>
+<td style="text-align: left;">55.88</td>
+<td style="text-align: left;">66.67</td>
+<td style="text-align: left;">62.30</td>
+<td style="text-align: left;">62.77</td>
+<td style="text-align: left;">72.53</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">repAreatoPerim</td>
+<td style="text-align: left;">66.57</td>
+<td style="text-align: left;">22.05</td>
+<td style="text-align: left;">78.71</td>
+<td style="text-align: left;">53.43</td>
+<td style="text-align: left;">67.35</td>
+<td style="text-align: left;">67.28</td>
+<td style="text-align: left;">61.22</td>
+<td style="text-align: left;">71.91</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">perim_GA</td>
+<td style="text-align: left;">59.13</td>
+<td style="text-align: left;">10.58</td>
+<td style="text-align: left;">84.34</td>
+<td style="text-align: left;">40.69</td>
+<td style="text-align: left;">63.44</td>
+<td style="text-align: left;">68.03</td>
+<td style="text-align: left;">53.64</td>
+<td style="text-align: left;">64.61</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">M_corr</td>
+<td style="text-align: left;">58.64</td>
+<td style="text-align: left;">0.35</td>
+<td style="text-align: left;">94.78</td>
+<td style="text-align: left;">29.90</td>
+<td style="text-align: left;">62.27</td>
+<td style="text-align: left;">82.43</td>
+<td style="text-align: left;">53.02</td>
+<td style="text-align: left;">64.25</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">rep_area</td>
+<td style="text-align: left;">45.33</td>
+<td style="text-align: left;">3,852.60</td>
+<td style="text-align: left;">81.93</td>
+<td style="text-align: left;">27.94</td>
+<td style="text-align: left;">58.12</td>
+<td style="text-align: left;">55.88</td>
+<td style="text-align: left;">39.66</td>
+<td style="text-align: left;">51.01</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="roc-for-subsambled-data-by-questionnaire-quantiles-25-steps" class="level4">
+<h4 data-anchor-id="roc-for-subsambled-data-by-questionnaire-quantiles-25-steps">ROC for subsambled data by questionnaire quantiles (25% steps).</h4>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_V7_mini_files/figure-html/unnamed-chunk-12-1.svg" class="img-fluid figure-img" width="624"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+
+|   |Feature              |   AUC| threshold| sensitivity| specificity|   ppv|   npv| ci_low| ci_high|
+|:--|:--------------------|-----:|---------:|-----------:|-----------:|-----:|-----:|------:|-------:|
+|3  |triangle_perim_GA_zs | 96.32|      1.63|       87.50|       97.83| 98.44| 83.33|  93.39|   99.25|
+|7  |SelfInter_persegm    | 92.93|      1.94|       95.83|       82.61| 89.61| 92.68|  87.70|   98.17|
+|15 |GLMValid_area_zs     | 92.12|     -0.25|       94.44|       84.78| 90.67| 90.70|  86.54|   97.69|
+|13 |isValid_M_perm_ID    | 91.30|      0.11|       93.06|       84.78| 90.54| 88.64|  85.29|   97.32|
+|18 |Corr_M_perm_ID       | 90.80|      0.37|       95.83|       82.22| 89.61| 92.50|  84.11|   97.50|
+|19 |Corr_Med_perm_ID     | 90.77|      0.37|       95.83|       82.22| 89.61| 92.50|  84.03|   97.52|
+|14 |isValid_Med_perm_ID  | 90.46|      0.06|       95.83|       76.09| 86.25| 92.11|  84.60|   96.32|
+|17 |GA_corr              | 89.62|      0.59|       86.11|       85.00| 91.18| 77.27|  82.66|   96.58|
+|12 |isValidStruct_GA     | 84.77|      0.17|       79.17|       80.43| 86.36| 71.15|  77.26|   92.28|
+|5  |M_spread_y           | 83.94|     76.99|       84.72|       78.26| 85.92| 76.60|  76.19|   91.69|
+|6  |M_spread_x           | 81.58|    124.58|       94.44|       63.04| 80.00| 87.88|  73.03|   90.14|
+|2  |rep_area_GAzs        | 80.40|      0.08|       91.67|       76.09| 85.71| 85.37|  69.83|   90.98|
+|10 |areatoPerim_GA       | 79.08|      0.14|       68.06|       84.78| 87.50| 62.90|  70.27|   87.89|
+|4  |repAreatoPerim       | 72.40|     21.87|       91.67|       60.87| 78.57| 82.35|  61.02|   83.78|
+|8  |areaPoly_GA          | 71.92|      1.09|       69.44|       67.39| 76.92| 58.49|  62.17|   81.67|
+|11 |isSimple_GA          | 65.37|      0.39|       54.17|       71.74| 75.00| 50.00|  55.08|   75.66|
+|16 |M_corr               | 60.11|      0.28|       93.06|       39.13| 70.53| 78.26|  48.19|   72.04|
+|9  |perim_GA             | 59.96|      8.99|       83.33|       50.00| 72.29| 65.71|  48.23|   71.70|
+|1  |rep_area             | 48.73|   3959.63|       93.06|       39.13| 70.53| 78.26|  35.47|   61.99|</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_V7_mini_files/figure-html/unnamed-chunk-12-2.svg" class="img-fluid figure-img" width="624"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+
+|   |Feature              |   AUC| threshold| sensitivity| specificity|   ppv|   npv| ci_low| ci_high|
+|:--|:--------------------|-----:|---------:|-----------:|-----------:|-----:|-----:|------:|-------:|
+|3  |triangle_perim_GA_zs | 96.02|      1.63|       87.50|       96.88| 95.45| 91.18|  93.18|   98.86|
+|16 |GLMValid_area_zs     | 92.30|     -0.25|       94.44|       84.38| 81.93| 95.29|  87.95|   96.66|
+|14 |isValid_M_perm_ID    | 91.20|      0.11|       93.06|       81.25| 78.82| 93.98|  86.58|   95.82|
+|7  |SelfInter_persegm    | 91.04|      1.67|       95.83|       73.96| 73.40| 95.95|  86.71|   95.37|
+|15 |isValid_Med_perm_ID  | 90.08|      0.06|       95.83|       72.92| 72.63| 95.89|  85.30|   94.85|
+|20 |Corr_M_perm_ID       | 88.99|      0.42|       93.06|       74.47| 73.63| 93.33|  83.91|   94.08|
+|21 |Corr_Med_perm_ID     | 88.96|      0.42|       93.06|       74.47| 73.63| 93.33|  83.87|   94.06|
+|19 |GA_corr              | 87.91|      0.59|       86.11|       79.78| 77.50| 87.65|  82.52|   93.29|
+|13 |isValidStruct_GA     | 85.11|      0.17|       79.17|       81.25| 76.00| 83.87|  79.12|   91.10|
+|2  |rep_area_GAzs        | 83.30|      0.08|       91.67|       78.12| 75.86| 92.59|  76.42|   90.18|
+|5  |M_spread_y           | 81.31|     83.78|       81.94|       76.04| 71.95| 84.88|  74.65|   87.97|
+|10 |areatoPerim_GA       | 78.76|      0.13|       72.22|       79.17| 72.22| 79.17|  71.72|   85.80|
+|4  |repAreatoPerim       | 76.87|     22.13|       91.67|       65.62| 66.67| 91.30|  69.16|   84.57|
+|6  |M_spread_x           | 75.22|    119.56|       95.83|       57.29| 62.73| 94.83|  67.86|   82.58|
+|8  |areaPoly_GA          | 70.95|      1.09|       69.44|       63.54| 58.82| 73.49|  63.17|   78.73|
+|11 |isSimple_GA          | 70.80|      0.17|       79.17|       53.12| 55.88| 77.27|  63.00|   78.61|
+|12 |isSimple_GA          | 70.80|      0.39|       54.17|       78.12| 65.00| 69.44|  63.00|   78.61|
+|9  |perim_GA             | 65.97|      8.99|       83.33|       56.25| 58.82| 81.82|  57.68|   74.26|
+|17 |M_corr               | 61.43|      0.35|       97.22|       33.33| 52.24| 94.12|  52.89|   69.97|
+|18 |M_corr               | 61.43|      0.27|       93.06|       37.50| 52.76| 87.80|  52.89|   69.97|
+|1  |rep_area             | 50.67|   2463.46|       84.72|       43.75| 53.04| 79.25|  41.51|   59.82|</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_V7_mini_files/figure-html/unnamed-chunk-12-3.svg" class="img-fluid figure-img" width="624"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+
+|   |Feature              |   AUC| threshold| sensitivity| specificity|   ppv|   npv| ci_low| ci_high|
+|:--|:--------------------|-----:|---------:|-----------:|-----------:|-----:|-----:|------:|-------:|
+|3  |triangle_perim_GA_zs | 90.54|      1.63|       83.33|       89.63| 85.86| 87.68|  86.58|   94.51|
+|15 |GLMValid_area_zs     | 89.19|     -0.06|       84.31|       85.93| 81.90| 87.88|  84.82|   93.55|
+|18 |Corr_M_perm_ID       | 87.77|      0.52|       85.29|       77.27| 74.36| 87.18|  83.41|   92.14|
+|19 |Corr_Med_perm_ID     | 87.74|      0.51|       85.29|       77.27| 74.36| 87.18|  83.36|   92.11|
+|13 |isValid_M_perm_ID    | 87.73|      0.11|       88.24|       79.26| 76.27| 89.92|  82.98|   92.49|
+|14 |isValid_Med_perm_ID  | 87.31|      0.17|       77.45|       85.93| 80.61| 83.45|  82.79|   91.82|
+|17 |GA_corr              | 86.55|      0.59|       83.33|       77.78| 75.22| 85.22|  81.84|   91.27|
+|12 |isValidStruct_GA     | 83.79|      0.17|       77.45|       80.00| 74.53| 82.44|  78.53|   89.04|
+|7  |SelfInter_persegm    | 83.38|      1.28|       89.22|       69.63| 68.94| 89.52|  78.17|   88.59|
+|5  |M_spread_y           | 80.36|     77.13|       86.27|       70.37| 68.75| 87.16|  74.63|   86.10|
+|10 |areatoPerim_GA       | 79.91|      0.14|       65.69|       86.67| 78.82| 76.97|  74.06|   85.77|
+|2  |rep_area_GAzs        | 79.24|      0.08|       87.25|       73.33| 71.20| 88.39|  73.09|   85.40|
+|4  |repAreatoPerim       | 73.78|     36.28|       71.57|       76.30| 69.52| 78.03|  67.13|   80.43|
+|11 |isSimple_GA          | 72.45|      0.28|       67.65|       68.15| 61.61| 73.60|  65.97|   78.93|
+|8  |areaPoly_GA          | 72.38|      1.09|       70.59|       63.70| 59.50| 74.14|  65.92|   78.84|
+|6  |M_spread_x           | 71.31|    119.56|       95.10|       52.59| 60.25| 93.42|  64.76|   77.87|
+|9  |perim_GA             | 63.80|      8.99|       82.35|       54.07| 57.53| 80.22|  56.69|   70.91|
+|16 |M_corr               | 59.98|      0.32|       96.08|       32.59| 51.85| 91.67|  52.74|   67.22|
+|1  |rep_area             | 48.83|   2075.54|       79.41|       40.74| 50.31| 72.37|  41.33|   56.33|</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_V7_mini_files/figure-html/unnamed-chunk-12-4.svg" class="img-fluid figure-img" width="624"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+
+|   |Feature              |   AUC| threshold| sensitivity| specificity|   ppv|   npv| ci_low| ci_high|
+|:--|:--------------------|-----:|---------:|-----------:|-----------:|-----:|-----:|------:|-------:|
+|3  |triangle_perim_GA_zs | 87.77|      1.64|       76.62|       89.29| 86.76| 80.65|  83.85|   91.70|
+|15 |GLMValid_area_zs     | 86.04|     -0.06|       78.57|       83.93| 81.76| 81.03|  81.92|   90.15|
+|13 |isValid_M_perm_ID    | 84.66|      0.11|       81.82|       77.98| 77.30| 82.39|  80.32|   89.01|
+|18 |Corr_M_perm_ID       | 84.45|      0.51|       79.87|       76.97| 76.40| 80.38|  80.17|   88.74|
+|19 |Corr_Med_perm_ID     | 84.42|      0.51|       79.87|       76.97| 76.40| 80.38|  80.12|   88.71|
+|14 |isValid_Med_perm_ID  | 83.00|      0.17|       71.43|       83.93| 80.29| 76.22|  78.60|   87.41|
+|17 |GA_corr              | 82.89|      0.59|       76.47|       77.85| 76.97| 77.36|  78.29|   87.49|
+|7  |SelfInter_persegm    | 81.58|      1.17|       83.12|       71.43| 72.73| 82.19|  76.84|   86.32|
+|12 |isValidStruct_GA     | 80.61|      0.17|       72.08|       80.36| 77.08| 75.84|  75.86|   85.36|
+|5  |M_spread_y           | 78.80|     77.57|       82.47|       71.43| 72.57| 81.63|  73.66|   83.93|
+|2  |rep_area_GAzs        | 77.95|      0.08|       81.82|       73.21| 73.68| 81.46|  72.55|   83.34|
+|10 |areatoPerim_GA       | 77.30|      0.14|       63.64|       84.52| 79.03| 71.72|  72.14|   82.45|
+|6  |M_spread_x           | 71.49|    121.47|       93.51|       52.38| 64.29| 89.80|  65.79|   77.19|
+|4  |repAreatoPerim       | 71.27|     32.82|       69.48|       72.02| 69.48| 72.02|  65.37|   77.17|
+|8  |areaPoly_GA          | 70.88|      1.11|       66.23|       64.88| 63.35| 67.70|  65.29|   76.47|
+|11 |isSimple_GA          | 69.51|      0.28|       61.69|       69.05| 64.63| 66.29|  63.83|   75.19|
+|9  |perim_GA             | 61.87|      8.97|       77.92|       52.98| 60.30| 72.36|  55.63|   68.12|
+|16 |M_corr               | 60.51|      0.32|       94.81|       33.93| 56.81| 87.69|  54.17|   66.85|
+|1  |rep_area             | 47.06|   3852.60|       85.71|       30.36| 53.01| 69.86|  40.51|   53.61|</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_V7_mini_files/figure-html/unnamed-chunk-12-5.svg" class="img-fluid figure-img" width="624"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+
+|   |Feature              |   AUC| threshold| sensitivity| specificity|   ppv|   npv| ci_low| ci_high|
+|:--|:--------------------|-----:|---------:|-----------:|-----------:|-----:|-----:|------:|-------:|
+|3  |triangle_perim_GA_zs | 84.85|      2.03|       76.23|       82.38| 83.33| 75.00|  80.98|   88.73|
+|15 |GLMValid_area_zs     | 82.65|     -0.06|       73.54|       82.90| 83.25| 73.06|  78.63|   86.67|
+|13 |isValid_M_perm_ID    | 82.02|      0.14|       73.99|       80.31| 81.28| 72.77|  77.93|   86.11|
+|18 |Corr_M_perm_ID       | 81.42|      0.38|       86.55|       64.74| 74.23| 80.39|  77.23|   85.60|
+|19 |Corr_Med_perm_ID     | 81.42|      0.38|       86.55|       64.74| 74.23| 80.39|  77.23|   85.61|
+|17 |GA_corr              | 80.45|      0.52|       81.53|       68.13| 75.73| 75.15|  76.11|   84.79|
+|14 |isValid_Med_perm_ID  | 80.17|      0.17|       66.82|       83.42| 82.32| 68.51|  76.05|   84.29|
+|7  |SelfInter_persegm    | 78.19|      1.67|       84.30|       64.77| 73.44| 78.12|  73.59|   82.79|
+|12 |isValidStruct_GA     | 78.03|      0.17|       69.06|       78.76| 78.97| 68.78|  73.69|   82.36|
+|10 |areatoPerim_GA       | 76.42|      0.14|       60.09|       83.94| 81.21| 64.54|  71.85|   80.99|
+|5  |M_spread_y           | 76.19|     85.26|       74.89|       72.54| 75.91| 71.43|  71.43|   80.95|
+|2  |rep_area_GAzs        | 74.67|      0.08|       75.78|       72.02| 75.78| 72.02|  69.59|   79.75|
+|8  |areaPoly_GA          | 70.93|      1.11|       66.37|       65.28| 68.84| 62.69|  65.99|   75.87|
+|6  |M_spread_x           | 69.23|    124.58|       91.03|       50.78| 68.12| 83.05|  63.96|   74.51|
+|11 |isSimple_GA          | 67.90|      0.17|       70.85|       57.51| 65.83| 63.07|  62.83|   72.97|
+|4  |repAreatoPerim       | 67.85|     29.43|       68.16|       65.80| 69.72| 64.14|  62.37|   73.34|
+|16 |M_corr               | 59.97|      0.22|       86.10|       39.90| 62.34| 71.30|  54.19|   65.75|
+|9  |perim_GA             | 59.66|      9.65|       79.82|       46.63| 63.35| 66.67|  53.97|   65.35|
+|1  |rep_area             | 45.81|   3852.60|       82.06|       29.02| 57.19| 58.33|  39.91|   51.70|</code></pre>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="phase-ii-methods" class="level1">
+<h1><em>Phase II</em> Methods</h1>
+</section>
+<section id="phase-ii-materials" class="level1">
+<h1><em>Phase II</em> Materials:</h1>
+<p>Materials are described here <a href="https://osf.io/pjb6e/?view_only=d467ebf4c1f94076ae4ac61298255065" class="uri">https://osf.io/pjb6e/?view_only=d467ebf4c1f94076ae4ac61298255065</a>.</p>
+</section>
+<section id="phase-ii-planned-population" class="level1">
+<h1><em>Phase II</em> Planned population</h1>
+<p><a href="https://osf.io/6h8dx"><strong>https://osf.io/6h8dx</strong></a></p>
+</section>
+<section id="discussion" class="level1">
+<h1>Discussion</h1>
+<p>From the different features we extracted, topological validity across the repetitions appeared to be the one leading to the largest Area Under the Curve. The optimal cutoff was exactly 1.5, leading to a sensitivity () and specificity ().</p>
+<p>The optimal criterion ineeds to be informed about the order between inducers (i.e.&nbsp;to construct the polygons) and interestingly suggests that synthetic inducer are structurally mapped following topological rules analogous to geographical space structures. Hence suggesting a spatial nature for the synthetic forms of space sequence synesthetes.</p>
+<p>Although an optimal tool to discriminate SSS might be particularly relevant for experimental purposes, it is important to consider some limitations. These consistency tools are designed with a limited set of sequential stimuli (i.e.&nbsp;months, weeks and the first ten natural numbers). <!--# Diversity --> Other sequences might also be represented in particular spatial positions such as temperature, ect. <!--# Continuum --> Another point is that rather than categorical, synesthesia might be present on a continuum in the general population. In that case diagnostic cutoffs might not be relevant, rather a score would be necessary. <!--# Cirularity --> Finally, there might also be an issue of circularity - as with many diagnostics : how synesthesia is defined determines how synestetes are detected which are the groups on which synesthesia is defined. <!--# External validity --> This is particularly relevant when the two diagnostic criteria on which validity are compared are self-reports (i.e.&nbsp;being conscious) and consistency.</p>
+<p>Overlapping responses. A methodological issue concerns participants that give the same responses across conditions. These responses are a complication since we can’t infer whether those conditions did not give rise to a synesthetic response in a synthesete or whether it is from a control that was confused about the instructions. On a methodological level, those responses can critically bias the diagnostic criteria. On one side excluding those responses would imbalance the number of responses by participant, on the other side including these responses might bias the diagnostic.</p>
+<p>See also <span class="citation" data-cites="root2025">(<a href="#ref-root2025" role="doc-biblioref">Root et al., 2025</a>)</span>.</p>
+</section>
+<section id="references" class="level1">
+<h1>References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
+<div id="ref-brang2013" class="csl-entry" role="listitem">
+Brang, D., Miller, L. E., McQuire, M., Ramachandran, V. S., &amp; Coulson, S. (2013). Enhanced mental rotation ability in time-space synesthesia. <em>Cognitive Processing</em>, <em>14</em>(4), 429–434. <a href="https://doi.org/10.1007/s10339-013-0561-5">https://doi.org/10.1007/s10339-013-0561-5</a>
+</div>
+<div id="ref-deroy2013" class="csl-entry" role="listitem">
+Deroy, O., &amp; Spence, C. (2013). Why we are not all synesthetes (not even weakly so). <em>Psychonomic Bulletin &amp; Review</em>, <em>20</em>(4), 643–664. <a href="https://doi.org/10.3758/s13423-013-0387-2">https://doi.org/10.3758/s13423-013-0387-2</a>
+</div>
+<div id="ref-galton1880" class="csl-entry" role="listitem">
+Galton, F. (1880). Visualised Numerals. <em>Nature</em>, <em>21</em>(533), 252–256. <a href="https://doi.org/10.1038/021252a0">https://doi.org/10.1038/021252a0</a>
+</div>
+<div id="ref-pebesma2018" class="csl-entry" role="listitem">
+Pebesma, E. (2018). Simple Features for R: Standardized Support for Spatial Vector Data. <em>The R Journal</em>, <em>10</em>(1), 439–446. <a href="https://doi.org/10.32614/RJ-2018-009">https://doi.org/10.32614/RJ-2018-009</a>
+</div>
+<div id="ref-piazza2006" class="csl-entry" role="listitem">
+Piazza, M., Pinel, P., &amp; Dehaene, S. (2006). Objective correlates of an unusual subjective experience: A single-case study of number<span></span>form synaesthesia. <em>Cognitive Neuropsychology</em>, <em>23</em>(8), 1162–1173. <a href="https://doi.org/10.1080/02643290600780080">https://doi.org/10.1080/02643290600780080</a>
+</div>
+<div id="ref-root2021" class="csl-entry" role="listitem">
+Root, N., Asano, M., Melero, H., Kim, C.-Y., Sidoroff-Dorso, A. V., Vatakis, A., Yokosawa, K., Ramachandran, V., &amp; Rouw, R. (2021). Do the colors of your letters depend on your language? Language-dependent and universal influences on grapheme-color synesthesia in seven languages. <em>Consciousness and Cognition</em>, <em>95</em>, 103192. <a href="https://doi.org/10.1016/j.concog.2021.103192">https://doi.org/10.1016/j.concog.2021.103192</a>
+</div>
+<div id="ref-root2025" class="csl-entry" role="listitem">
+Root, N., Chkhaidze, A., Melero, H., Sidoroff-Dorso, A., Volberg, G., Zhang, Y., &amp; Rouw, R. (2025). How <span>“</span>diagnostic<span>”</span> criteria interact to shape synesthetic behavior: The role of self-report and test<span></span>retest consistency in synesthesia research. <em>Consciousness and Cognition</em>, <em>129</em>, 103819. <a href="https://doi.org/10.1016/j.concog.2025.103819">https://doi.org/10.1016/j.concog.2025.103819</a>
+</div>
+<div id="ref-rothen2016" class="csl-entry" role="listitem">
+Rothen, N., Jünemann, K., Mealor, A. D., Burckhardt, V., &amp; Ward, J. (2016). The sensitivity and specificity of a diagnostic test of sequence-space synesthesia. <em>Behavior Research Methods</em>, <em>48</em>(4), 1476–1481. <a href="https://doi.org/10.3758/s13428-015-0656-2">https://doi.org/10.3758/s13428-015-0656-2</a>
+</div>
+<div id="ref-rothen2013" class="csl-entry" role="listitem">
+Rothen, N., Seth, A. K., Witzel, C., &amp; Ward, J. (2013b). Diagnosing synaesthesia with online colour pickers: Maximising sensitivity and specificity. <em>Journal of Neuroscience Methods</em>, <em>215</em>(1), 156–160. <a href="https://doi.org/10.1016/j.jneumeth.2013.02.009">https://doi.org/10.1016/j.jneumeth.2013.02.009</a>
+</div>
+<div id="ref-rothen2013a" class="csl-entry" role="listitem">
+Rothen, N., Seth, A. K., Witzel, C., &amp; Ward, J. (2013a). Diagnosing synaesthesia with online colour pickers: Maximising sensitivity and specificity. <em>Journal of Neuroscience Methods</em>, <em>215</em>(1), 156–160. <a href="https://doi.org/10.1016/j.jneumeth.2013.02.009">https://doi.org/10.1016/j.jneumeth.2013.02.009</a>
+</div>
+<div id="ref-sagiv2006" class="csl-entry" role="listitem">
+Sagiv, N., Simner, J., Collins, J., Butterworth, B., &amp; Ward, J. (2006). What is the relationship between synaesthesia and visuo-spatial number forms? <em>Cognition</em>, <em>101</em>(1), 114–128. <a href="https://doi.org/10.1016/j.cognition.2005.09.004">https://doi.org/10.1016/j.cognition.2005.09.004</a>
+</div>
+<div id="ref-seron1992" class="csl-entry" role="listitem">
+Seron, X., Pesenti, M., Noël, M.-P., Deloche, G., &amp; Cornet, J.-A. (1992). Images of numbers, or <span>“</span>when 98 is upper left and 6 sky blue<span>”</span>. <em>Cognition</em>, <em>44</em>(1), 159–196. <a href="https://doi.org/10.1016/0010-0277(92)90053-K">https://doi.org/10.1016/0010-0277(92)90053-K</a>
+</div>
+<div id="ref-vanpetersen2020" class="csl-entry" role="listitem">
+Van Petersen, E., Altgassen, M., Van Lier, R., &amp; Van Leeuwen, T. M. (2020b). Enhanced spatial navigation skills in sequence-space synesthetes. <em>Cortex</em>, <em>130</em>, 49–63. <a href="https://doi.org/10.1016/j.cortex.2020.04.034">https://doi.org/10.1016/j.cortex.2020.04.034</a>
+</div>
+<div id="ref-vanpetersen2020a" class="csl-entry" role="listitem">
+Van Petersen, E., Altgassen, M., Van Lier, R., &amp; Van Leeuwen, T. M. (2020a). Enhanced spatial navigation skills in sequence-space synesthetes. <em>Cortex</em>, <em>130</em>, 49–63. <a href="https://doi.org/10.1016/j.cortex.2020.04.034">https://doi.org/10.1016/j.cortex.2020.04.034</a>
+</div>
+<div id="ref-ward" class="csl-entry" role="listitem">
+Ward, J. (n.d.-a). <em>Optimizing a Measure of Consistency for Sequence-Space Synaesthesia</em>. <a href="https://doi.org/10.31234/osf.io/5cnr7">https://doi.org/10.31234/osf.io/5cnr7</a>
+</div>
+<div id="ref-wardb" class="csl-entry" role="listitem">
+Ward, J. (n.d.-b). <em>Optimizing a Measure of Consistency for Sequence-Space Synaesthesia</em>. <a href="https://doi.org/10.31234/osf.io/5cnr7">https://doi.org/10.31234/osf.io/5cnr7</a>
+</div>
+<div id="ref-ward2018" class="csl-entry" role="listitem">
+Ward, J., Ipser, A., Phanvanova, E., Brown, P., Bunte, I., &amp; Simner, J. (2018). The prevalence and cognitive profile of sequence-space synaesthesia. <em>Consciousness and Cognition</em>, <em>61</em>, 79–93. <a href="https://doi.org/10.1016/j.concog.2018.03.012">https://doi.org/10.1016/j.concog.2018.03.012</a>
+</div>
+</div>
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Of which we replicate the original results <span class="citation" data-cites="rothen2016">(<a href="#ref-rothen2016" role="doc-biblioref">Rothen et al., 2016</a>)</span> in a separate document<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

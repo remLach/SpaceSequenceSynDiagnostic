@@ -1,0 +1,2218 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2025-10-02">
+
+<title>Pre-registered report: Space Sequence Synesthesia Diagnostic using form mapping</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="2.Pre-registeredReport_files/libs/clipboard/clipboard.min.js"></script>
+<script src="2.Pre-registeredReport_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="2.Pre-registeredReport_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="2.Pre-registeredReport_files/libs/quarto-html/popper.min.js"></script>
+<script src="2.Pre-registeredReport_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="2.Pre-registeredReport_files/libs/quarto-html/anchor.min.js"></script>
+<link href="2.Pre-registeredReport_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="2.Pre-registeredReport_files/libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="2.Pre-registeredReport_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="2.Pre-registeredReport_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="2.Pre-registeredReport_files/libs/bootstrap/bootstrap-81267100e462c21b3d6c0d5bf76a3417.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Pre-registered report: Space Sequence Synesthesia Diagnostic using form mapping</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">October 2, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="abstract" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Abstract:</h1>
+<p>The existent diagnostic tools for space sequence synethesia are based on questionnaire and response consistency. Consistency is calculated as the area between repetitions for the same inducer. In the first present phase, available data from 570 participants is used to explore new geometrical features to discriminate syntheses from controls. Conceptually, our goal is to take advantage of the inducer’s ordinality that create synesthetic forms. For this aim, we harness a geography package to extract geometrical features to use as a test for synethesia. Reciever Operator Characteristics are used to select the features that best diagnose synesthesia. In a second phase to come, we test the predictive power of the new diagnostic features onto newly collected dataset.</p>
+</section>
+<section id="introduction" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Introduction</h1>
+<p><strong>Synesthesia</strong> is the concomitant perception from two different senses, for example certain humans perceive numbers as having a well defined position in space. Synesthetes come in all colour and flavours such as …</p>
+<p>Space Sequence Synesthesia (SSS) is a phenomenon present in some humans who perceive a spatial property for sequentially ordered or organized stimuli such as time or numbers, as early described by <span class="citation" data-cites="galton1880">(<a href="#ref-galton1880" role="doc-biblioref">Galton 1880</a>)</span>. The estimated prevalence for SSS in the general population span between 4.4 % <span class="citation" data-cites="brang2013">(<a href="#ref-brang2013" role="doc-biblioref">Brang et al. 2013</a>)</span> and 14.2 % <span class="citation" data-cites="seron1992">(<a href="#ref-seron1992" role="doc-biblioref">Seron et al. 1992</a>)</span>, see also <span class="citation" data-cites="ward2018 sagiv2006">(<a href="#ref-ward2018" role="doc-biblioref">Ward et al. 2018</a>; <a href="#ref-sagiv2006" role="doc-biblioref">Sagiv et al. 2006</a>)</span>. These estimates depend on diagnostic criteria for SSS. A strict definition of Synesthes requires this five different criteria <span class="citation" data-cites="deroy2013">(<a href="#ref-deroy2013" role="doc-biblioref">Deroy and Spence 2013</a>)</span>:</p>
+<ol type="1">
+<li><p>Automaticity: the inducer automatically triggers the concurrent. For example February might automatically trigger a specific location in the top left peri-space. Analogously to a colour word activates the colour in human literates (see stroop effect).</p></li>
+<li><p>Unidirectionality: the inducer triggers the concurrent but the concurrent trigger the inducer. For example if February automatically triggers the top left pei-space, the top-left peri space does not trigger February.</p></li>
+<li><p>Consciousness: The experience is conscious. For example a synesthete is conscious of his or her perception of February in the top left peri-space.</p></li>
+<li><p>Development: Should be present early in development. For example seeing month in particular spatial location already occurred as a child.</p></li>
+<li><p>Consistency: inducer-concurrent pair is stable in time. For example February is perceived on the top left, whether the time of the day or age. (Altough some changes might occur with aging).</p></li>
+</ol>
+<p>Consistency is the most suited for experimental settings since it can be tested by repeatedly presenting specific inducers to participants and collect the responses for their concurrent. If comparatively similar responses are given for the same inducers, then syneshtesia could be detected. Those tests have become the golden standart to detect synesthesia successfully, for example colour-grapheme synesthesia using colour picker <span class="citation" data-cites="rothen2013">(<a href="#ref-rothen2013" role="doc-biblioref">Rothen et al. 2013</a>)</span>. The transposition of this method to SSS have however not yelded convincing criteria (see Ward, Roten). Instead of colour picker, SSS are asked to position a set of inducer on their idiosyncratic concurrent location on the screen. If each inducer is repeated several times we can then compute the area between the responses for each inducer (i.e.&nbsp;a triangle if repeated three times). The sum or grand average of the triangle areas across several inducers of several conditions (i.e.&nbsp;number, weekdays and months) is then used to estimate individual consistencies. The smallest the total, the more consistent individual responses area. Despite yealding to satisfactory results, it leads to several limits: participant can give a response in the same position of the screen and obtain excellent consistency scores.</p>
+<p>In addition the method might over-diagnose SSS for some conditions (tpyes of)?. Month contain 12 stimuli, while weekdays 7, hence SSS with consistent spatial representations for months might have a higher weight on the final diagnostic criteria than if weekdays are consistent.</p>
+<p>In the following we aimed at taking advantage of two property of synthetic responses: they give rise to a form (i.e.&nbsp;number form, see Galton) that follows a sequential order (or ordinality <!--# There is a reference talking about the importance of ordinality in Syn -->).</p>
+<p>We harnessed a geographical package [ADD REF] to extract geometrical features from participant responses. For example we can extract polygons from each conditions and compute the area of these polygons.</p>
+</section>
+<section id="methods" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Methods</h1>
+<p><em>Phase I: present analyses</em>. First, we reproduce the diagnostic criteria of each respective dataset. Second, we merge the dataset and compare the diagnostic criteria across datasets using Reciever Operator Charachteristics (ROC). Third, we compare wheter the featuers lead to somilar ROC charachteristics across the different sets (i.e.&nbsp;for months, weeks and numbers). Fourth, we compute new candidate geometrical features that could be used to diagnose SS. Finally we summarize and compare all ROC and select the best features that class synesthetes from control with the merged dataset.</p>
+<p><em>Phase II: future analyses.</em> On a future dataset using the same task, we will compare the predictive power of the selected features using ROC.</p>
+<section id="materials" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="materials"><span class="header-section-number">3.1</span> Materials</h2>
+<p>A the exception of <span class="citation" data-cites="rothen2016">(<a href="#ref-rothen2016" role="doc-biblioref">Rothen et al. 2016</a>)</span>, the data from <span class="citation" data-cites="ward vanpetersen2020a">(<a href="#ref-ward" role="doc-biblioref">Ward, n.d.</a>; <a href="#ref-vanpetersen2020a" role="doc-biblioref">Van Petersen et al. 2020a</a>)</span> were collected online. The 29 inducers were: the 12 months of a year, 7 days of the week and 10 numbers (i.e.&nbsp;hindo-arabic numerals from 0 to 9). <span class="citation" data-cites="vanpetersen2020a">(<a href="#ref-vanpetersen2020a" role="doc-biblioref">Van Petersen et al. 2020a</a>)</span> Also presented 50 and 100 numerals, which we excluded here. <span class="citation" data-cites="ward">(<a href="#ref-ward" role="doc-biblioref">Ward, n.d.</a>)</span> data is collected using the Syntoolkit.</p>
+</section>
+<section id="procedure" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="procedure"><span class="header-section-number">3.2</span> Procedure</h2>
+<p>The details for each procedure is described in each respective article <span class="citation" data-cites="rothen2016 ward vanpetersen2020a">(<a href="#ref-rothen2016" role="doc-biblioref">Rothen et al. 2016</a>; <a href="#ref-ward" role="doc-biblioref">Ward, n.d.</a>; <a href="#ref-vanpetersen2020a" role="doc-biblioref">Van Petersen et al. 2020a</a>)</span>, here we describe the common task.</p>
+<p>Each participant is presented with one one inducer at a time at the center of a otherwise white screen. The participant is instructed to click at the screen position that they visualize them. Inducers order is randomized and each inducer is repeated three times.</p>
+<p><em>The order of the stimuli was randomised, but such that no stimulus was repeated until the previous batch of unique stimuli (N = 29) had been presented.</em></p>
+</section>
+</section>
+<section id="phase-i-methods" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> <em>Phase I</em> Methods</h1>
+<p>The data for <em>phase I,</em> comes from: <span class="citation" data-cites="rothen2016">(<a href="#ref-rothen2016" role="doc-biblioref">Rothen et al. 2016</a>)</span>,<span class="citation" data-cites="ward">(<a href="#ref-ward" role="doc-biblioref">Ward, n.d.</a>)</span> (from: <a href="#0" class="uri">https://osf.io/p5xsd/files/osfstorage</a>) and <span class="citation" data-cites="vanpetersen2020">(<a href="#ref-vanpetersen2020" role="doc-biblioref">Van Petersen et al. 2020b</a>)</span></p>
+<ul>
+<li>Root <span class="citation" data-cites="root2021">(<a href="#ref-root2021" role="doc-biblioref">Root et al. 2021</a>)</span></li>
+</ul>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>New names:
+New names:
+• `` -&gt; `...36`
+• `` -&gt; `...37`</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Using one column matrices in `filter()` was deprecated in dplyr 1.1.0.
+ℹ Please use one dimensional logical vectors instead.</code></pre>
+</div>
+</div>
+<p>We exclude 2 participants for which we could not compute the <em>z-scores</em>.</p>
+<section id="phase-i.-population" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="phase-i.-population"><span class="header-section-number">4.1</span> <em>Phase I.</em> Population</h2>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'group'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">dataSource</th>
+<th style="text-align: right;">Ctl</th>
+<th style="text-align: right;">Syn</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">PeterCor</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">12</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Rothen</td>
+<td style="text-align: right;">37</td>
+<td style="text-align: right;">33</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ward</td>
+<td style="text-align: right;">215</td>
+<td style="text-align: right;">252</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="phase-i.-analysis" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="phase-i.-analysis"><span class="header-section-number">4.2</span> <em>Phase I</em>. Analysis</h2>
+<p>First, we replicate consistency methods found in the literature using the same task (<span class="citation" data-cites="rothen2016 ward vanpetersen2020a root2021">(<a href="#ref-rothen2016" role="doc-biblioref">Rothen et al. 2016</a>; <a href="#ref-ward" role="doc-biblioref">Ward, n.d.</a>; <a href="#ref-vanpetersen2020a" role="doc-biblioref">Van Petersen et al. 2020a</a>; <a href="#ref-root2021" role="doc-biblioref">Root et al. 2021</a>)</span>) and compare the results.</p>
+<p>Second, we extract features based on the form. (C) We harness a geography package to compute segment based features (D) We compute polygon based features. (E) Convex Hull (F) Angles.</p>
+<ul>
+<li><p>Each feature is presented with the following structure:</p>
+<ul>
+<li><p>Compute Feature</p></li>
+<li><p>Example</p></li>
+<li><p>Receiver Operator Characteristics (ROC)</p></li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section id="phase-i.-results-reproduce" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> <em>Phase I.</em> Results Reproduce</h1>
+<section id="triangle-area" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="triangle-area"><span class="header-section-number">5.1</span> Triangle area</h2>
+<p><strong>Definition</strong>: Calculating consistency Each stimulus is represented by three xy coordinates - (x1, y1), (x2, y2), (x3, y3) - from the three repetitions. For each stimulus, the area of the triangle bounded by the coordinates is calculated as follows:<br>
+<span class="math inline">\(Area = (x1y2 + x2y3 + x3y1 – x1y3 – x2y1 – x3y2) / 2\)</span></p>
+</section>
+<section id="reproduce-rothen-et-al.-2016." class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="reproduce-rothen-et-al.-2016."><span class="header-section-number">5.2</span> Reproduce Rothen et al., 2016.</h2>
+<p>Here we reproduce <span class="citation" data-cites="rothen2016">(<a href="#ref-rothen2016" role="doc-biblioref">Rothen et al. 2016</a>)</span> ROC results:</p>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'ID'. You can override using the `.groups`
+argument.
+Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/ReproRothen2016-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 23%">
+<col style="width: 6%">
+<col style="width: 9%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Feature</th>
+<th style="text-align: right;">AUC</th>
+<th style="text-align: right;">threshold</th>
+<th style="text-align: right;">sensitivity</th>
+<th style="text-align: right;">specificity</th>
+<th style="text-align: right;">ppv</th>
+<th style="text-align: right;">npv</th>
+<th style="text-align: right;">ci_low</th>
+<th style="text-align: right;">ci_high</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">triangle_area_GA_Rothen</td>
+<td style="text-align: right;">74.611</td>
+<td style="text-align: right;">1574.552</td>
+<td style="text-align: right;">84.84848</td>
+<td style="text-align: right;">70.27027</td>
+<td style="text-align: right;">71.79487</td>
+<td style="text-align: right;">83.87097</td>
+<td style="text-align: right;">62.44444</td>
+<td style="text-align: right;">86.77751</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">group</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">Mean</th>
+<th style="text-align: right;">SD</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Ctl</td>
+<td style="text-align: right;">37</td>
+<td style="text-align: right;">7030.922</td>
+<td style="text-align: right;">11303.051</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Syn</td>
+<td style="text-align: right;">33</td>
+<td style="text-align: right;">1311.875</td>
+<td style="text-align: right;">1828.799</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                  Feature    AUC threshold sensitivity specificity      ppv
+1 triangle_area_GA_Rothen 74.611  1574.552    84.84848    70.27027 71.79487
+       npv   ci_low  ci_high
+1 83.87097 62.44444 86.77751</code></pre>
+</div>
+</div>
+<section id="summary-rothen-vs-reproduction" class="level3" data-number="5.2.1">
+<h3 data-number="5.2.1" class="anchored" data-anchor-id="summary-rothen-vs-reproduction"><span class="header-section-number">5.2.1</span> Summary Rothen vs Reproduction</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Descriptive</th>
+<th>DP</th>
+<th>AUC</th>
+<th>Mean (syn)</th>
+<th>Mean (con)</th>
+<th>SD (syn)</th>
+<th>SD (con)</th>
+<th>Sensitivity</th>
+<th>Specificity</th>
+<th>Cut-off</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Rothen</td>
+<td>Area</td>
+<td>1.57</td>
+<td>0.76</td>
+<td>1079</td>
+<td>7031</td>
+<td>1365</td>
+<td>11149</td>
+<td>88</td>
+<td>70</td>
+<td>1,596</td>
+</tr>
+<tr class="even">
+<td>Repro</td>
+<td></td>
+<td></td>
+<td>0.75</td>
+<td><strong>1312</strong></td>
+<td>7031</td>
+<td><strong>1829</strong></td>
+<td>11303</td>
+<td><strong>85</strong></td>
+<td>70</td>
+<td>1,575</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="reproduce-ward-2020" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="reproduce-ward-2020"><span class="header-section-number">5.3</span> Reproduce Ward, 2020:</h2>
+<!--# Should I reproduce it?  (1) data & code are avialable online (2) I already excluded 2 ID and adjusted screen size so it won't do the same (3) Permuted z-score will also differ -->
+<p><span class="citation" data-cites="ward">(<a href="#ref-ward" role="doc-biblioref">Ward, n.d.</a>)</span> combines different individual measures and features to diagnose synesthesia in comparison to randomly permuted z-score chance level thresholds:</p>
+<p><img src="images/clipboard-1140852143.png" class="img-fluid"></p>
+<p>Since we do not have questionnaire for all the data, we will only try to reproduce the consistency and sd combination.</p>
+<p>The mean area is calculated by adding together the area for each stimulus and dividing by 29. This unit is transformed into a percentage area taking into account the different pixel resolution of each participant.Mean area = <span class="math inline">\(Summed Area / Screen Area\)</span>, where: <span class="math inline">\(Screen Area = Xpixels * Ypixels\)</span></p>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Adding missing grouping variables: `ID`</code></pre>
+</div>
+</div>
+<section id="wip-here" class="level4" data-number="5.3.0.1">
+<h4 data-number="5.3.0.1" class="anchored" data-anchor-id="wip-here"><span class="header-section-number">5.3.0.1</span> WIP here:</h4>
+</section>
+</section>
+<section id="add-sd" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="add-sd"><span class="header-section-number">5.4</span> Add SD</h2>
+<section id="example" class="level3" data-number="5.4.1">
+<h3 data-number="5.4.1" class="anchored" data-anchor-id="example"><span class="header-section-number">5.4.1</span> Example</h3>
+<p>Would need an example with all in the center</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="roc" class="level3" data-number="5.4.2">
+<h3 data-number="5.4.2" class="anchored" data-anchor-id="roc"><span class="header-section-number">5.4.2</span> ROC</h3>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$ROC_properties
+    Feature     AUC threshold sensitivity specificity      ppv      npv  ci_low
+1 SD_ID_xsc 61.8348 0.1217639    89.22559    44.28044 63.70192 78.94737 57.0123
+   ci_high
+1 66.65736
+
+$Coningency_table
+     
+      Ctl           Syn          
+  Ctl "120 (44.3%)" "151 (55.7%)"
+  Syn "32 (10.8%)"  "265 (89.2%)"
+
+$Descr_table
+# A tibble: 2 × 4
+  group     n  Mean     SD
+  &lt;fct&gt; &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt;
+1 Ctl     271 0.167 0.124 
+2 Syn     297 0.228 0.0834</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$ROC_properties
+    Feature     AUC threshold sensitivity specificity      ppv      npv
+1 SD_ID_ysc 69.1515 0.1160754    81.81818    59.40959 68.83853 74.88372
+    ci_low  ci_high
+1 64.62566 73.67742
+
+$Coningency_table
+     
+      Ctl           Syn          
+  Ctl "161 (59.4%)" "110 (40.6%)"
+  Syn "54 (18.2%)"  "243 (81.8%)"
+
+$Descr_table
+# A tibble: 2 × 4
+  group     n  Mean     SD
+  &lt;fct&gt; &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt;
+1 Ctl     271 0.125 0.117 
+2 Syn     297 0.201 0.0946</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="reproduce-root-2021" class="level2" data-number="5.5">
+<h2 data-number="5.5" class="anchored" data-anchor-id="reproduce-root-2021"><span class="header-section-number">5.5</span> Reproduce Root 2021</h2>
+<p><span class="citation" data-cites="root2021">(<a href="#ref-root2021" role="doc-biblioref">Root et al. 2021</a>)</span> suggested to use random permutations to calculate individual chance levels of consistency. Individual x and y coordinates (29 (inducers) *3 (repetitions) = 87) are randomly shuffled across conditions and inducers and areas are calculated for each 1000 permutations. Hence giving rise to individual distribution for chance level of consistency. Z-score is then computed to compare the observed with the permuted consistencies:</p>
+<p><span class="math inline">\(Zscore = \frac{Obs Consistency – mean(Perm Consistency)} {SD(Perm Consistency)}\)</span></p>
+<section id="example-1" class="level3" data-number="5.5.1">
+<h3 data-number="5.5.1" class="anchored" data-anchor-id="example-1"><span class="header-section-number">5.5.1</span> Example</h3>
+</section>
+<section id="roc-1" class="level3" data-number="5.5.2">
+<h3 data-number="5.5.2" class="anchored" data-anchor-id="roc-1"><span class="header-section-number">5.5.2</span> ROC</h3>
+</section>
+</section>
+<section id="reproduced-features-on-merged-data" class="level2" data-number="5.6">
+<h2 data-number="5.6" class="anchored" data-anchor-id="reproduced-features-on-merged-data"><span class="header-section-number">5.6</span> Reproduced features on merged data:</h2>
+<section id="area-consistency" class="level3" data-number="5.6.1">
+<h3 data-number="5.6.1" class="anchored" data-anchor-id="area-consistency"><span class="header-section-number">5.6.1</span> Area Consistency</h3>
+<section id="example-2" class="level4" data-number="5.6.1.1">
+<h4 data-number="5.6.1.1" class="anchored" data-anchor-id="example-2"><span class="header-section-number">5.6.1.1</span> Example</h4>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/ExampleAreaConsistency-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="roc-2" class="level4" data-number="5.6.1.2">
+<h4 data-number="5.6.1.2" class="anchored" data-anchor-id="roc-2"><span class="header-section-number">5.6.1.2</span> ROC</h4>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/AreaConsistencyROC-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$ROC_properties
+      Feature     AUC  threshold sensitivity specificity      ppv      npv
+1 Consistency 50.2081 0.05868314    77.44108     39.8524 58.52417 61.71429
+    ci_low  ci_high
+1 45.19057 55.22565
+
+$Coningency_table
+     
+      Ctl           Syn          
+  Ctl "108 (39.9%)" "163 (60.1%)"
+  Syn "67 (22.6%)"  "230 (77.4%)"
+
+$Descr_table
+# A tibble: 2 × 4
+  group     n   Mean    SD
+  &lt;fct&gt; &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;
+1 Ctl     271 0.126  0.239
+2 Syn     297 0.0690 0.136</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Ctl, case = Syn
+Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/AreaConsistencyROC-2.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$ROC_properties
+         Feature     AUC threshold sensitivity specificity      ppv      npv
+1 Consistency_zs 70.3685  2.220246    76.43098    65.31365 70.71651 71.65992
+    ci_low  ci_high
+1 65.81407 74.92294
+
+$Coningency_table
+     
+      Ctl           Syn          
+  Ctl "177 (65.3%)" "94 (34.7%)" 
+  Syn "70 (23.6%)"  "227 (76.4%)"
+
+$Descr_table
+# A tibble: 2 × 4
+  group     n  Mean    SD
+  &lt;fct&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 Ctl     271  7.60  9.38
+2 Syn     297  2.15  3.95</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+</div>
+</section>
+</section>
+</section>
+</section>
+<section id="phase-i.-results-novel-features" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> <em>Phase I.</em> Results: Novel features</h1>
+<section id="segment-self-intersection" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="segment-self-intersection"><span class="header-section-number">6.1</span> Segment self-intersection</h2>
+<p>For each category we compute the number of times the path intersects within each repetition. This can be conceptualized as drawing a segment between the ordered inducers of each category (i.e.&nbsp;between 0 and 9 for numbers) and count how many line intersect. Hence the number of segment is <code>length(stimuli)-1</code>, for each participant we sum the number of self-intersections.</p>
+<p>Note: ideally we should shuffle the repetitions.</p>
+<section id="example-3" class="level3" data-number="6.1.1">
+<h3 data-number="6.1.1" class="anchored" data-anchor-id="example-3"><span class="header-section-number">6.1.1</span> Example</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="roc-3" class="level3" data-number="6.1.2">
+<h3 data-number="6.1.2" class="anchored" data-anchor-id="roc-3"><span class="header-section-number">6.1.2</span> ROC</h3>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$ROC_properties
+          Feature     AUC threshold sensitivity specificity      ppv     npv
+1 SumID_lineInter 72.8534     110.5    76.76768    62.36162 69.09091 71.0084
+    ci_low  ci_high
+1 68.62725 77.07951
+
+$Coningency_table
+     
+      Ctl           Syn          
+  Ctl "169 (62.4%)" "102 (37.6%)"
+  Syn "69 (23.2%)"  "228 (76.8%)"
+
+$Descr_table
+# A tibble: 2 × 4
+  group     n  Mean    SD
+  &lt;fct&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 Ctl     271  949. 1056.
+2 Syn     297  202.  511.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="segments-with-sf" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Segments (with sf)</h1>
+<p>We will take advantage of the <code>sf</code> package and connect the x and y coordinates of ordered inducer with a segment.</p>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Linking to GEOS 3.13.0, GDAL 3.8.5, PROJ 9.5.1; sf_use_s2() is TRUE</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Spherical geometry (s2) switched off</code></pre>
+</div>
+</div>
+</section>
+<section id="segment-length-should-replicate-rothen" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Segment length (should replicate Rothen)</h1>
+<section id="example-4" class="level2" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="example-4"><span class="header-section-number">8.1</span> Example</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="roc-4" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="roc-4"><span class="header-section-number">8.2</span> ROC</h2>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$ROC_properties
+       Feature     AUC threshold sensitivity specificity      ppv      npv
+1 GA_segm_leng 63.7755  7.856126    83.83838    49.07749 64.34109 73.48066
+    ci_low  ci_high
+1 59.07019 68.48084
+
+$Coningency_table
+     
+      Ctl           Syn          
+  Ctl "133 (49.1%)" "138 (50.9%)"
+  Syn "48 (16.2%)"  "249 (83.8%)"
+
+$Descr_table
+# A tibble: 2 × 4
+  group     n  Mean    SD
+  &lt;fct&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 Ctl     271  7.57  3.06
+2 Syn     297  6.15  2.29</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="distances-between-repetitions" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Distances between repetitions</h1>
+<section id="example-5" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="example-5"><span class="header-section-number">9.1</span> Example</h2>
+</section>
+<section id="roc-5" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="roc-5"><span class="header-section-number">9.2</span> ROC</h2>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$ROC_properties
+     Feature   AUC  threshold sensitivity specificity      ppv      npv
+1 GA_BtwDist 58.11 0.03093695     96.2963    26.93727 59.09091 86.90476
+    ci_low  ci_high
+1 53.88037 62.33964
+
+$Coningency_table
+     
+      Ctl          Syn          
+  Ctl "73 (26.9%)" "198 (73.1%)"
+  Syn "11 (3.7%)"  "286 (96.3%)"
+
+$Descr_table
+# A tibble: 2 × 4
+  group     n    Mean     SD
+  &lt;fct&gt; &lt;int&gt;   &lt;dbl&gt;  &lt;dbl&gt;
+1 Ctl     271 0.0792  0.172 
+2 Syn     297 0.00866 0.0410</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="polygon-based-geometries" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> Polygon based geometries</h1>
+</section>
+<section id="polygon-area" class="level1" data-number="11">
+<h1 data-number="11"><span class="header-section-number">11</span> Polygon area</h1>
+<section id="example-6" class="level2" data-number="11.1">
+<h2 data-number="11.1" class="anchored" data-anchor-id="example-6"><span class="header-section-number">11.1</span> Example</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/unnamed-chunk-21-2.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/unnamed-chunk-21-3.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="roc-6" class="level2" data-number="11.2">
+<h2 data-number="11.2" class="anchored" data-anchor-id="roc-6"><span class="header-section-number">11.2</span> ROC</h2>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$ROC_properties
+      Feature     AUC threshold sensitivity specificity   ppv      npv   ci_low
+1 GA_areaPoly 69.8958  1.288086    59.25926     70.4797 68.75 61.21795 65.64189
+   ci_high
+1 74.14962
+
+$Coningency_table
+     
+      Ctl           Syn          
+  Ctl "191 (70.5%)" "80 (29.5%)" 
+  Syn "121 (40.7%)" "176 (59.3%)"
+
+$Descr_table
+# A tibble: 2 × 4
+  group     n  Mean    SD
+  &lt;fct&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 Ctl     271 0.962 0.985
+2 Syn     297 1.74  1.25 </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="polygon-simplicity" class="level1" data-number="12">
+<h1 data-number="12"><span class="header-section-number">12</span> Polygon simplicity</h1>
+<section id="example-7" class="level2" data-number="12.1">
+<h2 data-number="12.1" class="anchored" data-anchor-id="example-7"><span class="header-section-number">12.1</span> Example</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/unnamed-chunk-24-2.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="roc-7" class="level2" data-number="12.2">
+<h2 data-number="12.2" class="anchored" data-anchor-id="roc-7"><span class="header-section-number">12.2</span> ROC</h2>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$ROC_properties
+      Feature     AUC threshold sensitivity specificity      ppv      npv
+1 GA_isSimple 69.3572 0.1666667    74.41077    56.45756 65.19174 66.81223
+    ci_low  ci_high
+1 65.06818 73.64615
+
+$Coningency_table
+     
+      Ctl           Syn          
+  Ctl "153 (56.5%)" "118 (43.5%)"
+  Syn "76 (25.6%)"  "221 (74.4%)"
+
+$Descr_table
+# A tibble: 2 × 4
+  group     n  Mean    SD
+  &lt;fct&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 Ctl     271 0.214 0.238
+2 Syn     297 0.390 0.270</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="topological-validity-structure" class="level1" data-number="13">
+<h1 data-number="13"><span class="header-section-number">13</span> Topological validity Structure</h1>
+<p>is topologically valid:</p>
+<p>From the package description: <em>“For projected geometries, st_make_valid uses the lwgeom_makevalid method also used by the PostGIS command ST_makevalid if the GEOS version linked to is smaller than 3.8.0, and otherwise the version shipped in GEOS; for geometries having ellipsoidal coordinates s2::s2_rebuild is being used.”</em> From <a href="https://postgis.net/docs/ST_IsValid.html" class="uri">https://postgis.net/docs/ST_IsValid.html</a>: <em>value is well-formed and valid in 2D according to the OGC rules.</em> (Open Geopsatial Consotrtium)</p>
+<section id="example-8" class="level2" data-number="13.1">
+<h2 data-number="13.1" class="anchored" data-anchor-id="example-8"><span class="header-section-number">13.1</span> Example</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/unnamed-chunk-27-2.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="roc-8" class="level2" data-number="13.2">
+<h2 data-number="13.2" class="anchored" data-anchor-id="roc-8"><span class="header-section-number">13.2</span> ROC</h2>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$ROC_properties
+           Feature     AUC threshold sensitivity specificity      ppv      npv
+1 GA_isValidStruct 77.7473 0.1666667    70.70707    75.27675 75.81227 70.10309
+    ci_low  ci_high
+1 74.01116 81.48351
+
+$Coningency_table
+     
+      Ctl           Syn          
+  Ctl "204 (75.3%)" "67 (24.7%)" 
+  Syn "87 (29.3%)"  "210 (70.7%)"
+
+$Descr_table
+# A tibble: 2 × 4
+  group     n  Mean    SD
+  &lt;fct&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 Ctl     271 0.118 0.180
+2 Syn     297 0.366 0.270</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+</div>
+<section id="extra-visualize-false-pos-and-neg" class="level3" data-number="13.2.1">
+<h3 data-number="13.2.1" class="anchored" data-anchor-id="extra-visualize-false-pos-and-neg"><span class="header-section-number">13.2.1</span> Extra: Visualize false pos and neg</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/unnamed-chunk-29-2.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/unnamed-chunk-29-3.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/unnamed-chunk-29-4.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="topological-de-9im" class="level1" data-number="14">
+<h1 data-number="14"><span class="header-section-number">14</span> Topological DE-9IM</h1>
+<p>See: <a href="https://r-spatial.org/book/03-Geometries.html#sec-opgeom" class="uri">https://r-spatial.org/book/03-Geometries.html#sec-opgeom</a> See: <a href="https://en.wikipedia.org/wiki/DE-9IM" class="uri">https://en.wikipedia.org/wiki/DE-9IM</a></p>
+<p>DE-9IM is a standard for several topological model’s features. It is called by st_relate. It returns a 3 x 3 matrix (DE9IM) for each relations:</p>
+<p><span class="math inline">\({\displaystyle \operatorname {DE9IM} (a,b)={\begin{bmatrix}\dim(I(a)\cap I(b))&amp;\dim(I(a)\cap B(b))&amp;\dim(I(a)\cap E(b))\\\dim(B(a)\cap I(b))&amp;\dim(B(a)\cap B(b))&amp;\dim(B(a)\cap E(b))\\\dim(E(a)\cap I(b))&amp;\dim(E(a)\cap B(b))&amp;\dim(E(a)\cap E(b))\end{bmatrix}}}\)</span></p>
+<p>⁠dim$ {}$⁠ is the dimension of the intersection (∩) of the interior (I), boundary (B), and exterior (E) of geometries a and b.</p>
+<p>Hence it returns a <em>spatial predicate</em> wdefined with mas domains:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>          Ctl  Syn       Subs
+212101212 952 1568  0.6071429
+2121012F2   2    2  1.0000000
+21210F212   0    1  0.0000000
+212111212   4    8  0.5000000
+212F01212  18    8  2.2500000
+212F01FF2  15    2  7.5000000
+212F0F212  12    2  6.0000000
+212F0FFF2   5    1  5.0000000
+212F1FFF2   1    0        Inf
+2F2101212  13    1 13.0000000
+2F21012F2  10    4  2.5000000
+2F2F01212  16    2  8.0000000
+2F2F01FF2  41    4 10.2500000
+2FF10F212  12    1 12.0000000
+2FF10F2F2   3    0        Inf
+2FF11F212   1    0        Inf
+2FFF0F212  32    3 10.6666667
+2FFF0FFF2 138   19  7.2631579
+2FFF1FFF2 626  853  0.7338804
+FF2F01212   6    0        Inf
+FF2F01FF2  27    6  4.5000000
+FF2F11212   1    0        Inf
+FF2FF1212 294  124  2.3709677
+FFFF0F212  26    2 13.0000000
+FFFF0FFF2 184   62  2.9677419</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           Ctl  Syn       Subs
+212101212 1009 1629  0.6193984
+2121012F2    0    1  0.0000000
+21210F212    2    3  0.6666667
+21210F2F2    1    0        Inf
+212111212   12    9  1.3333333
+212F01212   12    2  6.0000000
+212F01FF2   11    0        Inf
+212F0F212   12    2  6.0000000
+212F0FFF2    5    1  5.0000000
+212F11212    1    0        Inf
+212F11FF2    1    0        Inf
+2F2101212   13    7  1.8571429
+2F21012F2   27    6  4.5000000
+2F2111212    1    0        Inf
+2F2F01212   20    1 20.0000000
+2F2F01FF2   44   10  4.4000000
+2FF10F212   21    2 10.5000000
+2FF10F2F2    8    1  8.0000000
+2FF11F2F2    1    0        Inf
+2FFF0F212   59    6  9.8333333
+2FFF0FFF2  173   31  5.5806452
+2FFF1FFF2  591  846  0.6985816
+FF2F01212    4    2  2.0000000
+FF2F01FF2   40    4 10.0000000
+FF2F11212    3    0        Inf
+FF2FF1212   99   39  2.5384615
+FFFF0F212   31    8  3.8750000
+FFFF0FFF2  238   63  3.7777778</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          Ctl  Syn       Subs
+212101212 939 1569  0.5984704
+2121012F2   0    2  0.0000000
+21210F212   0    1  0.0000000
+21210F2F2   1    0        Inf
+212111212   8    7  1.1428571
+212F01212  12    3  4.0000000
+212F01FF2  14    1 14.0000000
+212F0F212  23    7  3.2857143
+212F0FFF2   5    0        Inf
+212F11212   1    0        Inf
+2F2101212  18    5  3.6000000
+2F21012F2  11    1 11.0000000
+2F2111212   1    0        Inf
+2F2F01212  12    1 12.0000000
+2F2F01FF2  44    3 14.6666667
+2FF10F212   7    0        Inf
+2FF10F2F2   4    1  4.0000000
+2FFF0F212  39    8  4.8750000
+2FFF0FFF2 147   27  5.4444444
+2FFF1FFF2 611  853  0.7162954
+FF2F01212   6    2  3.0000000
+FF2F01FF2  30    4  7.5000000
+FF2F11212   2    0        Inf
+FF2FF1212 279  125  2.2320000
+FFFF0F212  40    4 10.0000000
+FFFF0FFF2 185   49  3.7755102</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Ctl  Syn      Subs
+2121012122  939 1569 0.5984704
+212101212   952 1568 0.6071429
+2121012121 1009 1629 0.6193984
+2FFF1FFF21  591  846 0.6985816
+2FFF1FFF22  611  853 0.7162954
+2FFF1FFF2   626  853 0.7338804
+FF2FF12122  279  125 2.2320000
+FF2FF1212   294  124 2.3709677</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>2FFF1FFF2: S1 Interior vs.&nbsp;S2 Interior: The interiors intersect in 2 dimensions (2). S1 Interior vs.&nbsp;S2 Boundary: No intersection (F). S1 Interior vs.&nbsp;S2 Exterior: No intersection (F). S1 Boundary vs.&nbsp;S2 Interior: No intersection (F). S1 Boundary vs.&nbsp;S2 Boundary: A 1-dimensional intersection occurs (e.g., they share a common line segment) (1). S1 Boundary vs.&nbsp;S2 Exterior: No intersection (F). S1 Exterior vs.&nbsp;S2 Interior: No intersection (F). S1 Exterior vs.&nbsp;S2 Boundary: No intersection (F). S1 Exterior vs.&nbsp;S2 Exterior: The exteriors intersect in 2 dimensions (2).</p>
+<p>2FFF0FFF2: 2: The intersection of the first geometry’s interior and the second geometry’s interior creates a polygon (a two-dimensional intersection). F: The interior of the first geometry does not intersect the boundary of the second. F: The interior of the first geometry does not intersect the exterior of the second. F: The boundary of the first geometry does not intersect the interior of the second. 0: The boundary of the first geometry intersects the boundary of the second geometry at a point (a zero-dimensional intersection). F: The boundary of the first geometry does not intersect the exterior of the second. F: The exterior of the first geometry does not intersect the interior of the second. F: The exterior of the first geometry does not intersect the boundary of the second. 2: The exterior of the first geometry intersects the exterior of the second geometry, creating a polygon (a two-dimensional intersection).</p>
+<p>FFFF0FFF2: F (False): The intersection of the interior of the first geometry with the interior of the second geometry is empty. F (False): The intersection of the interior of the first geometry with the boundary of the second geometry is empty. F (False): The intersection of the interior of the first geometry with the exterior of the second geometry is empty. F (False): The intersection of the boundary of the first geometry with the interior of the second geometry is empty. 0 (Zero-Dimensional): The intersection of the boundary of the first geometry with the boundary of the second geometry is a point (0-dimensional). F (False): The intersection of the boundary of the first geometry with the exterior of the second geometry is empty. F (False): The intersection of the exterior of the first geometry with the interior of the second geometry is empty. F (False): The intersection of the exterior of the first geometry with the boundary of the second geometry is empty. 2 (Two-Dimensional): The intersection of the exterior of the first geometry with the exterior of the second geometry is a 2-dimensional area.</p>
+<section id="example-9" class="level2" data-number="14.1">
+<h2 data-number="14.1" class="anchored" data-anchor-id="example-9"><span class="header-section-number">14.1</span> Example</h2>
+</section>
+<section id="roc-9" class="level2" data-number="14.2">
+<h2 data-number="14.2" class="anchored" data-anchor-id="roc-9"><span class="header-section-number">14.2</span> ROC</h2>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$ROC_properties
+            Feature     AUC threshold sensitivity specificity      ppv      npv
+1 Sum_relateReciepe 55.6077   17078.5    93.60269    23.24723 57.20165 76.82927
+    ci_low  ci_high
+1 51.33587 59.87961
+
+$Coningency_table
+     
+      Ctl          Syn          
+  Ctl "63 (23.2%)" "208 (76.8%)"
+  Syn "19 (6.4%)"  "278 (93.6%)"
+
+$Descr_table
+# A tibble: 2 × 4
+  group     n   Mean    SD
+  &lt;fct&gt; &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;
+1 Ctl     271 17079.  2.62
+2 Syn     297 17079.  1.28</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="is-clockwise" class="level1" data-number="15">
+<h1 data-number="15"><span class="header-section-number">15</span> is clockwise (?)</h1>
+<section id="example-10" class="level2" data-number="15.1">
+<h2 data-number="15.1" class="anchored" data-anchor-id="example-10"><span class="header-section-number">15.1</span> Example</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/unnamed-chunk-35-2.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="roc-10" class="level2" data-number="15.2">
+<h2 data-number="15.2" class="anchored" data-anchor-id="roc-10"><span class="header-section-number">15.2</span> ROC</h2>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/unnamed-chunk-36-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$ROC_properties
+          Feature     AUC threshold sensitivity specificity      ppv      npv
+1 Sum_isClockwise 61.4279       2.5    75.75758    41.32841 58.59375 60.86957
+    ci_low  ci_high
+1 56.87297 65.98289
+
+$Coningency_table
+     
+      Ctl           Syn          
+  Ctl "112 (41.3%)" "159 (58.7%)"
+  Syn "72 (24.2%)"  "225 (75.8%)"
+
+$Descr_table
+# A tibble: 2 × 4
+  group     n  Mean    SD
+  &lt;fct&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 Ctl     271  3.24  2.24
+2 Syn     297  4.23  2.40</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="poly-to-circle" class="level1" data-number="16">
+<h1 data-number="16"><span class="header-section-number">16</span> Poly to circle</h1>
+</section>
+<section id="convex-hull" class="level1" data-number="17">
+<h1 data-number="17"><span class="header-section-number">17</span> Convex hull</h1>
+</section>
+<section id="convex-hull-area" class="level1" data-number="18">
+<h1 data-number="18"><span class="header-section-number">18</span> Convex Hull Area</h1>
+<section id="example-11" class="level2" data-number="18.1">
+<h2 data-number="18.1" class="anchored" data-anchor-id="example-11"><span class="header-section-number">18.1</span> Example</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/unnamed-chunk-39-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="roc-11" class="level2" data-number="18.2">
+<h2 data-number="18.2" class="anchored" data-anchor-id="roc-11"><span class="header-section-number">18.2</span> ROC</h2>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/unnamed-chunk-40-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$ROC_properties
+           Feature     AUC threshold sensitivity specificity      ppv      npv
+1 GA_area_convhull 56.0389  1.491143    74.74747    47.97048 61.15702 63.41463
+    ci_low  ci_high
+1 51.11374 60.96398
+
+$Coningency_table
+     
+      Ctl          Syn          
+  Ctl "130 (48%)"  "141 (52%)"  
+  Syn "75 (25.3%)" "222 (74.7%)"
+
+$Descr_table
+# A tibble: 2 × 4
+  group     n  Mean    SD
+  &lt;fct&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 Ctl     271  2.30  1.88
+2 Syn     297  2.58  1.45</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="compare-all-features" class="level1" data-number="19">
+<h1 data-number="19"><span class="header-section-number">19</span> Compare all features:</h1>
+<section id="summary-table" class="level2" data-number="19.1">
+<h2 data-number="19.1" class="anchored" data-anchor-id="summary-table"><span class="header-section-number">19.1</span> Summary table:</h2>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 2%">
+<col style="width: 17%">
+<col style="width: 7%">
+<col style="width: 12%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Feature</th>
+<th style="text-align: right;">AUC</th>
+<th style="text-align: right;">threshold</th>
+<th style="text-align: right;">sensitivity</th>
+<th style="text-align: right;">specificity</th>
+<th style="text-align: right;">ppv</th>
+<th style="text-align: right;">npv</th>
+<th style="text-align: right;">ci_low</th>
+<th style="text-align: right;">ci_high</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">GA_isValidStruct</td>
+<td style="text-align: right;">77.7473</td>
+<td style="text-align: right;">1.666667e-01</td>
+<td style="text-align: right;">70.70707</td>
+<td style="text-align: right;">75.27675</td>
+<td style="text-align: right;">75.81227</td>
+<td style="text-align: right;">70.10309</td>
+<td style="text-align: right;">74.01116</td>
+<td style="text-align: right;">81.48351</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">SumID_lineInter</td>
+<td style="text-align: right;">72.8534</td>
+<td style="text-align: right;">1.105000e+02</td>
+<td style="text-align: right;">76.76768</td>
+<td style="text-align: right;">62.36162</td>
+<td style="text-align: right;">69.09091</td>
+<td style="text-align: right;">71.00840</td>
+<td style="text-align: right;">68.62725</td>
+<td style="text-align: right;">77.07951</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">Consistency_zs</td>
+<td style="text-align: right;">70.3685</td>
+<td style="text-align: right;">2.220246e+00</td>
+<td style="text-align: right;">76.43098</td>
+<td style="text-align: right;">65.31365</td>
+<td style="text-align: right;">70.71651</td>
+<td style="text-align: right;">71.65992</td>
+<td style="text-align: right;">65.81407</td>
+<td style="text-align: right;">74.92294</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">8</td>
+<td style="text-align: left;">GA_areaPoly</td>
+<td style="text-align: right;">69.8958</td>
+<td style="text-align: right;">1.288086e+00</td>
+<td style="text-align: right;">59.25926</td>
+<td style="text-align: right;">70.47970</td>
+<td style="text-align: right;">68.75000</td>
+<td style="text-align: right;">61.21795</td>
+<td style="text-align: right;">65.64189</td>
+<td style="text-align: right;">74.14962</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">9</td>
+<td style="text-align: left;">GA_isSimple</td>
+<td style="text-align: right;">69.3572</td>
+<td style="text-align: right;">1.666667e-01</td>
+<td style="text-align: right;">74.41077</td>
+<td style="text-align: right;">56.45756</td>
+<td style="text-align: right;">65.19174</td>
+<td style="text-align: right;">66.81223</td>
+<td style="text-align: right;">65.06818</td>
+<td style="text-align: right;">73.64615</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">SD_ID_ysc</td>
+<td style="text-align: right;">69.1515</td>
+<td style="text-align: right;">1.160754e-01</td>
+<td style="text-align: right;">81.81818</td>
+<td style="text-align: right;">59.40959</td>
+<td style="text-align: right;">68.83853</td>
+<td style="text-align: right;">74.88372</td>
+<td style="text-align: right;">64.62566</td>
+<td style="text-align: right;">73.67742</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">GA_segm_leng</td>
+<td style="text-align: right;">63.7755</td>
+<td style="text-align: right;">7.856126e+00</td>
+<td style="text-align: right;">83.83838</td>
+<td style="text-align: right;">49.07749</td>
+<td style="text-align: right;">64.34109</td>
+<td style="text-align: right;">73.48066</td>
+<td style="text-align: right;">59.07019</td>
+<td style="text-align: right;">68.48084</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">SD_ID_xsc</td>
+<td style="text-align: right;">61.8348</td>
+<td style="text-align: right;">1.217639e-01</td>
+<td style="text-align: right;">89.22559</td>
+<td style="text-align: right;">44.28044</td>
+<td style="text-align: right;">63.70192</td>
+<td style="text-align: right;">78.94737</td>
+<td style="text-align: right;">57.01230</td>
+<td style="text-align: right;">66.65736</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">12</td>
+<td style="text-align: left;">Sum_isClockwise</td>
+<td style="text-align: right;">61.4279</td>
+<td style="text-align: right;">2.500000e+00</td>
+<td style="text-align: right;">75.75758</td>
+<td style="text-align: right;">41.32841</td>
+<td style="text-align: right;">58.59375</td>
+<td style="text-align: right;">60.86957</td>
+<td style="text-align: right;">56.87297</td>
+<td style="text-align: right;">65.98289</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">7</td>
+<td style="text-align: left;">GA_BtwDist</td>
+<td style="text-align: right;">58.1100</td>
+<td style="text-align: right;">3.093700e-02</td>
+<td style="text-align: right;">96.29630</td>
+<td style="text-align: right;">26.93727</td>
+<td style="text-align: right;">59.09091</td>
+<td style="text-align: right;">86.90476</td>
+<td style="text-align: right;">53.88037</td>
+<td style="text-align: right;">62.33964</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">13</td>
+<td style="text-align: left;">GA_area_convhull</td>
+<td style="text-align: right;">56.0389</td>
+<td style="text-align: right;">1.491143e+00</td>
+<td style="text-align: right;">74.74747</td>
+<td style="text-align: right;">47.97048</td>
+<td style="text-align: right;">61.15702</td>
+<td style="text-align: right;">63.41463</td>
+<td style="text-align: right;">51.11374</td>
+<td style="text-align: right;">60.96398</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">11</td>
+<td style="text-align: left;">Sum_relateReciepe</td>
+<td style="text-align: right;">55.6077</td>
+<td style="text-align: right;">1.707850e+04</td>
+<td style="text-align: right;">93.60269</td>
+<td style="text-align: right;">23.24723</td>
+<td style="text-align: right;">57.20165</td>
+<td style="text-align: right;">76.82927</td>
+<td style="text-align: right;">51.33587</td>
+<td style="text-align: right;">59.87961</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">Consistency</td>
+<td style="text-align: right;">50.2081</td>
+<td style="text-align: right;">5.868310e-02</td>
+<td style="text-align: right;">77.44108</td>
+<td style="text-align: right;">39.85240</td>
+<td style="text-align: right;">58.52417</td>
+<td style="text-align: right;">61.71429</td>
+<td style="text-align: right;">45.19057</td>
+<td style="text-align: right;">55.22565</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</section>
+<section id="could-compare-each-feature-singularly" class="level1" data-number="20">
+<h1 data-number="20"><span class="header-section-number">20</span> Could compare each feature singularly:</h1>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting direction: controls &lt; cases</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/unnamed-chunk-42-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting direction: controls &gt; cases</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/unnamed-chunk-42-2.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Bootstrap test for two correlated ROC curves
+
+data:  Sum_isValidStruct and Consistency_zs in ds_Q by group (Ctl, Syn)
+D = 6.13, boot.n = 100, boot.stratified = 1, p-value = 8.79e-10
+alternative hypothesis: true difference in AUC is not equal to 0
+sample estimates:
+pAUC (100-90 specificity) of roc1 pAUC (100-90 specificity) of roc2 
+                       3.05545340                        0.06696734 </code></pre>
+</div>
+</div>
+<section id="phase-ii-methods" class="level2" data-number="20.1">
+<h2 data-number="20.1" class="anchored" data-anchor-id="phase-ii-methods"><span class="header-section-number">20.1</span> <em>Phase II</em> Methods</h2>
+</section>
+<section id="phase-ii-materials" class="level2" data-number="20.2">
+<h2 data-number="20.2" class="anchored" data-anchor-id="phase-ii-materials"><span class="header-section-number">20.2</span> <em>Phase II</em> Materials:</h2>
+<p>Materials are desribed here <a href="https://osf.io/pjb6e/?view_only=d467ebf4c1f94076ae4ac61298255065" class="uri">https://osf.io/pjb6e/?view_only=d467ebf4c1f94076ae4ac61298255065</a>.</p>
+</section>
+<section id="phase-ii-planned-population" class="level2" data-number="20.3">
+<h2 data-number="20.3" class="anchored" data-anchor-id="phase-ii-planned-population"><span class="header-section-number">20.3</span> <em>Phase II</em> Planned population</h2>
+<p><a href="https://osf.io/6h8dx"><strong>https://osf.io/6h8dx</strong></a></p>
+</section>
+</section>
+<section id="discussion" class="level1" data-number="21">
+<h1 data-number="21"><span class="header-section-number">21</span> Discussion</h1>
+<p>From the different features we extracted, topological validity across the repetitions appeared to be the one leading to the largest Area Under the Curve. The optimal cutoff was exactly 1.5, leading to a sensitivity () and specificity ().</p>
+<p>The optimal criterion ineeds to be informed about the order between inducers (i.e.&nbsp;to construct the polygons) and interestingly suggests that synthetic inducer are structurally mapped following topological rules analogous to geographical space structures. Hence suggesting a spatial nature for the synthetic forms of space sequence synesthetes.</p>
+</section>
+<section id="supplementary-conditions" class="level1" data-number="22">
+<h1 data-number="22"><span class="header-section-number">22</span> Supplementary: Conditions</h1>
+<section id="per-conditions" class="level2" data-number="22.1">
+<h2 data-number="22.1" class="anchored" data-anchor-id="per-conditions"><span class="header-section-number">22.1</span> Per Conditions</h2>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/PerCondition-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/PerCondition-2.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/PerCondition-3.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Syn, case = Ctl</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/PerCondition-4.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Syn, case = Ctl</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/PerCondition-5.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Syn, case = Ctl</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/PerCondition-6.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/PerCondition-7.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/PerCondition-8.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = Ctl, case = Syn</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2.Pre-registeredReport_files/figure-html/PerCondition-9.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="summary-table-per-cond" class="level2" data-number="22.2">
+<h2 data-number="22.2" class="anchored" data-anchor-id="summary-table-per-cond"><span class="header-section-number">22.2</span> Summary table Per cond</h2>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 2%">
+<col style="width: 26%">
+<col style="width: 7%">
+<col style="width: 9%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Feature</th>
+<th style="text-align: right;">AUC</th>
+<th style="text-align: right;">threshold</th>
+<th style="text-align: right;">sensitivity</th>
+<th style="text-align: right;">specificity</th>
+<th style="text-align: right;">ppv</th>
+<th style="text-align: right;">npv</th>
+<th style="text-align: right;">ci_low</th>
+<th style="text-align: right;">ci_high</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">7</td>
+<td style="text-align: left;">SumID_lineInterCond_month</td>
+<td style="text-align: right;">77.6001</td>
+<td style="text-align: right;">30.0000000</td>
+<td style="text-align: right;">79.46128</td>
+<td style="text-align: right;">68.63469</td>
+<td style="text-align: right;">73.52025</td>
+<td style="text-align: right;">75.30364</td>
+<td style="text-align: right;">76.96926</td>
+<td style="text-align: right;">78.23095</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">GA_isValidStructCond_month</td>
+<td style="text-align: right;">74.2213</td>
+<td style="text-align: right;">0.1666667</td>
+<td style="text-align: right;">84.50185</td>
+<td style="text-align: right;">59.93266</td>
+<td style="text-align: right;">65.80460</td>
+<td style="text-align: right;">80.90909</td>
+<td style="text-align: right;">72.21873</td>
+<td style="text-align: right;">76.22388</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">9</td>
+<td style="text-align: left;">SumID_lineInterCond_number</td>
+<td style="text-align: right;">70.3368</td>
+<td style="text-align: right;">25.0000000</td>
+<td style="text-align: right;">69.36027</td>
+<td style="text-align: right;">65.31365</td>
+<td style="text-align: right;">68.66667</td>
+<td style="text-align: right;">66.04478</td>
+<td style="text-align: right;">69.56772</td>
+<td style="text-align: right;">71.10593</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">Consistency_zs_Cond_number</td>
+<td style="text-align: right;">69.4677</td>
+<td style="text-align: right;">0.7336641</td>
+<td style="text-align: right;">79.46128</td>
+<td style="text-align: right;">60.14760</td>
+<td style="text-align: right;">68.60465</td>
+<td style="text-align: right;">72.76786</td>
+<td style="text-align: right;">68.63720</td>
+<td style="text-align: right;">70.29828</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">Consistency_zs_Cond_month</td>
+<td style="text-align: right;">68.9627</td>
+<td style="text-align: right;">0.7376572</td>
+<td style="text-align: right;">75.42088</td>
+<td style="text-align: right;">66.42066</td>
+<td style="text-align: right;">71.11111</td>
+<td style="text-align: right;">71.14625</td>
+<td style="text-align: right;">68.18580</td>
+<td style="text-align: right;">69.73958</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">8</td>
+<td style="text-align: left;">SumID_lineInterCond_weekday</td>
+<td style="text-align: right;">67.7563</td>
+<td style="text-align: right;">59.5000000</td>
+<td style="text-align: right;">92.59259</td>
+<td style="text-align: right;">40.59041</td>
+<td style="text-align: right;">63.07339</td>
+<td style="text-align: right;">83.33333</td>
+<td style="text-align: right;">66.83536</td>
+<td style="text-align: right;">68.67721</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">Consistency_zs_Cond_weekday</td>
+<td style="text-align: right;">67.6625</td>
+<td style="text-align: right;">0.5399420</td>
+<td style="text-align: right;">77.44108</td>
+<td style="text-align: right;">58.67159</td>
+<td style="text-align: right;">67.25146</td>
+<td style="text-align: right;">70.35398</td>
+<td style="text-align: right;">66.65450</td>
+<td style="text-align: right;">68.67046</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">GA_isValidStructCond_weekday</td>
+<td style="text-align: right;">66.5474</td>
+<td style="text-align: right;">0.5000000</td>
+<td style="text-align: right;">88.56089</td>
+<td style="text-align: right;">36.70034</td>
+<td style="text-align: right;">56.07477</td>
+<td style="text-align: right;">77.85714</td>
+<td style="text-align: right;">64.20367</td>
+<td style="text-align: right;">68.89111</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">GA_isValidStructCond_number</td>
+<td style="text-align: right;">59.6171</td>
+<td style="text-align: right;">0.1666667</td>
+<td style="text-align: right;">81.18081</td>
+<td style="text-align: right;">37.71044</td>
+<td style="text-align: right;">54.32099</td>
+<td style="text-align: right;">68.71166</td>
+<td style="text-align: right;">57.51223</td>
+<td style="text-align: right;">61.72193</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</section>
+<section id="references" class="level1 unnumbered" data-number="23">
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">23 References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-brang2013" class="csl-entry" role="listitem">
+Brang, David, Luke E. Miller, Marguerite McQuire, V. S. Ramachandran, and Seana Coulson. 2013. <span>“Enhanced Mental Rotation Ability in Time-Space Synesthesia.”</span> <em>Cognitive Processing</em> 14 (4): 429–34. <a href="https://doi.org/10.1007/s10339-013-0561-5">https://doi.org/10.1007/s10339-013-0561-5</a>.
+</div>
+<div id="ref-deroy2013" class="csl-entry" role="listitem">
+Deroy, Ophelia, and Charles Spence. 2013. <span>“Why We Are Not All Synesthetes (Not Even Weakly So).”</span> <em>Psychonomic Bulletin &amp; Review</em> 20 (4): 643–64. <a href="https://doi.org/10.3758/s13423-013-0387-2">https://doi.org/10.3758/s13423-013-0387-2</a>.
+</div>
+<div id="ref-galton1880" class="csl-entry" role="listitem">
+Galton, Francis. 1880. <span>“Visualised Numerals.”</span> <em>Nature</em> 21 (533): 252–56. <a href="https://doi.org/10.1038/021252a0">https://doi.org/10.1038/021252a0</a>.
+</div>
+<div id="ref-root2021" class="csl-entry" role="listitem">
+Root, Nicholas, Michiko Asano, Helena Melero, Chai-Youn Kim, Anton V. Sidoroff-Dorso, Argiro Vatakis, Kazuhiko Yokosawa, Vilayanur Ramachandran, and Romke Rouw. 2021. <span>“Do the Colors of Your Letters Depend on Your Language? Language-Dependent and Universal Influences on Grapheme-Color Synesthesia in Seven Languages.”</span> <em>Consciousness and Cognition</em> 95 (October): 103192. <a href="https://doi.org/10.1016/j.concog.2021.103192">https://doi.org/10.1016/j.concog.2021.103192</a>.
+</div>
+<div id="ref-rothen2016" class="csl-entry" role="listitem">
+Rothen, Nicolas, Kristin Jünemann, Andy D. Mealor, Vera Burckhardt, and Jamie Ward. 2016. <span>“The Sensitivity and Specificity of a Diagnostic Test of Sequence-Space Synesthesia.”</span> <em>Behavior Research Methods</em> 48 (4): 1476–81. <a href="https://doi.org/10.3758/s13428-015-0656-2">https://doi.org/10.3758/s13428-015-0656-2</a>.
+</div>
+<div id="ref-rothen2013" class="csl-entry" role="listitem">
+Rothen, Nicolas, Anil K. Seth, Christoph Witzel, and Jamie Ward. 2013. <span>“Diagnosing Synaesthesia with Online Colour Pickers: Maximising Sensitivity and Specificity.”</span> <em>Journal of Neuroscience Methods</em> 215 (1): 156–60. <a href="https://doi.org/10.1016/j.jneumeth.2013.02.009">https://doi.org/10.1016/j.jneumeth.2013.02.009</a>.
+</div>
+<div id="ref-sagiv2006" class="csl-entry" role="listitem">
+Sagiv, N, J Simner, J Collins, B Butterworth, and J Ward. 2006. <span>“What Is the Relationship Between Synaesthesia and Visuo-Spatial Number Forms?”</span> <em>Cognition</em> 101 (1): 114–28. <a href="https://doi.org/10.1016/j.cognition.2005.09.004">https://doi.org/10.1016/j.cognition.2005.09.004</a>.
+</div>
+<div id="ref-seron1992" class="csl-entry" role="listitem">
+Seron, Xavier, Mauro Pesenti, Marie-Pascale Noël, Gérard Deloche, and Jacques-André Cornet. 1992. <span>“Images of numbers, or <span>“</span>when 98 is upper left and 6 sky blue<span>”</span>.”</span> <em>Cognition</em>, Numerical Cognition, 44 (1): 159–96. <a href="https://doi.org/10.1016/0010-0277(92)90053-K">https://doi.org/10.1016/0010-0277(92)90053-K</a>.
+</div>
+<div id="ref-vanpetersen2020" class="csl-entry" role="listitem">
+Van Petersen, Eline, Mareike Altgassen, Rob Van Lier, and Tessa M. Van Leeuwen. 2020b. <span>“Enhanced Spatial Navigation Skills in Sequence-Space Synesthetes.”</span> <em>Cortex</em> 130 (September): 49–63. <a href="https://doi.org/10.1016/j.cortex.2020.04.034">https://doi.org/10.1016/j.cortex.2020.04.034</a>.
+</div>
+<div id="ref-vanpetersen2020a" class="csl-entry" role="listitem">
+———. 2020a. <span>“Enhanced Spatial Navigation Skills in Sequence-Space Synesthetes.”</span> <em>Cortex</em> 130 (September): 49–63. <a href="https://doi.org/10.1016/j.cortex.2020.04.034">https://doi.org/10.1016/j.cortex.2020.04.034</a>.
+</div>
+<div id="ref-ward" class="csl-entry" role="listitem">
+Ward, Jamie. n.d. <span>“Optimizing a Measure of Consistency for Sequence-Space Synaesthesia.”</span> <a href="https://doi.org/10.31234/osf.io/5cnr7">https://doi.org/10.31234/osf.io/5cnr7</a>.
+</div>
+<div id="ref-ward2018" class="csl-entry" role="listitem">
+Ward, Jamie, Alberta Ipser, Eva Phanvanova, Paris Brown, Iris Bunte, and Julia Simner. 2018. <span>“The Prevalence and Cognitive Profile of Sequence-Space Synaesthesia.”</span> <em>Consciousness and Cognition</em> 61 (May): 79–93. <a href="https://doi.org/10.1016/j.concog.2018.03.012">https://doi.org/10.1016/j.concog.2018.03.012</a>.
+</div>
+</div></section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

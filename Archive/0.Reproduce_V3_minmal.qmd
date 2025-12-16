@@ -1,0 +1,268 @@
+---
+title: "Reproduce results"
+
+author:
+  - "Rémy Lachelin"
+date: today
+
+format:
+  pdf:
+    toc: true
+  html:
+    toc: true
+    page-layout: article
+#  live-html
+# engine: knitr
+
+link-citations: true
+link-bibliography: true
+bibliography: references.bib
+---
+
+# Analysis:
+
+Reproduction of the results in:
+
+-   Rothen [@rothen2016]. Data can be found here: <https://osf.io/6hq94/files/osfstorage> and here: <https://reshare.ukdataservice.ac.uk/852530/>
+
+```{r, setup, include=FALSE}
+knitr::opts_chunk$set(
+  fig.width = 10, fig.height = 8, echo = F
+)
+```
+
+```{r, packages, message=FALSE, warning=FALSE}
+# Import
+library(readr)
+library(readxl)
+# Wrangle
+library(tidyr)
+library(dplyr)
+# Visuals for export
+library(ggplot2)
+library(papaja)
+# Specific libraries
+library(pROC) # See https://www.r-bloggers.com/2019/02/some-r-packages-for-roc-curves/
+```
+
+# Rothen 2016
+
+```{r, LoadData}
+## Load data
+ds_Rothen <- read.csv("~/Documents/SpaceSequenceSynDiagnostic/SpaceSequenceSynDiagnostic/rawdata.txt", sep="")
+
+rawdata <- read_table("rawdata.txt")
+ds_Rothen_aggregated <- read_excel("final_data_four_methods.xlsx")
+
+# This  make the subject match:
+ds_Rothen$subject <- as.numeric(gsub(".*?([0-9]+).*", "\\1", ds_Rothen$ID))
+
+# Not per se necessary, but keeps same nomenclatures across datsets
+names(ds_Rothen)[names(ds_Rothen) == "Group"] <- "group"
+ds_Rothen$group <- as.factor(ds_Rothen$group)
+levels(ds_Rothen$group) <- c("Ctl","Syn")
+names(ds_Rothen)[names(ds_Rothen) == "Inducer"] <- "stimulus"
+names(ds_Rothen)[names(ds_Rothen) == "X"] <- "x"
+names(ds_Rothen)[names(ds_Rothen) == "Y"] <- "y"
+ds_Rothen$SynQuest <- ds_Rothen$group == "Syn"
+
+ds_Rothen$dataSource <- "Rothen"
+
+# From the paper (all the same since lab based):
+ds_Rothen$width  <- 1024
+ds_Rothen$height <- 768
+
+ds_Rothen$x_toNaN <- ds_Rothen$x
+ds_Rothen$y_toNaN <- ds_Rothen$y
+ds_Rothen$x_toNaN[ds_Rothen$x_toNaN == -1] <- NaN
+ds_Rothen$y_toNaN[ds_Rothen$y_toNaN == -1] <- NaN
+
+
+ds_Rothen$x_to0 <- ds_Rothen$x
+ds_Rothen$y_to0 <- ds_Rothen$y
+ds_Rothen$x_to0[ds_Rothen$x_to0 == NaN] <- 0
+ds_Rothen$y_to0[ds_Rothen$y_to0 == NaN] <- 0
+
+
+```
+
+This is what we aim to replicate [@rothen2016]:
+
+![](Rothen_2016.png)
+
+```{r}
+## Define function to compute ROC:
+Comp_ROC <- function(data, group_col, feature, ID){
+  
+  ################ ROC analyses ################ 
+  
+  ROC_here <- pROC::roc(data[[group_col]] ~ data[[feature]], data, 
+                  percent=TRUE,
+                  # arguments for ci
+                  ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+                  # arguments for plot
+                  plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+                  print.auc=TRUE, show.thres=TRUE)
+  
+  # Best threshold using Youden's J
+  best_coords <- pROC::coords(ROC_here, "best", 
+                              ret = c("threshold", "sensitivity","specificity","ppv","npv"), 
+                              best.method = "youden")
+  
+
+  auc_val <- as.numeric(pROC::auc(ROC_here))
+  ci_auc  <- ci.auc(ROC_here)
+  
+  new_row <- data.frame(
+    Feature   = feature,
+    AUC        = round(auc_val, 4),
+    threshold  = as.numeric(best_coords[["threshold"]]),
+    sensitivity= as.numeric(best_coords[["sensitivity"]]),
+    specificity= as.numeric(best_coords[["specificity"]]),
+    ppv        = as.numeric(best_coords[["ppv"]]),
+    npv        = as.numeric(best_coords[["npv"]]),
+    ci_low     = as.numeric(ci_auc[1]),
+    ci_high    = as.numeric(ci_auc[3]),
+    stringsAsFactors = FALSE
+  )
+
+  ################ Contingency table ################ 
+  
+  data$diagnosis <- ifelse(data[[feature]] >= best_coords$threshold,  "Ctl","Syn")
+  tab_counts <- table(data[[group_col]], data$diagnosis)
+  
+  tab_percent <- prop.table(tab_counts, margin = 1) * 100
+  
+  result <- matrix(
+    paste0(tab_counts, " (", round(tab_percent, 1), "%)"),
+    nrow = nrow(tab_counts),
+    dimnames = dimnames(tab_counts)
+  )
+  
+  ################ General description ################ 
+  
+  Descr_table <- data %>%
+    group_by(!!sym(group_col)) %>%
+    summarize(n = length(unique(!!sym(ID))), Mean = mean(!!sym(feature)), SD = sd(!!sym(feature)))
+
+  ################ Return tables ################ 
+  return(list(ROC_properties = new_row, Coningency_table =result, Descr_table = Descr_table,ROC = ROC_here))
+
+}
+```
+
+## Area ($pixel^2$):
+
+**Definition**: Calculating consistency Each stimulus is represented by three xy coordinates - (x1, y1), (x2, y2), (x3, y3) - from the three repetitions. For each stimulus, the area of the triangle bounded by the coordinates is calculated as follows:\
+$Area = (x1y2 + x2y3 + x3y1 – x1y3 – x2y1 – x3y2) / 2$
+
+```{r}
+### Define triangle_area funciton:
+triangle_area <- function(x, y) {
+  if(length(x) != 3 | length(y) != 3) return(NA)
+  area <- abs(
+    x[1]*y[2] + x[2]*y[3] + x[3]*y[1] -
+    x[1]*y[3] - x[2]*y[1] - x[3]*y[2]
+  ) / 2
+  return(area)
+}
+
+```
+
+```{r}
+
+## Compute triangle area by group:
+ds_Rothen <- ds_Rothen %>%  
+  group_by(ID, stimulus) %>%
+  mutate(triangle_area = triangle_area(x, y)) %>%
+  ungroup()
+
+## Summarize By ID:
+ds_rothen_ID <- ds_Rothen %>%
+  ungroup() %>% group_by(ID,group) %>%
+  summarize(triangle_area_GA = mean(triangle_area, na.rm = TRUE)) 
+ 
+Out_area <- Comp_ROC(ds_rothen_ID, "group", "triangle_area_GA","ID")
+
+knitr::kable(Out_area$ROC_properties)
+knitr::kable(Out_area$Descr_table)
+knitr::kable(Out_area$Coningency_table)
+
+
+ds_rothen_ID %>%
+    group_by(group) %>%
+    summarize(n = length(unique(ID)), Mean = mean(triangle_area_GA), SD = sd(triangle_area_GA))
+
+
+```
+
+```{r }
+###### To 0
+## Compute triangle area by group:
+ds_Rothen <- ds_Rothen %>%  
+  group_by(ID, stimulus) %>%
+  mutate(triangle_area_to0 = triangle_area(x_to0, y_to0)) %>%
+  ungroup()
+
+## Summarize By ID:
+ds_rothen_ID <- ds_Rothen %>%
+  ungroup() %>% group_by(ID,group) %>%
+  summarize(triangle_areaGA_to0 = mean(triangle_area_to0)) 
+ 
+Out_area <- Comp_ROC(ds_rothen_ID, "group", "triangle_areaGA_to0","ID")
+
+knitr::kable(Out_area$ROC_properties)
+knitr::kable(Out_area$Descr_table)
+knitr::kable(Out_area$Coningency_table)
+
+
+ds_rothen_ID %>%
+    group_by(group) %>%
+    summarize(n = length(unique(ID)), Mean = mean(triangle_areaGA_to0), SD = sd(triangle_areaGA_to0))
+
+
+```
+
+```{}
+```
+
+```{r}
+#### To NaN
+## Compute triangle area by group:
+ds_Rothen <- ds_Rothen %>%  
+  group_by(ID, stimulus) %>%
+  mutate(triangle_area_toNaN = triangle_area(x_toNaN, y_toNaN)) %>%
+  ungroup()
+
+## Summarize By ID:
+ds_rothen_ID <- ds_Rothen %>%
+  ungroup() %>% group_by(ID,group) %>%
+  summarize(triangle_area_GA_toNaN = mean(triangle_area_toNaN, na.rm = TRUE)) 
+ 
+Out_area <- Comp_ROC(ds_rothen_ID, "group", "triangle_area_GA_toNaN","ID")
+
+knitr::kable(Out_area$ROC_properties)
+knitr::kable(Out_area$Descr_table)
+knitr::kable(Out_area$Coningency_table)
+
+
+ds_rothen_ID %>%
+    group_by(group) %>%
+    summarize(n = length(unique(ID)), Mean = mean(triangle_area_GA_toNaN), SD = sd(triangle_area_GA_toNaN))
+```
+
+### Summary Rothen vs Repro
+
+|   | Descriptive | AUC | Mean (syn) | Mean (con) | SD (syn) | SD (con) | Sensitivity | Specificity | Cut-off |
+|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
+| Rothen | Area | 0.76 | 1079 | 7031 | 1365 | 11149 | 88 | 70 | 1,596 |
+| Repro |  | 0.75 | **1312** | 7031 | **1829** | 11303 | **85** | 70 | 1,575 |
+| Repro_to0 |  | 0.75 | 1312 | 7031 | 1829 | 11303 | 85 | 70 | 1,573 |
+| Repro_toNaN |  | 0.76 | 1080 | 7031 | 1386 | 11303 | 88 | 70 | 1,574 |
+
+
+# System info:
+
+```{r}
+sessionInfo()
+```

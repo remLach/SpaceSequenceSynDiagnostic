@@ -1,0 +1,112 @@
+---
+title: "Test"
+author: "RL"
+format: html
+server: shiny
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+## Introduction
+
+![](images/Picture%201.png)
+
+## Bullets
+
+When you click the **Render** button a document will be generated that includes:
+
+-   Content authored with markdown
+-   Output from executable code
+
+## Code
+
+When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+1 + 1
+```
+
+```{r}
+library(shiny)
+library(ggplot2)
+
+ui <- fluidPage(
+  titlePanel("Interactive Confusion Matrix and ROC Curve"),
+  
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput("tp", "True Positive (%)", min = 0, max = 100, value = 40),
+      sliderInput("fp", "False Positive (%)", min = 0, max = 100, value = 10),
+      sliderInput("tn", "True Negative (%)", min = 0, max = 100, value = 40),
+      sliderInput("fn", "False Negative (%)", min = 0, max = 100, value = 10),
+      textOutput("validText")
+    ),
+    
+    mainPanel(
+      plotOutput("rocPlot"),
+      verbatimTextOutput("matrixText")
+    )
+  )
+)
+
+server <- function(input, output, session) {
+  
+  cm <- reactive({
+    tp <- input$tp
+    fp <- input$fp
+    tn <- input$tn
+    fn <- input$fn
+    total <- tp + fp + tn + fn
+    data.frame(tp = tp, fp = fp, tn = tn, fn = fn, total = total)
+  })
+  
+  output$validText <- renderText({
+    if (abs(cm()$total - 100) > 1e-6) {
+      return("⚠️ The total does not sum to 100%. Please adjust your values.")
+    } else {
+      return("✅ The total sums to 100%.")
+    }
+  })
+  
+  output$matrixText <- renderPrint({
+    cm()
+  })
+  
+  output$rocPlot <- renderPlot({
+    if (abs(cm()$total - 100) > 1e-6) return(NULL)
+    
+    tp <- cm()$tp / 100
+    fp <- cm()$fp / 100
+    tn <- cm()$tn / 100
+    fn <- cm()$fn / 100
+    
+    # Compute base rates
+    tpr_base <- tp / (tp + fn)
+    fpr_base <- fp / (fp + tn)
+    
+    # Simulate ROC by varying threshold
+    thresholds <- seq(0, 1, length.out = 50)
+    roc_data <- data.frame(
+      Threshold = thresholds,
+      TPR = pmin(1, pmax(0, tpr_base * thresholds + (1 - thresholds))),
+      FPR = pmin(1, pmax(0, fpr_base * thresholds))
+    )
+    
+    ggplot(roc_data, aes(x = FPR, y = TPR)) +
+      geom_line(color = "blue", size = 1.2) +
+      geom_point(aes(x = fpr_base, y = tpr_base), color = "red", size = 4) +
+      geom_abline(intercept = 0, slope = 1, linetype = "dashed", color = "gray") +
+      labs(
+        title = "ROC Curve (based on entered confusion matrix)",
+        x = "False Positive Rate (FPR)",
+        y = "True Positive Rate (TPR)"
+      ) +
+      theme_minimal()
+  })
+}
+
+shinyApp(ui = ui, server = server)
+
+```
