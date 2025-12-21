@@ -1,0 +1,2344 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Rémy Lachelin">
+<meta name="author" content="Chhavi Sachdeva">
+<meta name="author" content="Nicolas Rothen">
+<meta name="keywords" content="Space sequence synesthesia, consistency test">
+<meta name="description" content="MY PAPER’S TITLE">
+
+<title>Pre-registered report: Space Sequence Synesthesia Diagnostic using form mapping</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="2.Pre-registeredReport_V12_testNewGrouping_files/libs/clipboard/clipboard.min.js"></script>
+<script src="2.Pre-registeredReport_V12_testNewGrouping_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="2.Pre-registeredReport_V12_testNewGrouping_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="2.Pre-registeredReport_V12_testNewGrouping_files/libs/quarto-html/popper.min.js"></script>
+<script src="2.Pre-registeredReport_V12_testNewGrouping_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="2.Pre-registeredReport_V12_testNewGrouping_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="2.Pre-registeredReport_V12_testNewGrouping_files/libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="2.Pre-registeredReport_V12_testNewGrouping_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="2.Pre-registeredReport_V12_testNewGrouping_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="2.Pre-registeredReport_V12_testNewGrouping_files/libs/bootstrap/bootstrap-967bfc029c68e8d72ac0bafb67f2687c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="_extensions/wjschne/apaquarto/apa.css">
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-introduction" id="toc-sec-introduction" class="nav-link active" data-scroll-target="#sec-introduction">Introduction</a>
+  <ul class="collapse">
+  <li><a href="#sec-heterogeneity-and-homogeneity-of-sss" id="toc-sec-heterogeneity-and-homogeneity-of-sss" class="nav-link" data-scroll-target="#sec-heterogeneity-and-homogeneity-of-sss">Heterogeneity and homogeneity of Sequence-Space Synesthesia</a></li>
+  <li><a href="#sec-consistency-tests" id="toc-sec-consistency-tests" class="nav-link" data-scroll-target="#sec-consistency-tests">Consistency tests</a></li>
+  <li><a href="#present-study" id="toc-present-study" class="nav-link" data-scroll-target="#present-study">Present study</a></li>
+  </ul></li>
+  <li><a href="#general-methods" id="toc-general-methods" class="nav-link" data-scroll-target="#general-methods">General Methods</a>
+  <ul class="collapse">
+  <li><a href="#materials" id="toc-materials" class="nav-link" data-scroll-target="#materials">Materials</a></li>
+  <li><a href="#procedure" id="toc-procedure" class="nav-link" data-scroll-target="#procedure">Procedure</a></li>
+  </ul></li>
+  <li><a href="#phase-i.-methods" id="toc-phase-i.-methods" class="nav-link" data-scroll-target="#phase-i.-methods"><em>Phase I.</em> Methods</a>
+  <ul class="collapse">
+  <li><a href="#phase-i.-participants" id="toc-phase-i.-participants" class="nav-link" data-scroll-target="#phase-i.-participants"><em>Phase I.</em> Participants</a></li>
+  </ul></li>
+  <li><a href="#adding" id="toc-adding" class="nav-link" data-scroll-target="#adding">ADDING</a>
+  <ul class="collapse">
+  <li><a href="#phase-i.-procedure" id="toc-phase-i.-procedure" class="nav-link" data-scroll-target="#phase-i.-procedure"><em>Phase I.</em> Procedure</a></li>
+  <li><a href="#sec-phase-i.-analysis" id="toc-sec-phase-i.-analysis" class="nav-link" data-scroll-target="#sec-phase-i.-analysis"><em>Phase I.</em> Analysis</a>
+  <ul class="collapse">
+  <li><a href="#sec-stimulus-level-area-and-perimeter-between-repetitions" id="toc-sec-stimulus-level-area-and-perimeter-between-repetitions" class="nav-link" data-scroll-target="#sec-stimulus-level-area-and-perimeter-between-repetitions">Stimulus level: area and perimeter between repetitions</a></li>
+  <li><a href="#sec-category-level-additional-features" id="toc-sec-category-level-additional-features" class="nav-link" data-scroll-target="#sec-category-level-additional-features">Form level: additional features</a></li>
+  <li><a href="#sec-category-level-additional-improvements" id="toc-sec-category-level-additional-improvements" class="nav-link" data-scroll-target="#sec-category-level-additional-improvements">Form level: additional improvements</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#phase-i.-results" id="toc-phase-i.-results" class="nav-link" data-scroll-target="#phase-i.-results"><em>Phase I.</em> Results</a>
+  <ul class="collapse">
+  <li><a href="#roc-analysis" id="toc-roc-analysis" class="nav-link" data-scroll-target="#roc-analysis">ROC analysis</a></li>
+  <li><a href="#comparison-of-features-distribution" id="toc-comparison-of-features-distribution" class="nav-link" data-scroll-target="#comparison-of-features-distribution">Comparison of feature’s distribution</a></li>
+  <li><a href="#comparison-of-features-by-category" id="toc-comparison-of-features-by-category" class="nav-link" data-scroll-target="#comparison-of-features-by-category">Comparison of features by category</a></li>
+  <li><a href="#additional-analyses" id="toc-additional-analyses" class="nav-link" data-scroll-target="#additional-analyses">Additional analyses</a></li>
+  </ul></li>
+  <li><a href="#sec-phase-ii-methods" id="toc-sec-phase-ii-methods" class="nav-link" data-scroll-target="#sec-phase-ii-methods"><em>Phase II</em> Methods</a></li>
+  <li><a href="#phase-ii-analyses" id="toc-phase-ii-analyses" class="nav-link" data-scroll-target="#phase-ii-analyses"><em>Phase II Analyses</em></a></li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a>
+  <ul class="collapse">
+  <li><a href="#sec-limitations" id="toc-sec-limitations" class="nav-link" data-scroll-target="#sec-limitations">Limitations</a></li>
+  <li><a href="#sec-conclusions" id="toc-sec-conclusions" class="nav-link" data-scroll-target="#sec-conclusions">Conclusions</a></li>
+  </ul></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  <li>Appendix</li>
+  <li><a href="#apx-sec-supplementary-material-phase-i" id="toc-apx-sec-supplementary-material-phase-i" class="nav-link" data-scroll-target="#apx-sec-supplementary-material-phase-i">Appendix phase I</a>
+  <ul class="collapse">
+  <li><a href="#sec-sm1" id="toc-sec-sm1" class="nav-link" data-scroll-target="#sec-sm1">Appendix 1 Subsambled data by questionnaire quantiles (10% steps)</a></li>
+  <li><a href="#sec-sm2-correlation-with-self-report" id="toc-sec-sm2-correlation-with-self-report" class="nav-link" data-scroll-target="#sec-sm2-correlation-with-self-report">Appendix 2 Correlation with self-report</a></li>
+  <li><a href="#sec-SM3byds" id="toc-sec-SM3byds" class="nav-link" data-scroll-target="#sec-SM3byds">Appendix 3 By dataset</a></li>
+  <li><a href="#sec-sm4-reliability" id="toc-sec-sm4-reliability" class="nav-link" data-scroll-target="#sec-sm4-reliability">Appendix 4 Reliability</a></li>
+  <li><a href="#sec-sm5-plot-all" id="toc-sec-sm5-plot-all" class="nav-link" data-scroll-target="#sec-sm5-plot-all">Appendix 5 Plot all</a></li>
+  </ul></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="2.Pre-registeredReport_V12_testNewGrouping.docx"><i class="bi bi-file-word"></i>MS Word (apaquarto)</a></li><li><a href="2.Pre-registeredReport_V12_testNewGrouping.pdf"><i class="bi bi-file-pdf"></i>PDF (apaquarto)</a></li><li><a href="2.Pre-registeredReport_V12_testNewGrouping.pdf"><i class="bi bi-file-pdf"></i>Typst (apaquarto)</a></li></ul></div></nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+</div>
+<main class="content" id="quarto-document-content">
+
+
+
+
+<br>
+
+<br>
+
+<section id="title" class="level1 title unnumbered unlisted">
+<h1 class="title unnumbered unlisted">Pre-registered report: Space Sequence Synesthesia Diagnostic using form mapping</h1>
+<div class="Author">
+<br>
+
+<p>Rémy Lachelin, Chhavi Sachdeva, and Nicolas Rothen</p>
+<p>Psychology, UniDistance Suisse</p>
+</div>
+<br>
+
+<br>
+
+</section>
+<section id="author-note" class="level1 unnumbered unlisted AuthorNote">
+<h1 class="unnumbered unlisted AuthorNote">Author Note</h1>
+<p>Rémy Lachelin <img src="_extensions/wjschne/apaquarto/ORCID-iD_icon-vector.svg" id="orchid" class="img-fluid" style="width:4.23mm" alt="Orcid ID Logo: A green circle with white letters ID"> <a href="https://orcid.org/0000-0002-8485-7153">https://orcid.org/0000-0002-8485-7153</a></p>
+<p>Chhavi Sachdeva <img src="_extensions/wjschne/apaquarto/ORCID-iD_icon-vector.svg" id="orchid" class="img-fluid" style="width:4.23mm" alt="Orcid ID Logo: A green circle with white letters ID"> <a href="https://orcid.org/0000-0002-0074-4371">https://orcid.org/0000-0002-0074-4371</a></p>
+<p>Nicolas Rothen <img src="_extensions/wjschne/apaquarto/ORCID-iD_icon-vector.svg" id="orchid" class="img-fluid" style="width:4.23mm" alt="Orcid ID Logo: A green circle with white letters ID"> <a href="https://orcid.org/0000-0002-8874-8341">https://orcid.org/0000-0002-8874-8341</a></p>
+<p>Author roles were classified using the Contributor Role Taxonomy (CRediT; https://credit.niso.org/) as follows: <em>Rémy Lachelin</em><strong>: </strong>design and analyses. <em>Chhavi Sachdeva</em><strong>: </strong>design, data collection, and manuscript. <em>Nicolas Rothen</em><strong>: </strong>design, founding, and manuscript</p>
+<p>Correspondence concerning this article should be addressed to Rémy Lachelin, Psychology, UniDistance Suisse, Schinerstrasse 18, Brig-Glis, Valais 3900, Email: <a href="mailto:remy.lachelin@fernuni.ch">remy.lachelin@fernuni.ch</a></p>
+<br>
+</section>
+<section id="abstract" class="level1 unnumbered unlisted AuthorNote">
+<h1 class="unnumbered unlisted AuthorNote">Abstract</h1>
+<div class="AbstractFirstParagraph">
+<p>Sequence-space synesthesia (SSS) is the phenomenon of representing ordered visual symbols in particular spatial positions. Existent tools to detect SSS are based on self-reports (i.e.&nbsp;questionnaire) and consistency tests. Consistency tests are critical for the understanding of synesthesia to characterize or classify participants’ synesthesia in experimental settings. We attempt to further optimize SSS diagnostic criteria with a paradigm shift. In this pre-registered report, we compare available diagnostics with new diagnostic criteria on 685 participants. Conceptually, the novel criteria aim at taking advantage of ordinality and extract geometric features based at the forms level. We harness a geography package to compute new potential criteria. Receiver Operator Characteristics analyses are used to compare all features. The results suggest topological validity to be the best criteria. In a second phase, we will test the predictive power of the new diagnostic features on an additional dataset that has yet to be collected.</p>
+</div>
+<p><em>Keywords</em>: Space sequence synesthesia, consistency test</p>
+<br>
+</section>
+<section id="firstheader" class="level1 title unnumbered unlisted">
+<h1 class="title unnumbered unlisted">Pre-registered report: Space Sequence Synesthesia Diagnostic using form mapping</h1>
+</section>
+<section id="sec-introduction" class="level1">
+<h1>Introduction</h1>
+<p>Sequence-Space Synesthesia (SSS) or visuo-spatial forms is the phenomenon where people visualize ordered sequences in particular spatial positions. For example, numbers, weekdays or months (synesthetic <em>inducers</em>) are represented as arranged into specific spatial positions is space (synesthetic <em>concurrent</em>).</p>
+<section id="sec-heterogeneity-and-homogeneity-of-sss" class="level2">
+<h2 data-anchor-id="sec-heterogeneity-and-homogeneity-of-sss">Heterogeneity and homogeneity of Sequence-Space Synesthesia</h2>
+<p>The spatial (visuo-spatial) forms of SSS are idiosyncratic, which results in considerable heterogeneity in how this phenomenon is manifested across individuals. One source of heterogeneity is given by dimensionality: some SSS experiences involve three-dimensional (3D) and two-dimensional (2D) spatial arrangement <span class="citation" data-cites="eagleman2009a price2013">(<a href="#ref-eagleman2009a" role="doc-biblioref">Eagleman, 2009</a>; <a href="#ref-price2013" role="doc-biblioref">Price &amp; Pearson, 2013</a>)</span>. Another source is the reference frame, for example , the spatial forms take place in an external space around the body (<em>i.e.</em> projector) or in an internal space (<em>i.e.</em> associator) <span class="citation" data-cites="dixon2004 smilek2007">(<a href="#ref-dixon2004" role="doc-biblioref">Dixon et al., 2004</a>; <a href="#ref-smilek2007" role="doc-biblioref">Smilek et al., 2007</a>)</span>. Further variability can be explained by temporal-spatial properties, such as manipulation of their spatial forms such as “zooming” in and out, rotating or shifting perspectives <span class="citation" data-cites="gould2014">(<a href="#ref-gould2014" role="doc-biblioref">Gould et al., 2014</a>)</span>. Lastly, the shape, complexity and layout of the spatial forms are also heterogeneous such as forming for example ovals, lines or zig-zags or loops. With some recurring shapes being more frequent, such as ovals for months <span class="citation" data-cites="eagleman2009a">(<a href="#ref-eagleman2009a" role="doc-biblioref">Eagleman, 2009</a>)</span>.</p>
+<p>Despite the after mentioned heterogeneities, SSS is also phenomenological characterized <span class="citation" data-cites="seron1992">(<a href="#ref-seron1992" role="doc-biblioref">Seron et al., 1992</a>)</span>. <em>Automaticity</em>: the <em>inducer</em> automatically triggers the <em>concurrent</em>. <em>Unidirectionality</em>: while the <em>inducer</em> triggers the concurrent, the concurrent does not trigger the inducer. <em>Developmentally early</em>: the experience was already present during childhood. <em>Consciousness</em>: The concurrent is consciously perceived. <em>Consistency</em>: the inducer-concurrent pair remains stable in time within subject. These distinctions can be quantified with self reported questionnaire (i.e.&nbsp;for development and consciousness), or more objectively using behavioural tests such as consistency tests <span class="citation" data-cites="baron-cohen1993">(<a href="#ref-baron-cohen1993" role="doc-biblioref">Baron-Cohen et al., 1993</a>)</span>.</p>
+</section>
+<section id="sec-consistency-tests" class="level2">
+<h2 data-anchor-id="sec-consistency-tests">Consistency tests</h2>
+<p>The rationale behind consistency tests are designed to measure the variability in <em>inducer</em>-<em>concurrent</em> across time. These test are used as an objective validation or genuinnes test of self-reported synesthetes, it is therefore mainly useful in experimental settings to compare synesthetes and control and characterize the former.</p>
+<p>Consistency tests have made their proof for colour-grapheme synesthesia. Measures of individual consistency can be derived using colour-pickers while presenting an inducer repeatedly within a list (i.e.&nbsp;the letter “A”). More specifically the euclidean distance in CIE-LUV colour space (which is designed for perceptual uniformity) between repetitions of the same inducer lead to satisfactory accuracy when using a cut-off estiated from a larger sample <span class="citation" data-cites="rothen2013a">(<a href="#ref-rothen2013a" role="doc-biblioref">Rothen et al., 2013</a>)</span>.</p>
+<p>A similar rationale than for colour-grapheme synesthesia has been used to characterize SSS. Brang et al.<span class="citation" data-cites="brang2010">(<a href="#ref-brang2010" role="doc-biblioref">2010</a>)</span>, evaluated consistency as the distance between repetition (i.e.&nbsp;January and January) compared to the adjacent stimuli (i.e.&nbsp;February), the stimulus response was defined as consistent if within 1.96 z-scores. This criteria was however noted to potentially be to conservatory, since it detected synesthesia in 4 of 81 self-reported synesthetes.</p>
+<p>The same rationale as for colour-grapheme synesthesia <span class="citation" data-cites="rothen2013a">(<a href="#ref-rothen2013a" role="doc-biblioref">Rothen et al., 2013</a>)</span> has been applied to design a consistency test of SSS <span class="citation" data-cites="rothen2016">(<a href="#ref-rothen2016" role="doc-biblioref">Rothen et al., 2016a</a>)</span>. For SSS, instead of a colour-picker, participant’s task it to position each selected inducer on the computer’s screen position of their concurrent experience with each inducer being usually repeated three times. Form this task, the area and perimeter between the coordinates of repeated inducers has been used as a measure of consistency <span class="citation" data-cites="rothen2016">(<a href="#ref-rothen2016" role="doc-biblioref">Rothen et al., 2016a</a>)</span>. Consistent SSS responses should lead to smaller area (i.e.&nbsp;closer response in space). A cut-off of an average triangle area covering &lt;.203 % of the total screen area to classify as SSS was suggested i.e. 1596 pixels on a 1024 X 768 resolution display <span class="citation" data-cites="ward2018">(see also <a href="#ref-ward2018" role="doc-biblioref">Ward et al., 2018</a>)</span>. Standard deviation of responses and permuting the responses to compare single responses to a chance level calculated from permutations as in Root <span class="citation" data-cites="root2021">(<a href="#ref-root2021" role="doc-biblioref">2021</a>)</span> have been compare in <span class="citation" data-cites="ward">(<a href="#ref-ward" role="doc-biblioref">Ward, n.d.-a</a>)</span>. A measure of consistency between the x and y coordinates is then compared. The total area between the responses of same inducer has been suggested to be used <span class="citation" data-cites="rothen2016">(<a href="#ref-rothen2016" role="doc-biblioref">Rothen et al., 2016a</a>)</span>.</p>
+<p><span class="citation" data-cites="ward2018">(<a href="#ref-ward2018" role="doc-biblioref">Ward et al., 2018</a>)</span></p>
+<p>One general caveat for consistency tasks, is that synesthetic forms are idiosyncratic. In other words, the inducer-concurrent pairs might lead to form. Other problems with this type of consistency tests is that (1) it might favor one form of SSS, such as those with linear spatial forms <span class="citation" data-cites="ward">(<a href="#ref-ward" role="doc-biblioref">Ward, n.d.-a</a>)</span>. (2) some participant not knowing the responses might click on the same position, leading to high consistencies <span class="citation" data-cites="rothen2016">(see <a href="#ref-rothen2016" role="doc-biblioref">Rothen et al., 2016a</a>)</span>. (3)</p>
+<p>Moreover, this kind of criteria might bias the diagnosis to include synesthetes with straight lines which leads to less variability than more complex forms<span class="citation" data-cites="Ward">(<a href="#ref-Ward" role="doc-biblioref"><strong>Ward?</strong></a>)</span>.</p>
+</section>
+<section id="present-study" class="level2">
+<h2 data-anchor-id="present-study">Present study</h2>
+<p>The goal of this registered report is to compare different consistency features on their ability to classify SSS from controls using Receiver Operator Characteristics (ROC). In the present <em>Phase I</em> we merge already available datasets to replicate systematic consistency test methods from the literature to additional new features. These new features are designed to take advantage of two properties of synesthetic responses First, the importance of ordinality between the inducers (i.e. Monday -&gt; Tuesday -&gt; Wednesday, ect). Some studies have systematically investigated ordinality, but using adjacent inducers (i.e.&nbsp;the distances between Monday, Tuesday and Wednesday as in <span class="citation" data-cites="brang2010">(<a href="#ref-brang2010" role="doc-biblioref">Brang et al., 2010</a>)</span>. Other have used the angle formed by adjacent inducers <span class="citation" data-cites="eagleman2009a">(<a href="#ref-eagleman2009a" role="doc-biblioref">Eagleman, 2009</a>)</span>.</p>
+<p>Second, thee particular synthetic forms of the sequential spatial location. These forms might have geometrical properties. For example months of the year might be represented circularly (as already described by <span class="citation" data-cites="galton1880">(<a href="#ref-galton1880" role="doc-biblioref">Galton, 1880</a>)</span> for numbers).</p>
+<p>To take advantage of sequential and geometrical synesthetic forms, we harnessed a geo-spatial package<span class="citation" data-cites="pebesma2018">(<a href="#ref-pebesma2018" role="doc-biblioref">Pebesma, 2018</a>)</span> to extract geometrical features from participant x and y coordinate responses. This packages allows for example to build string or polygons for each repetition and compare different geometrical features. Those individual geometrical features are then compared using Receiver Operator Characteristics (ROC) between individuals grouped as synesthets and control. In the present <em>phase I</em>,we compare ROC on three merged derivation datasets using the same task on SSS <span class="citation" data-cites="rothen2016 vanpetersen2020a">Ward (<a href="#ref-ward" role="doc-biblioref">n.d.-a</a>)</span>. In future <em>phase II</em>, we compare whether the features selected to diagnose SSS in <em>phase I,</em> on a validation dataset that is not yet acquired (registered report on the open science foundation: <a href="https://osf.io/9efjb/" class="uri">https://osf.io/9efjb/</a><strong>).</strong></p>
+<p>The rationale here is that synesthetic responses should have geometrical feature that differ from controls. For example, several SSS representations for months are circular.</p>
+</section>
+</section>
+<section id="general-methods" class="level1">
+<h1>General Methods</h1>
+<p><em>Phase I: present analyses</em>. We merged three available datasets and compared available diagnostic criteria across datasets using Receiver Operator Characteristics (ROC) for different approaches. First, we attempt at reproducing the diagnostic criteria on stimulus level consistency such as area and perimeter. Second, we explore a new approach consisting of comparing geometrical features across repetitions. Third, we apply second order approaches such as permutation tests. On one hand we reproduce Root et al. <span class="citation" data-cites="root2021">(<a href="#ref-root2021" role="doc-biblioref">2021</a>)</span> permutation test that was developed for colour-grapheme synesthesia applied to SSS, as in ward <span class="citation" data-cites="ward">(<a href="#ref-ward" role="doc-biblioref">n.d.-a</a>)</span>). On the other hand we apply permutations across repetitions to obtain a permuted measure of consistency. In other words, we shuffle the presentation order and compute the geometrical feature in non chronological order. Finally we use General Linear Model’s (GLM) to attempt to fit the best diagnostic curve combining different criteria.</p>
+<p><em>Phase II: future analyses.</em> On a future dataset to be collected using the same task, we will compare the predictive power of the selected features using ROC.</p>
+<section id="materials" class="level2">
+<h2 data-anchor-id="materials">Materials</h2>
+<p>A the exception of <span class="citation" data-cites="rothen2016">(<a href="#ref-rothen2016" role="doc-biblioref">Rothen et al., 2016a</a>)</span> (see <a href="https://osf.io/6hq94/files/osfstorage" class="uri">https://osf.io/6hq94/files/osfstorage</a>), the data from <span class="citation" data-cites="ward vanpetersen2020a">(<a href="#ref-vanpetersen2020a" role="doc-biblioref">Van Petersen et al., 2020a</a>; <a href="#ref-ward" role="doc-biblioref">Ward, n.d.-a</a>)</span> were collected online. The 29 inducers were: the 12 months of a year, 7 days of the week and 10 numbers (i.e.&nbsp;hindo-arabic numerals from 0 to 9). <span class="citation" data-cites="vanpetersen2020a">(<a href="#ref-vanpetersen2020a" role="doc-biblioref">Van Petersen et al., 2020a</a>)</span> Also presented 50 and 100 numerals, which we excluded here. <span class="citation" data-cites="ward">(<a href="#ref-ward" role="doc-biblioref">Ward, n.d.-a</a>)</span> data is collected using the Syntoolkit.</p>
+</section>
+<section id="procedure" class="level2">
+<h2 data-anchor-id="procedure">Procedure</h2>
+<p>The details for the task’s administration of each dataset are described in each respective article: <span class="citation" data-cites="ward">(<a href="#ref-ward" role="doc-biblioref">Ward, n.d.-a</a>)</span> conducted the task online and <span class="citation" data-cites="rothen2016 vanpetersen2020a">(<a href="#ref-rothen2016" role="doc-biblioref">Rothen et al., 2016a</a>; <a href="#ref-vanpetersen2020a" role="doc-biblioref">Van Petersen et al., 2020a</a>)</span> in laboratory. Each stimuli is presented randomly and sequentially centrally on the screen. Participant are instructed to click on the screen position where they visualize them.</p>
+<p>Stimulus included here are 7 weekdays (Monday to Sunday), 12 months (January to December) and 9 numbers (0 to 9). For Ward’s data the stimulus were presented in randomized order with the constraint that no stimulus was repeated until all unique stimuli (N = 29) had been presented once.</p>
+<p>Importantly, while the three datasets included in <em>phase I</em> include three repetitions per stimuli, the <em>phase II</em> will use four repetition per stimuli.</p>
+</section>
+</section>
+<section id="phase-i.-methods" class="level1">
+<h1><em>Phase I.</em> Methods</h1>
+<section id="phase-i.-participants" class="level2">
+<h2 data-anchor-id="phase-i.-participants"><em>Phase I.</em> Participants</h2>
+<p>We merged four datasets: <span class="citation" data-cites="rothen2016">Rothen et al. (<a href="#ref-rothen2016" role="doc-biblioref">2016a</a>)</span>,<span class="citation" data-cites="ward">(<a href="#ref-ward" role="doc-biblioref">Ward, n.d.-a</a>)</span> (from: <a href="#0" class="uri">https://osf.io/p5xsd/files/osfstorage</a>) ,<span class="citation" data-cites="vanpetersen2020">(<a href="#ref-vanpetersen2020" role="doc-biblioref">Van Petersen et al., 2020b</a>)</span> and additional data gently provided by private communications with Pr. Ward, see <a href="#tbl-mytb2" class="quarto-xref" aria-expanded="false">Table&nbsp;2</a>. To match the other datasets, stimuli form <span class="citation" data-cites="vanpetersen2020">(<a href="#ref-vanpetersen2020" role="doc-biblioref">Van Petersen et al., 2020b</a>)</span> are translated from Dutch to English and for the stimuli, only numbers from 0 to 9 are kept (excluding 50 and 100).</p>
+</section>
+</section>
+<section id="adding" class="level1">
+<h1>ADDING</h1>
+<p>We kept 577 from the initial 581 participants. First, we excluded 1307 empty trials including trials flagged for having the same x or y coordinates across conditions and repetitions, causing the depletion of 2 participants<span class="citation" data-cites="rothen2016a ward2018">(as in <a href="#ref-rothen2016a" role="doc-biblioref">Rothen et al., 2016b</a>; <a href="#ref-ward2018" role="doc-biblioref">Ward et al., 2018</a>)</span>. 2 participants were excluded for having less than 4 coordinate points since this would impeach computing polygons, see <a href="#sec-category-level-additional-features" class="quarto-xref">Section&nbsp;4.2.2</a>. As a consequence, 0 participants did not have coordinates in all conditions, for example no coordinates for numbers. Then, x and y coordinates were then separately normalized (z-score) per participant.</p>
+<p>From the final sample of N = 577, 306 were synesthetes and 271 controls. <a href="#tbl-mytb2" class="quarto-xref" aria-expanded="false">Table&nbsp;2</a> breaks down the number of synesthetes and control contributed by each dataset.</p>
+<p>Since not all the data is directly associated to demographics, we resume in <a href="#tbl-mytb1" class="quarto-xref" aria-expanded="false">Table&nbsp;1</a> the original sample’s reported descriptives.</p>
+<div id="tbl-mytb1" class="quarto-float quarto-figure quarto-figure-center FigureWithNote" prefix="" data-quarto-disable-processing="true" data-apa-note="Note below table" data-tblnum="1" data-custom-style="FigureWithNote">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-mytb1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="FigureTitle" data-custom-style="FigureTitle">
+<p>Table&nbsp;1</p>
+</div>
+<div class="Caption" data-custom-style="Caption">
+<p>My Caption</p>
+</div>
+</figcaption>
+<div aria-describedby="tbl-mytb1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table id="tbl-mytb1" class="caption-top table" prefix="" data-tblnum="1">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Source</th>
+<th></th>
+<th>Synesthetes</th>
+<th></th>
+<th></th>
+<th></th>
+<th>Controls</th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>Original</td>
+<td></td>
+<td></td>
+<td>Included</td>
+<td></td>
+<td></td>
+<td></td>
+<td>Included</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>N</td>
+<td>Age</td>
+<td>n fem ales</td>
+<td>N</td>
+<td>N</td>
+<td>Age</td>
+<td>n females</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><span class="citation" data-cites="rothen2016">(<a href="#ref-rothen2016" role="doc-biblioref">Rothen et al., 2016a</a>)</span></td>
+<td>33</td>
+<td>23.1</td>
+<td>24</td>
+<td>37</td>
+<td>37</td>
+<td>28.2</td>
+<td>27</td>
+<td>37</td>
+</tr>
+<tr class="even">
+<td><span class="citation" data-cites="vanpetersen2020">(<a href="#ref-vanpetersen2020" role="doc-biblioref">Van Petersen et al., 2020b</a>)</span></td>
+<td>23</td>
+<td>23.22</td>
+<td>20</td>
+<td>21</td>
+<td>21</td>
+<td>21.57</td>
+<td>19</td>
+<td>13</td>
+</tr>
+<tr class="odd">
+<td><span class="citation" data-cites="wardb">(<a href="#ref-wardb" role="doc-biblioref">Ward, n.d.-b</a>)</span></td>
+<td>252</td>
+<td>37.21</td>
+<td>202</td>
+<td>249</td>
+<td>215</td>
+<td>19.90</td>
+<td>178</td>
+<td>204</td>
+</tr>
+<tr class="even">
+<td>Ward 2</td>
+<td></td>
+<td></td>
+<td></td>
+<td>88</td>
+<td></td>
+<td></td>
+<td></td>
+<td>17</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Merged</td>
+<td></td>
+<td></td>
+<td></td>
+<td>395</td>
+<td></td>
+<td></td>
+<td></td>
+<td>271</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<div>
+<div class="FigureNote NoIndent" data-custom-style="FigureNote">
+<em>Note</em>. Note&nbsp;below table
+</div>
+</div>
+<div class="cell FigureWithNote" data-ft.align="left" data-apa-note="Sources are" prefix="" data-tblnum="2" data-custom-style="FigureWithNote">
+<div id="tbl-mytb2" class="cell quarto-float quarto-figure quarto-figure-center" prefix="" data-tblnum="2" data-apa-note="Sources are" data-ft.align="left">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-mytb2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="FigureTitle" data-custom-style="FigureTitle">
+<p>Table&nbsp;2</p>
+</div>
+<div class="Caption" data-custom-style="Caption">
+<p>Summary of data sources</p>
+</div>
+</figcaption>
+<div aria-describedby="tbl-mytb2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">dataSource</th>
+<th style="text-align: right;">Ctl</th>
+<th style="text-align: right;">Syn</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">PeterCor</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">22</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Rothen</td>
+<td style="text-align: right;">37</td>
+<td style="text-align: right;">32</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ward</td>
+<td style="text-align: right;">213</td>
+<td style="text-align: right;">252</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+<div>
+<div class="FigureNote NoIndent" data-custom-style="FigureNote">
+<em>Note</em>. Sources&nbsp;are
+</div>
+</div>
+</div>
+<p>Regarding the syntheses, we can only describe their profile from the data by Pr. Ward (i.e.&nbsp;from 465 cases. These profiles are described only for the stimulus categories used in the consistency test (i.e.&nbsp;number, weekdays and month). From the venn-diagram of <a href="#fig-myplot1" class="quarto-xref" aria-expanded="false">Figure&nbsp;1</a> we see that only 18% of this sample does neither self-report having SSS, nor space-forms for Numbers, Days or Month.</p>
+<div class="cell FigureWithNote" data-apa-note="Only the subsample from Ward is included here" data-custom-style="FigureWithNote">
+<div class="cell-output-display">
+<div id="fig-myplot1" class="quarto-float quarto-figure quarto-figure-center" prefix="" data-fignum="1">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-myplot1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="FigureTitle" data-custom-style="FigureTitle">
+<p>Figure&nbsp;1</p>
+</div>
+<div class="Caption" data-custom-style="Caption">
+<p>Venn diagram of the types of self-reported SSS</p>
+</div>
+</figcaption>
+<div aria-describedby="fig-myplot1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="2.Pre-registeredReport_V12_testNewGrouping_files/figure-html/fig-myplot1-1.svg" class="img-fluid figure-img" width="624">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div>
+<div class="FigureNote NoIndent" data-custom-style="FigureNote">
+<em>Note</em>. Only&nbsp;the subsample from Ward is included here
+</div>
+</div>
+<section id="phase-i.-procedure" class="level2">
+<h2 data-anchor-id="phase-i.-procedure"><em>Phase I.</em> Procedure</h2>
+<p>The median display resolution was 1440 X 768, with a maximum of 2560 X 2025 and a minimum of 308 X 149 .</p>
+</section>
+<section id="sec-phase-i.-analysis" class="level2">
+<h2 data-anchor-id="sec-phase-i.-analysis"><em>Phase I.</em> Analysis</h2>
+<p>First, we reproduce consistency methods found in the literature using the same task (<span class="citation" data-cites="rothen2016 ward vanpetersen2020a root2021">(<a href="#ref-root2021" role="doc-biblioref">Root et al., 2021</a>; <a href="#ref-rothen2016" role="doc-biblioref">Rothen et al., 2016a</a>; <a href="#ref-vanpetersen2020a" role="doc-biblioref">Van Petersen et al., 2020a</a>; <a href="#ref-ward" role="doc-biblioref">Ward, n.d.-a</a>)</span>) and compare the results. These methods are on the stimulus level, hence they asses the consistency for each stimulus <em>within</em> the repetitions.</p>
+<p>Second, we extract features on the form level. We harness a geography package to compute geometry based features. Informed on the ordinality of the stimulus (i.e.&nbsp;Monday, Tuesday, ect), we construct segments and polygon by conditions and repetitions. These methods are on the form or category level. The rationale here is to see whether when considering the stimuli as ordered coordinates, i.e.&nbsp;as segments or polygon, they are consistent <em>between</em> repetitions.</p>
+<p>Since these methods are also relying on repetition order (i.e.&nbsp;the segment for numbers are constructed with repetition 1 - vs.&nbsp;2 vs.&nbsp;3, that is their chronological order of experimental presentation), we also compute the best AUC features by permuting repetitions. We predict that permuted averaged features should lead to better classifications. Because synesthete’s within stimulus consistency should lead to similar forms interdependently from the chronological order of stimulus presentation.</p>
+<p>Each feature’s performance in classifying SSS from controls was compared with Receiver Operator Characteristics (ROC) analyses. Area Under the Curve (AUC) is used to determine which feature is best at classifying SSS from Controls. The optimal cut-off’s are calculated with Youden’s index <span class="citation" data-cites="youden1950">(<a href="#ref-youden1950" role="doc-biblioref">Youden, 1950</a>)</span>. Discriminant Power (DP) is used as an additional estimate of discrimination performance according to the optimal cut-off (<strong>?@eq-DP</strong>). DP around 1 being interpreted as inefficient discrimination.</p>
+<p><span class="math display">
+DP = \frac{sqrt{(3)}}{\pi} (log(X) + log(Y))
+</span></p>
+<p>where: <span class="math inline">X = sensitivity/(1−sensitivity)</span> and <span class="math inline">Y = specificity/ (1−specificity)</span></p>
+<p>Additional analyses in the appendix try to address several concerns raised in the literature of consistencyt test: that some criteria might be more beneficial towards a certain type of SSS than others and circularity. For the concern that some criteria might bias towards types of synesthesia, we compared the groups by sub-type of SSS (i.e. weekdays, months and numbers) with the classifications using the cut-offs for permuted validity and perimeter. In an attempt to circumvent the circularity of perfectioning consistency test based ons elf-reported groups, we attempted two additional approaches: first testing sub-samples depending on percentiles of the questionnaire score sample distribution <a href="#sec-sm1" class="quarto-xref">Section&nbsp;11.1</a>. The rationale is that a good consistency test should have similar discriminative performances for strong SSS and weaker SSS. To do this we re-sampled the SSS and controls based on their questionnaire distribution by percentiles, i.e.&nbsp;comparing 10% highest questionnaire 10% worst, then 20% vs 20%, ect. Second correlating the questionnaire scores with the results from different features extracted from the consistency test <a href="#sec-sm2-correlation-with-self-report" class="quarto-xref">Section&nbsp;11.2</a>. Finally, since we will attempt to predict the best diagnostic features of a to be collected dataset, we also carried analyses across the different datasets separately, to test wheter each consistency test’s feature remain constant, see <a href="#sec-SM3byds" class="quarto-xref">Section&nbsp;11.3</a> .</p>
+<section id="sec-stimulus-level-area-and-perimeter-between-repetitions" class="level3">
+<h3 data-anchor-id="sec-stimulus-level-area-and-perimeter-between-repetitions">Stimulus level: area and perimeter between repetitions</h3>
+<p>Conceptually, the more consistent responses to the same stimuli should have smaller coordinate distance. This distance can be computed as the area or the perimeter formed by the x,y coordinate between the repetitions (i.e.&nbsp;(x1, y1), (x2, y2), (x3, y3)). With three repetitions, the area is calculated as in using the formula <a href="#eq-area" class="quarto-xref">Equation&nbsp;1</a> and the perimeter <a href="#eq-perim" class="quarto-xref">Equation&nbsp;2</a>.</p>
+<p><span id="eq-area"><span class="math display">
+Area = (x1y2 +x2y3 + x3y1 – x1y3 – x2y1 – x3y2) / 2
+\tag{1}</span></span></p>
+<p><span id="eq-perim"><span class="math display">
+Perimeter = \sqrt{(x2 - x1)^2 + (y2 – y1)^2} + \sqrt{(x3 - x2)^2 + (y3 –y2)^2} + \sqrt{(x1 - x3)^2 + (y1 – y3)^2}
+\tag{2}</span></span></p>
+<p>We compute the area in term of % of the screen area to be able to compare with the consistency results in <span class="citation" data-cites="rothen2016">(<a href="#ref-rothen2016" role="doc-biblioref">Rothen et al., 2016a</a>)</span> and <span class="citation" data-cites="ward2018">(<a href="#ref-ward2018" role="doc-biblioref">Ward et al., 2018</a>)</span>. In addition, since the screen sizes differ between experimental settings and individual response’s spread vary, we computed the area on individually z-score transformed x,y coordinates. The area of each stimuli is then averaged for each participants.</p>
+<p>Next we replicate <span class="citation" data-cites="root2021">(<a href="#ref-root2021" role="doc-biblioref">Root et al., 2021</a>)</span> permuted consistency method. For each individual, the x and y coordinates are randomly permuted and the areas are calculated. After 1000 permutations per individual, a z-score is calculated with the observed means compared to the permuted distribution, see <a href="#eq-zpermRoot" class="quarto-xref">Equation&nbsp;3</a>. <span id="eq-zpermRoot"><span class="math display">
+Zscore = [(Observed) – (Mean Permuted)] / (SD Permuted)
+\tag{3}</span></span></p>
+<p>The permuted distribution would be the theoretical individual chance level distribution and hence the z-score reflects where the observed area lies from the chance level.</p>
+</section>
+<section id="sec-category-level-additional-features" class="level3">
+<h3 data-anchor-id="sec-category-level-additional-features">Form level: additional features</h3>
+<p>Taking the stimuli as an ordered sequence we can consider them as a geometrical segments (i.e.&nbsp;open geometrical form) and polygons (i.e. closed geometrical form), similarly as originally described in <span class="citation" data-cites="galton1880">Galton (<a href="#ref-galton1880" role="doc-biblioref">1880</a>)</span>. From there we can extract several geometrical properties. First, we extract the number of <em>self-intersections</em> of each segments. Conceptually, SSS should have less chance to produce that self-intersect than control. The number of self-intersections are added separately for each repetitions and conditions and averaged per participants.</p>
+<p>The next geometrical features are extracted using the simple feature <code>sf</code> package <span class="citation" data-cites="pebesma2018">(<a href="#ref-pebesma2018" role="doc-biblioref">Pebesma, 2018</a>)</span> to generate ordered segments and polygons based on the individually z-score transformed x and y coordinates. <code>sf</code> has originally been developed for geography.</p>
+<p>We calculate the polygon’s area and perimeter of the polygons and average per participants.</p>
+<p>Then we use the second order functions provided by the <strong><code>sf</code></strong> package to check for topological features from the polygons. These tests return a boolean. First we test each polygon for simplicity, a simple polygon being described as not having self-intersections or self-tangencies.</p>
+<p>Then we test for topological validity, this function tests if a polygon is <em>is well-formed and valid in 2D according to the</em> Open Geopsatial Consotrtium <em>rules (see</em> <a href="https://postgis.net/docs/ST_IsValid.html" class="uri">https://postgis.net/docs/ST_IsValid.html</a> and <a href="https://postgis.net/docs/using_postgis_dbmanagement.html#OGC_Validity" class="uri">https://postgis.net/docs/using_postgis_dbmanagement.html#OGC_Validity</a>). Each participant’s form is tested for validity as a boolean for each repetitions and averaged, averaged over the 9 forms per participants (i.e.&nbsp;3 categories X 3 repetitions). Hence it can span from 1 (all 9 are valid) to 0 (none of the 9 forms are valid).</p>
+<p>Finally, we also attempted a correlational approach. Here we correlate the coordinates.</p>
+</section>
+<section id="sec-category-level-additional-improvements" class="level3">
+<h3 data-anchor-id="sec-category-level-additional-improvements">Form level: additional improvements</h3>
+<p>Until now the form based features are computed by chronologically ordered repetitions. For example, Monday is repeated three times per ID. The coordinates for Monday presented the first time will always be used to form the segment/polygon with the Tuesday presented the first time. However, for consistency, this should be independent from chronological order. To circumvent this, we can permute the repetitions per conditions. I predict the permuted averages of the same features should give rise to better AUC.</p>
+<p>Finally, we used General Linear Model (GLM) on the two features with the best AUC and add the prediction as an additional feature. A GLM could provide a formula where multiple features could be combined in order to optimize AUC.</p>
+</section>
+</section>
+</section>
+<section id="phase-i.-results" class="level1">
+<h1><em>Phase I.</em> Results</h1>
+<p>Descriptively, the area between repetition for SSS was larger than previously literature: 0.26% , compared to 0.14% in <span class="citation" data-cites="rothen2016">(<a href="#ref-rothen2016" role="doc-biblioref">2016a</a>)</span> and 0.15 % in <span class="citation" data-cites="ward2018">(<a href="#ref-ward2018" role="doc-biblioref">Ward et al., 2018</a>)</span>). This difference seems to be mainly driven by the dataset from <span class="citation" data-cites="ward">(<a href="#ref-ward" role="doc-biblioref">Ward, n.d.-a</a>)</span> with respectively 0.26% area. Descriptively, this might be explained by a more variable sample [<em>SD = 0.50</em> % in <span class="citation" data-cites="ward">(<a href="#ref-ward" role="doc-biblioref">n.d.-a</a>)</span> compared to <em>SD = 0.09 %</em> in <span class="citation" data-cites="rothen2016">Rothen et al. (<a href="#ref-rothen2016" role="doc-biblioref">2016a</a>)</span>] see <a href="#tbl-mytb4" class="quarto-xref" aria-expanded="false">Table&nbsp;A1</a>. However these are more similar across datasets using standardized coordinates (M = 0.05 (<em>SD = 0.06</em>) <span class="citation" data-cites="rothen2016">(<a href="#ref-rothen2016" role="doc-biblioref">Rothen et al., 2016a</a>)</span>, M = 0.08 (<em>SD = 0.15</em>) <span class="citation" data-cites="ward">(<a href="#ref-ward" role="doc-biblioref">Ward, n.d.-a</a>)</span>, M = 0.09 (<em>SD = 0.15</em>)). Hence, for the perimeter, we only consider z-scores. All other feature’s averages and standard deviations are described in <a href="#tbl-mytb01" class="quarto-xref" aria-expanded="false">Table&nbsp;4</a>.</p>
+<section id="roc-analysis" class="level2">
+<h2 data-anchor-id="roc-analysis">ROC analysis</h2>
+<p>The ROC analysis suggest that the two best AUC are obtained from the averaged permuted validity score (AUC = 80.92; CI = [77.3-84.54], DP = 2.16, cut-off = 0.17 or 1.53/9 valid forms) and the standardized perimeter between the repetitions of each stimuli (AUC = 80.54; CI = [76.74-84.33], DP = 2.22, cut-off = 1.92 z-scores). While both AUC do not differ between these (DeLong test: D = 0.21, <em>p</em> = 0.83), the total ROC do (Venkatraman test: 5432, <em>p</em> = 0.082). However, at the proposed cut-off, the permuted validity leads to higher specificity (80.153 vs. 76.718) hence best to reject controls (i.e.&nbsp;less false negatives) but smaller sensitivity (69.366 vs. 74.648), hence perimeter is best at detecting SSS (i.e.&nbsp;less false positives). See <a href="#tbl-mytb3" class="quarto-xref" aria-expanded="false">Table&nbsp;3</a> for all the features sorted by the largest AUC and <a href="#fig-myplot2" class="quarto-xref" aria-expanded="false">Figure&nbsp;2</a> for the descritive ROC curves of each features.</p>
+<div class="cell FigureWithNote" data-apa-note="ROC curves for each features" data-custom-style="FigureWithNote">
+<div class="cell-output-display">
+<div id="fig-myplot2" class="quarto-float quarto-figure quarto-figure-center" prefix="" data-fignum="2">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-myplot2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="FigureTitle" data-custom-style="FigureTitle">
+<p>Figure&nbsp;2</p>
+</div>
+<div class="Caption" data-custom-style="Caption">
+<p>All the ROC curves for each features</p>
+</div>
+</figcaption>
+<div aria-describedby="fig-myplot2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="2.Pre-registeredReport_V12_testNewGrouping_files/figure-html/fig-myplot2-1.svg" class="img-fluid figure-img" width="624">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div>
+<div class="FigureNote NoIndent" data-custom-style="FigureNote">
+<em>Note</em>. ROC&nbsp;curves for each features
+</div>
+</div>
+<div class="cell FigureWithoutNote" data-ft.align="left" prefix="" data-tblnum="3" data-custom-style="FigureWithoutNote">
+<div id="tbl-mytb3" class="cell quarto-float quarto-figure quarto-figure-center" prefix="" data-tblnum="3" data-ft.align="left">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-mytb3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="FigureTitle" data-custom-style="FigureTitle">
+<p>Table&nbsp;3</p>
+</div>
+<div class="Caption" data-custom-style="Caption">
+<p>Summary of ROC analysis</p>
+</div>
+</figcaption>
+<div aria-describedby="tbl-mytb3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
+<caption>(#tab:tbl-mytb3)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Feature</th>
+<th style="text-align: left;">AUC</th>
+<th style="text-align: left;">DP</th>
+<th style="text-align: left;">threshold</th>
+<th style="text-align: left;">sensitivity</th>
+<th style="text-align: left;">specificity</th>
+<th style="text-align: left;">ci_low</th>
+<th style="text-align: left;">ci_high</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">GLM_Valid_areazs</td>
+<td style="text-align: left;">81.57</td>
+<td style="text-align: left;">2.21</td>
+<td style="text-align: left;">-0.21</td>
+<td style="text-align: left;">78.17</td>
+<td style="text-align: left;">72.90</td>
+<td style="text-align: left;">78.00</td>
+<td style="text-align: left;">85.14</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">isValid_perm_M</td>
+<td style="text-align: left;">80.92</td>
+<td style="text-align: left;">2.16</td>
+<td style="text-align: left;">0.17</td>
+<td style="text-align: left;">69.37</td>
+<td style="text-align: left;">80.15</td>
+<td style="text-align: left;">77.30</td>
+<td style="text-align: left;">84.54</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Perimeter_zs</td>
+<td style="text-align: left;">80.54</td>
+<td style="text-align: left;">2.22</td>
+<td style="text-align: left;">1.92</td>
+<td style="text-align: left;">74.65</td>
+<td style="text-align: left;">76.72</td>
+<td style="text-align: left;">76.74</td>
+<td style="text-align: left;">84.33</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">isValidStruct_M</td>
+<td style="text-align: left;">77.77</td>
+<td style="text-align: left;">1.96</td>
+<td style="text-align: left;">0.17</td>
+<td style="text-align: left;">71.83</td>
+<td style="text-align: left;">74.43</td>
+<td style="text-align: left;">73.95</td>
+<td style="text-align: left;">81.59</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">SelfInter</td>
+<td style="text-align: left;">73.20</td>
+<td style="text-align: left;">1.77</td>
+<td style="text-align: left;">1.17</td>
+<td style="text-align: left;">79.58</td>
+<td style="text-align: left;">61.07</td>
+<td style="text-align: left;">68.91</td>
+<td style="text-align: left;">77.49</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Area_zs</td>
+<td style="text-align: left;">72.35</td>
+<td style="text-align: left;">1.87</td>
+<td style="text-align: left;">0.08</td>
+<td style="text-align: left;">76.41</td>
+<td style="text-align: left;">67.56</td>
+<td style="text-align: left;">67.85</td>
+<td style="text-align: left;">76.86</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">areaPoly_GA</td>
+<td style="text-align: left;">70.53</td>
+<td style="text-align: left;">1.27</td>
+<td style="text-align: left;">1.29</td>
+<td style="text-align: left;">61.62</td>
+<td style="text-align: left;">69.47</td>
+<td style="text-align: left;">66.22</td>
+<td style="text-align: left;">74.84</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">isSimple_GA</td>
+<td style="text-align: left;">70.41</td>
+<td style="text-align: left;">1.32</td>
+<td style="text-align: left;">0.28</td>
+<td style="text-align: left;">59.86</td>
+<td style="text-align: left;">72.14</td>
+<td style="text-align: left;">66.10</td>
+<td style="text-align: left;">74.71</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">perm_zs</td>
+<td style="text-align: left;">67.18</td>
+<td style="text-align: left;">2.30</td>
+<td style="text-align: left;">-3.67</td>
+<td style="text-align: left;">94.01</td>
+<td style="text-align: left;">40.08</td>
+<td style="text-align: left;">62.56</td>
+<td style="text-align: left;">71.80</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">perimPoly</td>
+<td style="text-align: left;">61.22</td>
+<td style="text-align: left;">1.28</td>
+<td style="text-align: left;">9.65</td>
+<td style="text-align: left;">79.23</td>
+<td style="text-align: left;">49.24</td>
+<td style="text-align: left;">56.32</td>
+<td style="text-align: left;">66.12</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Corr_XY_M</td>
+<td style="text-align: left;">59.16</td>
+<td style="text-align: left;">1.05</td>
+<td style="text-align: left;">0.20</td>
+<td style="text-align: left;">83.10</td>
+<td style="text-align: left;">37.40</td>
+<td style="text-align: left;">54.29</td>
+<td style="text-align: left;">64.04</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Corr_M</td>
+<td style="text-align: left;">57.20</td>
+<td style="text-align: left;">1.06</td>
+<td style="text-align: left;">0.10</td>
+<td style="text-align: left;">85.56</td>
+<td style="text-align: left;">33.21</td>
+<td style="text-align: left;">52.30</td>
+<td style="text-align: left;">62.10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Perimeter_perc</td>
+<td style="text-align: left;">56.87</td>
+<td style="text-align: left;">0.76</td>
+<td style="text-align: left;">0.03</td>
+<td style="text-align: left;">76.41</td>
+<td style="text-align: left;">40.08</td>
+<td style="text-align: left;">51.95</td>
+<td style="text-align: left;">61.78</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Area_perc</td>
+<td style="text-align: left;">51.42</td>
+<td style="text-align: left;">0.84</td>
+<td style="text-align: left;">0.20</td>
+<td style="text-align: left;">77.11</td>
+<td style="text-align: left;">41.22</td>
+<td style="text-align: left;">46.31</td>
+<td style="text-align: left;">56.52</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<div class="cell FigureWithoutNote" data-ft.align="left" prefix="" data-tblnum="4" data-custom-style="FigureWithoutNote">
+<div id="tbl-mytb01" class="cell quarto-float quarto-figure quarto-figure-center" prefix="" data-tblnum="4" data-ft.align="left">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-mytb01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="FigureTitle" data-custom-style="FigureTitle">
+<p>Table&nbsp;4</p>
+</div>
+<div class="Caption" data-custom-style="Caption">
+<p>Descriptives of each features</p>
+</div>
+</figcaption>
+<div aria-describedby="tbl-mytb01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
+<caption>(#tab:tbl-mytb01)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Feature</th>
+<th style="text-align: left;">Ctl</th>
+<th style="text-align: left;">Syn</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">GLM_Valid_areazs</td>
+<td style="text-align: left;">-0.67 (1.20)</td>
+<td style="text-align: left;">0.91 (1.33)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">isValid_perm_M</td>
+<td style="text-align: left;">0.11 (0.15)</td>
+<td style="text-align: left;">0.34 (0.24)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Perimeter_zs</td>
+<td style="text-align: left;">3.41 (1.69)</td>
+<td style="text-align: left;">1.57 (1.16)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">isValidStruct_M</td>
+<td style="text-align: left;">0.12 (0.18)</td>
+<td style="text-align: left;">0.37 (0.27)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">SelfInter</td>
+<td style="text-align: left;">9.23 (10.61)</td>
+<td style="text-align: left;">1.66 (4.64)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Area_zs</td>
+<td style="text-align: left;">0.27 (0.33)</td>
+<td style="text-align: left;">0.08 (0.14)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">areaPoly_GA</td>
+<td style="text-align: left;">0.99 (0.98)</td>
+<td style="text-align: left;">1.80 (1.25)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">isSimple_GA</td>
+<td style="text-align: left;">0.20 (0.22)</td>
+<td style="text-align: left;">0.38 (0.27)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">perm_zs</td>
+<td style="text-align: left;">107.05 (816.44)</td>
+<td style="text-align: left;">10.18 (209.16)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">perimPoly</td>
+<td style="text-align: left;">9.64 (3.45)</td>
+<td style="text-align: left;">8.35 (2.53)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Corr_XY_M</td>
+<td style="text-align: left;">0.09 (0.45)</td>
+<td style="text-align: left;">-0.02 (0.27)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Corr_M</td>
+<td style="text-align: left;">0.21 (0.29)</td>
+<td style="text-align: left;">0.27 (0.17)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Perimeter_perc</td>
+<td style="text-align: left;">0.03 (0.03)</td>
+<td style="text-align: left;">0.03 (0.10)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Area_perc</td>
+<td style="text-align: left;">0.45 (0.83)</td>
+<td style="text-align: left;">0.24 (0.48)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+</section>
+<section id="comparison-of-features-distribution" class="level2">
+<h2 data-anchor-id="comparison-of-features-distribution">Comparison of feature’s distribution</h2>
+<p>Regarding the distribution’s of each features across the SSS vs. controls, <a href="#fig-myplot3" class="quarto-xref" aria-expanded="false">Figure&nbsp;3</a> compares the density plots of each standardized criteria (in order to make them comparable) which visually indicates a bimodal distribution. Median of the z-scores per group are also presented in <a href="#tbl-mytb05" class="quarto-xref" aria-expanded="false">Table&nbsp;5</a>.</p>
+<div class="cell FigureWithNote" data-apa-note="all feature's score have been z-score transformed in order to be compared" data-custom-style="FigureWithNote">
+<div class="cell-output-display">
+<div id="fig-myplot3" class="quarto-float quarto-figure quarto-figure-center" prefix="" data-fignum="3">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-myplot3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="FigureTitle" data-custom-style="FigureTitle">
+<p>Figure&nbsp;3</p>
+</div>
+<div class="Caption" data-custom-style="Caption">
+<p>Density plots of all the features comparing SSS and controls</p>
+</div>
+</figcaption>
+<div aria-describedby="fig-myplot3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="2.Pre-registeredReport_V12_testNewGrouping_files/figure-html/fig-myplot3-1.svg" class="img-fluid figure-img" width="624">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div>
+<div class="FigureNote NoIndent" data-custom-style="FigureNote">
+<em>Note</em>. all&nbsp;feature’s score have been z-score transformed in order to be compared
+</div>
+</div>
+<div class="cell FigureWithoutNote" data-ft.align="left" prefix="" data-tblnum="5" data-custom-style="FigureWithoutNote">
+<div id="tbl-mytb05" class="cell quarto-float quarto-figure quarto-figure-center" prefix="" data-tblnum="5" data-ft.align="left">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-mytb05-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="FigureTitle" data-custom-style="FigureTitle">
+<p>Table&nbsp;5</p>
+</div>
+<div class="Caption" data-custom-style="Caption">
+<p>Descriptives of each features</p>
+</div>
+</figcaption>
+<div aria-describedby="tbl-mytb05-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
+<caption>(#tab:tbl-mytb05)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Feature</th>
+<th style="text-align: left;">Ctl</th>
+<th style="text-align: left;">Syn</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">GLM_Valid_areazs</td>
+<td style="text-align: left;">M = -0.55Med = -0.50 (0.80)</td>
+<td style="text-align: left;">M = 0.50Med = 0.49 (0.89)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">isValid_perm_M</td>
+<td style="text-align: left;">M = -0.52Med = -0.77 (0.65)</td>
+<td style="text-align: left;">M = 0.48Med = 0.39 (1.03)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Perimeter_zs</td>
+<td style="text-align: left;">M = 0.56Med = 0.58 (0.99)</td>
+<td style="text-align: left;">M = -0.52Med = -0.79 (0.68)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">isValidStruct_M</td>
+<td style="text-align: left;">M = -0.49Med = -0.75 (0.69)</td>
+<td style="text-align: left;">M = 0.46Med = 0.31 (1.03)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">SelfInter</td>
+<td style="text-align: left;">M = 0.44Med = -0.28 (1.19)</td>
+<td style="text-align: left;">M = -0.41Med = -0.56 (0.52)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Area_zs</td>
+<td style="text-align: left;">M = 0.38Med = -0.16 (1.23)</td>
+<td style="text-align: left;">M = -0.35Med = -0.54 (0.52)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">areaPoly_GA</td>
+<td style="text-align: left;">M = -0.35Med = -0.52 (0.82)</td>
+<td style="text-align: left;">M = 0.32Med = 0.14 (1.04)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">isSimple_GA</td>
+<td style="text-align: left;">M = -0.36Med = -0.70 (0.84)</td>
+<td style="text-align: left;">M = 0.34Med = 0.15 (1.02)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">perm_zs</td>
+<td style="text-align: left;">M = 0.09Med = -0.11 (1.39)</td>
+<td style="text-align: left;">M = -0.08Med = -0.11 (0.36)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">perimPoly</td>
+<td style="text-align: left;">M = 0.22Med = 0.17 (1.12)</td>
+<td style="text-align: left;">M = -0.20Med = -0.33 (0.82)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Corr_XY_M</td>
+<td style="text-align: left;">M = 0.16Med = 0.14 (1.21)</td>
+<td style="text-align: left;">M = -0.14Med = -0.09 (0.73)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Corr_M</td>
+<td style="text-align: left;">M = -0.12Med = -0.10 (1.23)</td>
+<td style="text-align: left;">M = 0.11Med = 0.11 (0.72)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Perimeter_perc</td>
+<td style="text-align: left;">M = 0.02Med = -0.10 (0.39)</td>
+<td style="text-align: left;">M = -0.01Med = -0.16 (1.34)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Area_perc</td>
+<td style="text-align: left;">M = 0.16Med = -0.30 (1.23)</td>
+<td style="text-align: left;">M = -0.15Med = -0.35 (0.70)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+</section>
+<section id="comparison-of-features-by-category" class="level2">
+<h2 data-anchor-id="comparison-of-features-by-category">Comparison of features by category</h2>
+<p>We descriptively compared whether the feature’s criteria could bias towards some SSS sub-types to the other. Using only the datasets from Ward, we compared whether the detected SSS witht the two main feature’s (permuted validity and perimeter) applied cut-off led to detect more self-reported SSS for specific space-forms for numbers, days or months. This is illustrated by a Venn diagram showing each participant falling in each of these five categories and their overlaps, see <strong>?@fig-myplot4</strong>. From this diagram we can assess that 30 % of the SSS do report space forms for all the three categories and that are detected by both tests, while 11 % with all categories are not detected by any of both features. 9 %</p>
+<div class="cell FigureWithNote" data-apa-note="Only data from Ward is included here. % from the toal of " data-custom-style="FigureWithNote">
+<div class="cell-output-display">
+<div id="fig-myplot4-1" class="quarto-float quarto-figure quarto-figure-center" prefix="" data-fignum="4">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-myplot4-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="FigureTitle" data-custom-style="FigureTitle">
+<p>Figure&nbsp;4</p>
+</div>
+<div class="Caption" data-custom-style="Caption">
+<p>Avocado Venn Diagramm of self-report and tests</p>
+</div>
+</figcaption>
+<div aria-describedby="fig-myplot4-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="2.Pre-registeredReport_V12_testNewGrouping_files/figure-html/fig-myplot4-1.svg" class="img-fluid figure-img" width="624">
+</div>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div id="fig-myplot4-2" class="quarto-float quarto-figure quarto-figure-center" prefix="" data-fignum="5">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-myplot4-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="FigureTitle" data-custom-style="FigureTitle">
+<p>Figure&nbsp;5</p>
+</div>
+<div class="Caption" data-custom-style="Caption">
+<p>Avocado Venn Diagramm of self-report and tests</p>
+</div>
+</figcaption>
+<div aria-describedby="fig-myplot4-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="2.Pre-registeredReport_V12_testNewGrouping_files/figure-html/fig-myplot4-2.svg" class="img-fluid figure-img" width="624">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div>
+<div class="FigureNote NoIndent" data-custom-style="FigureNote">
+<em>Note</em>. Only&nbsp;data from Ward is included here. % from the toal of
+</div>
+</div>
+</section>
+<section id="additional-analyses" class="level2">
+<h2 data-anchor-id="additional-analyses">Additional analyses</h2>
+<p>The extreme groups were defined by the percentiles on the questionnaire sores, hence only the data from Ward is included there. We computed AUC, sensitivity and sensibility for the 10-90 %, 20-80 %, 30-70 %, 40-60 % sub-sampled participants depending on the distribution of the synaesthesia questionnaire <span class="citation" data-cites="ward2018">(see <a href="#ref-ward2018" role="doc-biblioref">Ward et al., 2018</a>)</span>. The results for AUC <a href="#fig-myplot5" class="quarto-xref" aria-expanded="false">Figure&nbsp;A1</a>, sensitivity and specificity <a href="#fig-myplot6" class="quarto-xref" aria-expanded="false">Figure&nbsp;A2</a>.</p>
+<p>However we also found differences across the datasets, see <a href="#fig-myplot9" class="quarto-xref" aria-expanded="false">Figure&nbsp;A4</a> for AUC, <a href="#fig-myplot10" class="quarto-xref" aria-expanded="false">Figure&nbsp;A5</a> for sensitivity and specificity.</p>
+<p>To confirm that the results are not circular, we correlated questionnaire scores with the features results, see <a href="#sec-sm2-correlation-with-self-report" class="quarto-xref">Section&nbsp;11.2</a>, <a href="#fig-myplot8" class="quarto-xref" aria-expanded="false">Figure&nbsp;A3</a></p>
+<p>Finally, descriptively we also wanted to see whether one of the main criteria would be more beneficial for one form of SSS or the other, see</p>
+</section>
+</section>
+<section id="sec-phase-ii-methods" class="level1">
+<h1><em>Phase II</em> Methods</h1>
+<p>Additional data will be collected in the future using the same consistency test, with the procedural exception that there will be four repetitions per stimuli instead of three. The same feature will be extracted from this dataset. Hence for the stimulus levels feature we will compare the area and perimeter of a rectangle of four coordinates pairs instead of a triangle. Materials are more details on this study are pre-registered on OSF (<a href="https://osf.io/pjb6e/?view_only=d467ebf4c1f94076ae4ac61298255065" class="uri">https://osf.io/pjb6e/?view_only=d467ebf4c1f94076ae4ac61298255065</a>). The population (i.e.&nbsp;sample size and recruitment method) are also pre-registered (<a href="https://osf.io/6h8dx" class="uri">https://osf.io/6h8dx</a><strong>).</strong></p>
+</section>
+<section id="phase-ii-analyses" class="level1">
+<h1><em>Phase II Analyses</em></h1>
+<p>We will compute the same ROC analyses as in this pre-registration. For</p>
+</section>
+<section id="discussion" class="level1">
+<h1>Discussion</h1>
+<p>Shifting from investigating consistency across stimulus position to across repetitions have led to some improvement in ROC. The best criteria was a GLM</p>
+<p>From the different features we extracted, topological validity across the repetitions appeared to be the one leading to the largest Area Under the Curve.</p>
+<section id="sec-limitations" class="level2">
+<h2 data-anchor-id="sec-limitations">Limitations</h2>
+<p>Although an optimal tool to discriminate SSS might be particularly relevant for experimental purposes, it is important to consider some limitations. These consistency tools are designed with a limited set of sequential stimuli (i.e.&nbsp;months, weeks and the first ten natural numbers). <!--# Diversity --> Other sequences might also be represented in particular spatial positions such as temperature, ect. <!--# Continuum --> Another point is that rather than categorical, synesthesia might be present on a continuum in the general population. In that case diagnostic cutoffs might not be relevant, rather a score would be necessary <span class="citation" data-cites="price2013">(<a href="#ref-price2013" role="doc-biblioref">Price &amp; Pearson, 2013</a>)</span>. <!--# Cirularity --> Finally, there might also be an issue of circularity - as with many diagnostics : how synesthesia is defined determines how synestetes are detected which are the groups on which synesthesia is defined <span class="citation" data-cites="simner2012">(<a href="#ref-simner2012" role="doc-biblioref">Simner, 2012</a>)</span>. <!--# External validity --> This is particularly relevant when the two diagnostic criteria on which validity are compared are self-reports (i.e.&nbsp;being conscious) and consistency.</p>
+<p>The heterogeneity of methods used to detect SSS, combined with the heterogeneity of SSS complicates the task to estimate general population prevalence of SSS <span class="citation" data-cites="jonas2014 brang2010 sagiv2006">(<a href="#ref-brang2010" role="doc-biblioref">Brang et al., 2010</a>; <a href="#ref-jonas2014" role="doc-biblioref">Jonas &amp; Price, 2014</a>; <a href="#ref-sagiv2006" role="doc-biblioref">Sagiv et al., 2006</a>)</span>. For the present stake, the circularity issue makes it difficult since consistency diagnostic tools are designed to best classify control from synesthetes and hence depend on how those groups are initially defined. For example <a href="#sec-SM3byds" class="quarto-xref">Section&nbsp;11.3</a> suggests that the best AUC is given by different features depending on the different datasets.</p>
+<p>Numerals. While weekdays and months are finite sets, numerals are infinite. It is possible that some criteria could improve wen taking a larger set of numerals into account, in particular since there many descriptively interesting form occur at different decimals (in hindo-arabic decimal number system), see examples in <span class="citation" data-cites="galton1880">(<a href="#ref-galton1880" role="doc-biblioref">Galton, 1880</a>)</span> .</p>
+<p>SSS with 3D representations might also be under-diagnosed since the test is in 2D. However it seems that most SSS are relatively good at transposing 3D to 2D, which might be also explain by a more general advantage in visuo-spatial memory for SSS <span class="citation" data-cites="brang2010">(<a href="#ref-brang2010" role="doc-biblioref">Brang et al., 2010</a>)</span>.</p>
+<p>Overlapping responses. A methodological issue concerns participants that give the same responses across conditions. These responses are a complication since we can’t infer whether those conditions did not give rise to a synesthetic response in a synthesete or whether it is from a control that was confused about the instructions. On a methodological level, those responses can critically bias the diagnostic criteria. On one side excluding those responses would imbalance the number of responses by participant, on the other side including these responses might bias the diagnostic.</p>
+<p>Future studies could use machine learning and/or neural network in an attempt to fin the best criteria for classifying synesthetes from control. This approach however need to have a clear explanability, since the main use of a criteria is experimental. Ideally, we would need an algorithm which could give individual probability to have SSS on which a threshold would help to</p>
+<p>See also <span class="citation" data-cites="root2025">(<a href="#ref-root2025" role="doc-biblioref">Root et al., 2025</a>)</span>.</p>
+</section>
+<section id="sec-conclusions" class="level2">
+<h2 data-anchor-id="sec-conclusions">Conclusions</h2>
+<p>The feature that led to the best AUC was topological validity. If confirmed, this might lead to interesting conclusions about how SSS map ordinal stimuli in space. The parallel between maps and neuroscience has a long history (i.e.&nbsp;retinotopy, sonotopy or somatotopy), hence it seems that the automatic spatial associations in SSS follow to some extend some topological rules <span class="citation" data-cites="eagleman2009a">(<a href="#ref-eagleman2009a" role="doc-biblioref">Eagleman, 2009</a>)</span>.</p>
+<p>The optimal criterion needs to be informed about the order between inducers (i.e.&nbsp;to construct the polygons) and interestingly suggests that synthetic inducer are structurally mapped following topological rules analogous to geographical space structures. Hence suggesting a spatial nature for the synthetic forms of space sequence synesthetes.</p>
+<p>Interestingly, ordinality is very important an important semantic property of numbers (REF). Moreover that numbers are acquired sequentially (i.e.&nbsp;1 is learned before 2) (REF). Hence the importance of ordinality in SSS is coherent with developmental accounts of Synesthesia <span class="citation" data-cites="price2013">(<a href="#ref-price2013" role="doc-biblioref">Price &amp; Pearson, 2013</a>)</span>.</p>
+</section>
+</section>
+<section id="references" class="level1">
+<h1>References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
+<div id="ref-baron-cohen1993" class="csl-entry" role="listitem">
+Baron-Cohen, S., Harrison, J., Goldstein, L. H., &amp; Wyke, M. (1993). Coloured Speech Perception: Is Synaesthesia what Happens when Modularity Breaks Down? <em>Perception</em>, <em>22</em>(4), 419–426. <a href="https://doi.org/10.1068/p220419">https://doi.org/10.1068/p220419</a>
+</div>
+<div id="ref-brang2010" class="csl-entry" role="listitem">
+Brang, D., Teuscher, U., Ramachandran, V. S., &amp; Coulson, S. (2010). Temporal sequences, synesthetic mappings, and cultural biases: The geography of time. <em>Consciousness and Cognition</em>, <em>19</em>(1), 311–320. <a href="https://doi.org/10.1016/j.concog.2010.01.003">https://doi.org/10.1016/j.concog.2010.01.003</a>
+</div>
+<div id="ref-dixon2004" class="csl-entry" role="listitem">
+Dixon, M. J., Smilek, D., &amp; Merikle, P. M. (2004). Not all synaesthetes are created equal: Projector versus associator synaesthetes. <em>Cognitive, Affective, &amp; Behavioral Neuroscience</em>, <em>4</em>(3), 335–343. <a href="https://doi.org/10.3758/CABN.4.3.335">https://doi.org/10.3758/CABN.4.3.335</a>
+</div>
+<div id="ref-eagleman2009a" class="csl-entry" role="listitem">
+Eagleman, D. M. (2009). The objectification of overlearned sequences: A new view of spatial sequence synesthesia. <em>Cortex</em>, <em>45</em>(10), 1266–1277. <a href="https://doi.org/10.1016/j.cortex.2009.06.012">https://doi.org/10.1016/j.cortex.2009.06.012</a>
+</div>
+<div id="ref-galton1880" class="csl-entry" role="listitem">
+Galton, F. (1880). Visualised Numerals. <em>Nature</em>, <em>21</em>(533), 252–256. <a href="https://doi.org/10.1038/021252a0">https://doi.org/10.1038/021252a0</a>
+</div>
+<div id="ref-gould2014" class="csl-entry" role="listitem">
+Gould, C., Froese, T., Barrett, A. B., Ward, J., &amp; Seth, A. K. (2014). An extended case study on the phenomenology of sequence-space synesthesia. <em>Frontiers in Human Neuroscience</em>, <em>8</em>. <a href="https://doi.org/10.3389/fnhum.2014.00433">https://doi.org/10.3389/fnhum.2014.00433</a>
+</div>
+<div id="ref-jonas2014" class="csl-entry" role="listitem">
+Jonas, C. N., &amp; Price, M. C. (2014). Not all synesthetes are alike: Spatial vs. Visual dimensions of sequence-space synesthesia. <em>Frontiers in Psychology</em>, <em>5</em>. <a href="https://doi.org/10.3389/fpsyg.2014.01171">https://doi.org/10.3389/fpsyg.2014.01171</a>
+</div>
+<div id="ref-pebesma2018" class="csl-entry" role="listitem">
+Pebesma, E. (2018). Simple Features for R: Standardized Support for Spatial Vector Data. <em>The R Journal</em>, <em>10</em>(1), 439–446. <a href="https://doi.org/10.32614/RJ-2018-009">https://doi.org/10.32614/RJ-2018-009</a>
+</div>
+<div id="ref-price2013" class="csl-entry" role="listitem">
+Price, M., &amp; Pearson, D. (2013). Toward a visuospatial developmental account of sequence-space synesthesia. <em>Frontiers in Human Neuroscience</em>, <em>7</em>. <a href="https://doi.org/10.3389/fnhum.2013.00689">https://doi.org/10.3389/fnhum.2013.00689</a>
+</div>
+<div id="ref-root2021" class="csl-entry" role="listitem">
+Root, N., Asano, M., Melero, H., Kim, C.-Y., Sidoroff-Dorso, A. V., Vatakis, A., Yokosawa, K., Ramachandran, V., &amp; Rouw, R. (2021). Do the colors of your letters depend on your language? Language-dependent and universal influences on grapheme-color synesthesia in seven languages. <em>Consciousness and Cognition</em>, <em>95</em>, 103192. <a href="https://doi.org/10.1016/j.concog.2021.103192">https://doi.org/10.1016/j.concog.2021.103192</a>
+</div>
+<div id="ref-root2025" class="csl-entry" role="listitem">
+Root, N., Chkhaidze, A., Melero, H., Sidoroff-Dorso, A., Volberg, G., Zhang, Y., &amp; Rouw, R. (2025). How <span>“</span>diagnostic<span>”</span> criteria interact to shape synesthetic behavior: The role of self-report and test<span></span>retest consistency in synesthesia research. <em>Consciousness and Cognition</em>, <em>129</em>, 103819. <a href="https://doi.org/10.1016/j.concog.2025.103819">https://doi.org/10.1016/j.concog.2025.103819</a>
+</div>
+<div id="ref-rothen2016" class="csl-entry" role="listitem">
+Rothen, N., Jünemann, K., Mealor, A. D., Burckhardt, V., &amp; Ward, J. (2016a). The sensitivity and specificity of a diagnostic test of sequence-space synesthesia. <em>Behavior Research Methods</em>, <em>48</em>(4), 1476–1481. <a href="https://doi.org/10.3758/s13428-015-0656-2">https://doi.org/10.3758/s13428-015-0656-2</a>
+</div>
+<div id="ref-rothen2016a" class="csl-entry" role="listitem">
+Rothen, N., Jünemann, K., Mealor, A. D., Burckhardt, V., &amp; Ward, J. (2016b). The sensitivity and specificity of a diagnostic test of sequence-space synesthesia. <em>Behavior Research Methods</em>, <em>48</em>(4), 1476–1481. <a href="https://doi.org/10.3758/s13428-015-0656-2">https://doi.org/10.3758/s13428-015-0656-2</a>
+</div>
+<div id="ref-rothen2013a" class="csl-entry" role="listitem">
+Rothen, N., Seth, A. K., Witzel, C., &amp; Ward, J. (2013). Diagnosing synaesthesia with online colour pickers: Maximising sensitivity and specificity. <em>Journal of Neuroscience Methods</em>, <em>215</em>(1), 156–160. <a href="https://doi.org/10.1016/j.jneumeth.2013.02.009">https://doi.org/10.1016/j.jneumeth.2013.02.009</a>
+</div>
+<div id="ref-sagiv2006" class="csl-entry" role="listitem">
+Sagiv, N., Simner, J., Collins, J., Butterworth, B., &amp; Ward, J. (2006). What is the relationship between synaesthesia and visuo-spatial number forms? <em>Cognition</em>, <em>101</em>(1), 114–128. <a href="https://doi.org/10.1016/j.cognition.2005.09.004">https://doi.org/10.1016/j.cognition.2005.09.004</a>
+</div>
+<div id="ref-seron1992" class="csl-entry" role="listitem">
+Seron, X., Pesenti, M., Noël, M.-P., Deloche, G., &amp; Cornet, J.-A. (1992). Images of numbers, or <span>“</span>when 98 is upper left and 6 sky blue<span>”</span>. <em>Cognition</em>, <em>44</em>(1), 159–196. <a href="https://doi.org/10.1016/0010-0277(92)90053-K">https://doi.org/10.1016/0010-0277(92)90053-K</a>
+</div>
+<div id="ref-simner2012" class="csl-entry" role="listitem">
+Simner, J. (2012). Defining synaesthesia. <em>British Journal of Psychology</em>, <em>103</em>(1), 1–15. <a href="https://doi.org/10.1348/000712610X528305">https://doi.org/10.1348/000712610X528305</a>
+</div>
+<div id="ref-smilek2007" class="csl-entry" role="listitem">
+Smilek, D., Callejas, A., Dixon, M. J., &amp; Merikle, P. M. (2007). Ovals of time: Time-space associations in synaesthesia. <em>Consciousness and Cognition</em>, <em>16</em>(2), 507–519. <a href="https://doi.org/10.1016/j.concog.2006.06.013">https://doi.org/10.1016/j.concog.2006.06.013</a>
+</div>
+<div id="ref-vanpetersen2020" class="csl-entry" role="listitem">
+Van Petersen, E., Altgassen, M., Van Lier, R., &amp; Van Leeuwen, T. M. (2020b). Enhanced spatial navigation skills in sequence-space synesthetes. <em>Cortex</em>, <em>130</em>, 49–63. <a href="https://doi.org/10.1016/j.cortex.2020.04.034">https://doi.org/10.1016/j.cortex.2020.04.034</a>
+</div>
+<div id="ref-vanpetersen2020a" class="csl-entry" role="listitem">
+Van Petersen, E., Altgassen, M., Van Lier, R., &amp; Van Leeuwen, T. M. (2020a). Enhanced spatial navigation skills in sequence-space synesthetes. <em>Cortex</em>, <em>130</em>, 49–63. <a href="https://doi.org/10.1016/j.cortex.2020.04.034">https://doi.org/10.1016/j.cortex.2020.04.034</a>
+</div>
+<div id="ref-ward" class="csl-entry" role="listitem">
+Ward, J. (n.d.-a). <em>Optimizing a Measure of Consistency for Sequence-Space Synaesthesia</em>. <a href="https://doi.org/10.31234/osf.io/5cnr7">https://doi.org/10.31234/osf.io/5cnr7</a>
+</div>
+<div id="ref-wardb" class="csl-entry" role="listitem">
+Ward, J. (n.d.-b). <em>Optimizing a Measure of Consistency for Sequence-Space Synaesthesia</em>. <a href="https://doi.org/10.31234/osf.io/5cnr7">https://doi.org/10.31234/osf.io/5cnr7</a>
+</div>
+<div id="ref-ward2018" class="csl-entry" role="listitem">
+Ward, J., Ipser, A., Phanvanova, E., Brown, P., Bunte, I., &amp; Simner, J. (2018). The prevalence and cognitive profile of sequence-space synaesthesia. <em>Consciousness and Cognition</em>, <em>61</em>, 79–93. <a href="https://doi.org/10.1016/j.concog.2018.03.012">https://doi.org/10.1016/j.concog.2018.03.012</a>
+</div>
+<div id="ref-youden1950" class="csl-entry" role="listitem">
+Youden, W. J. (1950). Index for rating diagnostic tests. <em>Cancer</em>, <em>3</em>(1), 32–35. <a href="https://doi.org/10.1002/1097-0142(1950)3:1<32::aid-cncr2820030106>3.0.co;2-3">https://doi.org/10.1002/1097-0142(1950)3:1&lt;32::aid-cncr2820030106&gt;3.0.co;2-3</a>
+</div>
+</div>
+</section>
+<section class="level1">
+<h1>Appendix</h1>
+</section>
+<section id="apx-sec-supplementary-material-phase-i" class="level1" data-appendixtitle="A">
+<h1 data-appendixtitle="A">Appendix phase I</h1>
+<p>To additionally test the validity of the criteria, we computed the ROC again by subsampling the groups based on the questionnaire scores so to have more extreme groups. This was done only on the data from Ward, since the other did not include a questionnaire in the data.</p>
+<section id="sec-sm1" class="level2">
+<h2 data-anchor-id="sec-sm1">Appendix 1 Subsambled data by questionnaire quantiles (10% steps)</h2>
+<p>In the following, we compare the data sampled by the questionnaire score. Based on the distribution of the questionnaire score, we sampled the 10 % with the lowest and 10 % with the highest scores. Those are then compared with the 20 and 20 % and so on until 40 and 40 %. The rationale of this procedure is that AUC, sensitivity and specificity should remain stable across percentiles for a feature to be valid, see <a href="#fig-myplot5" class="quarto-xref" aria-expanded="false">Figure&nbsp;A1</a>. In other words the ROC should remain unchanged if we take extreme groups compared to less extreme ones.</p>
+<div class="cell FigureWithNote" data-apa-note="Each point is an increasing percentiles" data-custom-style="FigureWithNote">
+<div class="cell-output-display">
+<div id="fig-myplot5" class="quarto-float quarto-figure quarto-figure-center" prefix="A" data-fignum="1">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-myplot5-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="FigureTitle" data-custom-style="FigureTitle">
+<p>Figure&nbsp;A1</p>
+</div>
+<div class="Caption" data-custom-style="Caption">
+<p>Lineplots of AUC by percentile</p>
+</div>
+</figcaption>
+<div aria-describedby="fig-myplot5-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="2.Pre-registeredReport_V12_testNewGrouping_files/figure-html/fig-myplot5-1.svg" class="img-fluid figure-img" width="624">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div>
+<div class="FigureNote NoIndent" data-custom-style="FigureNote">
+<em>Note</em>. Each&nbsp;point is an increasing percentiles
+</div>
+</div>
+<div id="fig-myplot6" class="quarto-layout-panel FigureWithoutNote" data-custom-style="FigureWithoutNote">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-myplot6-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="FigureTitle" data-custom-style="FigureTitle">
+<p>Figure&nbsp;A2</p>
+</div>
+<div class="Caption" data-custom-style="Caption">
+<p>Lineplots of Sensitivity and Specificity by percentiles</p>
+</div>
+</figcaption>
+<div aria-describedby="fig-myplot6-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-myplot6" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-myplot6-1" class="quarto-float quarto-figure quarto-figure-center" prefix="A" data-fignum="2A">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-fig" id="fig-myplot6-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(A) Sensitivity
+</figcaption>
+<div aria-describedby="fig-myplot6-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="2.Pre-registeredReport_V12_testNewGrouping_files/figure-html/fig-myplot6-1.svg" class="img-fluid figure-img" data-ref-parent="fig-myplot6" width="624">
+</div>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-myplot6" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-myplot6-2" class="quarto-float quarto-figure quarto-figure-center" prefix="A" data-fignum="2B">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-fig" id="fig-myplot6-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(B) Specificity
+</figcaption>
+<div aria-describedby="fig-myplot6-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="2.Pre-registeredReport_V12_testNewGrouping_files/figure-html/fig-myplot6-2.svg" class="img-fluid figure-img" data-ref-parent="fig-myplot6" width="624">
+</div>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</figure>
+</div>
+</section>
+<section id="sec-sm2-correlation-with-self-report" class="level2">
+<h2 data-anchor-id="sec-sm2-correlation-with-self-report">Appendix 2 Correlation with self-report</h2>
+<p>The best criterion should also best correlate with SSS self-reported questionnaire score.<br>
+Works only with Ward’s aggregated data, see <a href="#fig-myplot6" class="quarto-xref" aria-expanded="false">Figure&nbsp;A2</a>.</p>
+<div class="cell FigureWithNote" data-apa-note="Only data from Ward is included here" data-custom-style="FigureWithNote">
+<div class="cell-output-display">
+<div id="fig-myplot8" class="quarto-float quarto-figure quarto-figure-center" prefix="A" data-fignum="3">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-myplot8-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="FigureTitle" data-custom-style="FigureTitle">
+<p>Figure&nbsp;A3</p>
+</div>
+<div class="Caption" data-custom-style="Caption">
+<p>Correlation with self-reported questionnaire</p>
+</div>
+</figcaption>
+<div aria-describedby="fig-myplot8-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="2.Pre-registeredReport_V12_testNewGrouping_files/figure-html/fig-myplot8-1.svg" class="img-fluid figure-img" width="864">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div>
+<div class="FigureNote NoIndent" data-custom-style="FigureNote">
+<em>Note</em>. Only&nbsp;data from Ward is included here
+</div>
+</div>
+</section>
+<section id="sec-SM3byds" class="level2">
+<h2 data-anchor-id="sec-SM3byds">Appendix 3 By dataset</h2>
+<p>Here we compare the ROC for each specific data sample. Although the different authors have used a similar method, there might be a recruitment bias or other.</p>
+<p><a href="#tbl-mytb4" class="quarto-xref" aria-expanded="false">Table&nbsp;A1</a></p>
+<p><a href="#fig-myplot9" class="quarto-xref" aria-expanded="false">Figure&nbsp;A4</a></p>
+<p><a href="#fig-myplot10" class="quarto-xref" aria-expanded="false">Figure&nbsp;A5</a></p>
+<p><strong>?@fig-myplot11</strong></p>
+<div class="cell FigureWithoutNote" data-ft.align="left" prefix="A" data-tblnum="1" data-custom-style="FigureWithoutNote">
+<div id="tbl-mytb4" class="cell quarto-float quarto-figure quarto-figure-center" prefix="A" data-tblnum="1" data-ft.align="left">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-mytb4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="FigureTitle" data-custom-style="FigureTitle">
+<p>Table&nbsp;A1</p>
+</div>
+<div class="Caption" data-custom-style="Caption">
+<p>Average feature for each group and dataset</p>
+</div>
+</figcaption>
+<div aria-describedby="tbl-mytb4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
+<caption>(#tab:tbl-mytb4)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">dataSource</th>
+<th style="text-align: left;">Feature</th>
+<th style="text-align: left;">Ctl</th>
+<th style="text-align: left;">Syn</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">PeterCor</td>
+<td style="text-align: left;">Area_perc</td>
+<td style="text-align: left;">M = 0.31Med = 0.16 (0.40)</td>
+<td style="text-align: left;">M = 0.07Med = 0.08 (0.05)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Rothen</td>
+<td style="text-align: left;">Area_perc</td>
+<td style="text-align: left;">M = 0.89Med = 0.28 (1.44)</td>
+<td style="text-align: left;">M = 0.13Med = 0.09 (0.09)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ward</td>
+<td style="text-align: left;">Area_perc</td>
+<td style="text-align: left;">M = 0.38Med = 0.09 (0.69)</td>
+<td style="text-align: left;">M = 0.26Med = 0.11 (0.50)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">PeterCor</td>
+<td style="text-align: left;">Area_zs</td>
+<td style="text-align: left;">M = 0.06Med = 0.03 (0.11)</td>
+<td style="text-align: left;">M = 0.02Med = 0.01 (0.01)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Rothen</td>
+<td style="text-align: left;">Area_zs</td>
+<td style="text-align: left;">M = 0.23Med = 0.11 (0.25)</td>
+<td style="text-align: left;">M = 0.05Med = 0.03 (0.06)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ward</td>
+<td style="text-align: left;">Area_zs</td>
+<td style="text-align: left;">M = 0.30Med = 0.16 (0.34)</td>
+<td style="text-align: left;">M = 0.08Med = 0.03 (0.15)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PeterCor</td>
+<td style="text-align: left;">Perimeter_perc</td>
+<td style="text-align: left;">M = 0.02Med = 0.02 (0.01)</td>
+<td style="text-align: left;">M = 0.01Med = 0.01 (0.00)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Rothen</td>
+<td style="text-align: left;">Perimeter_perc</td>
+<td style="text-align: left;">M = 0.05Med = 0.04 (0.04)</td>
+<td style="text-align: left;">M = 0.03Med = 0.02 (0.01)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ward</td>
+<td style="text-align: left;">Perimeter_perc</td>
+<td style="text-align: left;">M = 0.03Med = 0.02 (0.03)</td>
+<td style="text-align: left;">M = 0.03Med = 0.02 (0.11)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">PeterCor</td>
+<td style="text-align: left;">Perimeter_zs</td>
+<td style="text-align: left;">M = 1.33Med = 1.24 (0.79)</td>
+<td style="text-align: left;">M = 0.77Med = 0.73 (0.24)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Rothen</td>
+<td style="text-align: left;">Perimeter_zs</td>
+<td style="text-align: left;">M = 2.91Med = 3.07 (1.37)</td>
+<td style="text-align: left;">M = 1.60Med = 1.18 (0.96)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ward</td>
+<td style="text-align: left;">Perimeter_zs</td>
+<td style="text-align: left;">M = 3.71Med = 3.76 (1.65)</td>
+<td style="text-align: left;">M = 1.61Med = 1.14 (1.19)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PeterCor</td>
+<td style="text-align: left;">perm_zs</td>
+<td style="text-align: left;">M = -5.90Med = -6.13 (0.72)</td>
+<td style="text-align: left;">M = -5.82Med = -5.97 (0.57)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Rothen</td>
+<td style="text-align: left;">perm_zs</td>
+<td style="text-align: left;">M = -5.63Med = -5.82 (1.28)</td>
+<td style="text-align: left;">M = -5.78Med = -6.00 (0.79)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ward</td>
+<td style="text-align: left;">perm_zs</td>
+<td style="text-align: left;">M = 139.11Med = -3.73 (923.23)</td>
+<td style="text-align: left;">M = 12.42Med = -5.89 (223.34)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">PeterCor</td>
+<td style="text-align: left;">SelfInter</td>
+<td style="text-align: left;">M = 1.41Med = 0.44 (2.22)</td>
+<td style="text-align: left;">M = 0.35Med = 0.11 (0.46)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Rothen</td>
+<td style="text-align: left;">SelfInter</td>
+<td style="text-align: left;">M = 1.78Med = 0.56 (2.37)</td>
+<td style="text-align: left;">M = 0.36Med = 0.17 (0.47)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ward</td>
+<td style="text-align: left;">SelfInter</td>
+<td style="text-align: left;">M = 11.39Med = 5.89 (11.05)</td>
+<td style="text-align: left;">M = 1.84Med = 0.33 (4.92)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PeterCor</td>
+<td style="text-align: left;">areaPoly_GA</td>
+<td style="text-align: left;">M = 0.63Med = 0.42 (0.68)</td>
+<td style="text-align: left;">M = 1.99Med = 2.05 (1.24)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Rothen</td>
+<td style="text-align: left;">areaPoly_GA</td>
+<td style="text-align: left;">M = 1.27Med = 1.20 (0.91)</td>
+<td style="text-align: left;">M = 1.95Med = 1.69 (1.28)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ward</td>
+<td style="text-align: left;">areaPoly_GA</td>
+<td style="text-align: left;">M = 0.98Med = 0.71 (1.01)</td>
+<td style="text-align: left;">M = 1.77Med = 1.56 (1.25)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">PeterCor</td>
+<td style="text-align: left;">perimPoly</td>
+<td style="text-align: left;">M = 8.87Med = 8.87 (3.53)</td>
+<td style="text-align: left;">M = 7.22Med = 7.21 (0.90)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Rothen</td>
+<td style="text-align: left;">perimPoly</td>
+<td style="text-align: left;">M = 11.21Med = 11.45 (3.14)</td>
+<td style="text-align: left;">M = 9.13Med = 8.58 (1.97)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ward</td>
+<td style="text-align: left;">perimPoly</td>
+<td style="text-align: left;">M = 9.43Med = 9.10 (3.43)</td>
+<td style="text-align: left;">M = 8.34Med = 7.97 (2.61)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PeterCor</td>
+<td style="text-align: left;">isSimple_GA</td>
+<td style="text-align: left;">M = 0.13Med = 0.11 (0.13)</td>
+<td style="text-align: left;">M = 0.54Med = 0.56 (0.30)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Rothen</td>
+<td style="text-align: left;">isSimple_GA</td>
+<td style="text-align: left;">M = 0.14Med = 0.11 (0.19)</td>
+<td style="text-align: left;">M = 0.37Med = 0.33 (0.23)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ward</td>
+<td style="text-align: left;">isSimple_GA</td>
+<td style="text-align: left;">M = 0.22Med = 0.11 (0.23)</td>
+<td style="text-align: left;">M = 0.37Med = 0.33 (0.26)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">PeterCor</td>
+<td style="text-align: left;">isValidStruct_M</td>
+<td style="text-align: left;">M = 0.13Med = 0.11 (0.13)</td>
+<td style="text-align: left;">M = 0.54Med = 0.56 (0.30)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Rothen</td>
+<td style="text-align: left;">isValidStruct_M</td>
+<td style="text-align: left;">M = 0.14Med = 0.11 (0.19)</td>
+<td style="text-align: left;">M = 0.37Med = 0.33 (0.23)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ward</td>
+<td style="text-align: left;">isValidStruct_M</td>
+<td style="text-align: left;">M = 0.12Med = 0.00 (0.18)</td>
+<td style="text-align: left;">M = 0.36Med = 0.33 (0.27)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PeterCor</td>
+<td style="text-align: left;">Corr_XY_M</td>
+<td style="text-align: left;">M = -0.01Med = -0.03 (0.19)</td>
+<td style="text-align: left;">M = -0.18Med = -0.25 (0.28)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Rothen</td>
+<td style="text-align: left;">Corr_XY_M</td>
+<td style="text-align: left;">M = 0.09Med = 0.08 (0.20)</td>
+<td style="text-align: left;">M = -0.08Med = -0.01 (0.36)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ward</td>
+<td style="text-align: left;">Corr_XY_M</td>
+<td style="text-align: left;">M = 0.10Med = 0.11 (0.50)</td>
+<td style="text-align: left;">M = -0.01Med = 0.01 (0.26)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">PeterCor</td>
+<td style="text-align: left;">Corr_M</td>
+<td style="text-align: left;">M = 0.25Med = 0.26 (0.16)</td>
+<td style="text-align: left;">M = 0.21Med = 0.20 (0.15)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Rothen</td>
+<td style="text-align: left;">Corr_M</td>
+<td style="text-align: left;">M = 0.27Med = 0.23 (0.17)</td>
+<td style="text-align: left;">M = 0.26Med = 0.27 (0.22)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ward</td>
+<td style="text-align: left;">Corr_M</td>
+<td style="text-align: left;">M = 0.20Med = 0.21 (0.31)</td>
+<td style="text-align: left;">M = 0.27Med = 0.27 (0.16)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PeterCor</td>
+<td style="text-align: left;">isValid_perm_M</td>
+<td style="text-align: left;">M = 0.11Med = 0.07 (0.10)</td>
+<td style="text-align: left;">M = 0.49Med = 0.56 (0.25)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Rothen</td>
+<td style="text-align: left;">isValid_perm_M</td>
+<td style="text-align: left;">M = 0.13Med = 0.09 (0.16)</td>
+<td style="text-align: left;">M = 0.33Med = 0.27 (0.22)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ward</td>
+<td style="text-align: left;">isValid_perm_M</td>
+<td style="text-align: left;">M = 0.11Med = 0.05 (0.15)</td>
+<td style="text-align: left;">M = 0.34Med = 0.31 (0.24)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">PeterCor</td>
+<td style="text-align: left;">GLM_Valid_areazs</td>
+<td style="text-align: left;">M = -0.21Med = -0.31 (0.60)</td>
+<td style="text-align: left;">M = 1.76Med = 2.12 (1.22)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Rothen</td>
+<td style="text-align: left;">GLM_Valid_areazs</td>
+<td style="text-align: left;">M = -0.48Med = -0.43 (1.10)</td>
+<td style="text-align: left;">M = 0.88Med = 0.61 (1.14)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ward</td>
+<td style="text-align: left;">GLM_Valid_areazs</td>
+<td style="text-align: left;">M = -0.75Med = -0.65 (1.25)</td>
+<td style="text-align: left;">M = 0.86Med = 0.83 (1.34)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<div class="cell FigureWithNote" data-apa-note="AUC" data-custom-style="FigureWithNote">
+<div class="cell-output-display">
+<div id="fig-myplot9" class="quarto-float quarto-figure quarto-figure-center" prefix="A" data-fignum="4">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-myplot9-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="FigureTitle" data-custom-style="FigureTitle">
+<p>Figure&nbsp;A4</p>
+</div>
+<div class="Caption" data-custom-style="Caption">
+<p>Lineplots of AUC by data source</p>
+</div>
+</figcaption>
+<div aria-describedby="fig-myplot9-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="2.Pre-registeredReport_V12_testNewGrouping_files/figure-html/fig-myplot9-1.svg" class="img-fluid figure-img" width="624">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div>
+<div class="FigureNote NoIndent" data-custom-style="FigureNote">
+<em>Note</em>. AUC
+</div>
+</div>
+<div id="fig-myplot10" class="quarto-layout-panel FigureWithoutNote" data-custom-style="FigureWithoutNote">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-myplot10-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="FigureTitle" data-custom-style="FigureTitle">
+<p>Figure&nbsp;A5</p>
+</div>
+<div class="Caption" data-custom-style="Caption">
+<p>Lineplots of Sensitivity and Specificity by data source</p>
+</div>
+</figcaption>
+<div aria-describedby="fig-myplot10-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-myplot10" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-myplot10-1" class="quarto-float quarto-figure quarto-figure-center" prefix="A" data-fignum="5A">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-fig" id="fig-myplot10-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(A) Sensitivity
+</figcaption>
+<div aria-describedby="fig-myplot10-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="2.Pre-registeredReport_V12_testNewGrouping_files/figure-html/fig-myplot10-1.svg" class="img-fluid figure-img" data-ref-parent="fig-myplot10" width="624">
+</div>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-myplot10" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-myplot10-2" class="quarto-float quarto-figure quarto-figure-center" prefix="A" data-fignum="5B">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-fig" id="fig-myplot10-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(B) Specificity
+</figcaption>
+<div aria-describedby="fig-myplot10-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="2.Pre-registeredReport_V12_testNewGrouping_files/figure-html/fig-myplot10-2.svg" class="img-fluid figure-img" data-ref-parent="fig-myplot10" width="624">
+</div>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</figure>
+</div>
+</section>
+<section id="sec-sm4-reliability" class="level2">
+<h2 data-anchor-id="sec-sm4-reliability">Appendix 4 Reliability</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 3%">
+<col style="width: 21%">
+<col style="width: 7%">
+<col style="width: 6%">
+<col style="width: 12%">
+<col style="width: 15%">
+<col style="width: 15%">
+<col style="width: 8%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Feature</th>
+<th style="text-align: right;">AUC</th>
+<th style="text-align: right;">DP</th>
+<th style="text-align: right;">threshold</th>
+<th style="text-align: right;">sensitivity</th>
+<th style="text-align: right;">specificity</th>
+<th style="text-align: right;">ci_low</th>
+<th style="text-align: right;">ci_high</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">14</td>
+<td style="text-align: left;">GLM_Valid_areazs</td>
+<td style="text-align: right;">82.42</td>
+<td style="text-align: right;">2.30</td>
+<td style="text-align: right;">-0.23</td>
+<td style="text-align: right;">80.62</td>
+<td style="text-align: right;">71.68</td>
+<td style="text-align: right;">77.53</td>
+<td style="text-align: right;">87.31</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">13</td>
+<td style="text-align: left;">isValid_perm_M</td>
+<td style="text-align: right;">81.72</td>
+<td style="text-align: right;">2.16</td>
+<td style="text-align: right;">0.15</td>
+<td style="text-align: right;">73.12</td>
+<td style="text-align: right;">76.99</td>
+<td style="text-align: right;">76.74</td>
+<td style="text-align: right;">86.70</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">Perimeter_zs</td>
+<td style="text-align: right;">79.57</td>
+<td style="text-align: right;">2.33</td>
+<td style="text-align: right;">2.02</td>
+<td style="text-align: right;">78.12</td>
+<td style="text-align: right;">75.22</td>
+<td style="text-align: right;">73.81</td>
+<td style="text-align: right;">85.33</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">isValidStruct_M</td>
+<td style="text-align: right;">78.40</td>
+<td style="text-align: right;">2.06</td>
+<td style="text-align: right;">0.17</td>
+<td style="text-align: right;">70.00</td>
+<td style="text-align: right;">77.88</td>
+<td style="text-align: right;">73.20</td>
+<td style="text-align: right;">83.61</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">SelfInter</td>
+<td style="text-align: right;">74.20</td>
+<td style="text-align: right;">1.79</td>
+<td style="text-align: right;">1.33</td>
+<td style="text-align: right;">80.00</td>
+<td style="text-align: right;">61.06</td>
+<td style="text-align: right;">67.95</td>
+<td style="text-align: right;">80.44</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">Area_zs</td>
+<td style="text-align: right;">71.28</td>
+<td style="text-align: right;">1.83</td>
+<td style="text-align: right;">0.07</td>
+<td style="text-align: right;">78.12</td>
+<td style="text-align: right;">64.60</td>
+<td style="text-align: right;">64.57</td>
+<td style="text-align: right;">77.99</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">7</td>
+<td style="text-align: left;">areaPoly_GA</td>
+<td style="text-align: right;">70.61</td>
+<td style="text-align: right;">1.31</td>
+<td style="text-align: right;">1.27</td>
+<td style="text-align: right;">63.12</td>
+<td style="text-align: right;">69.03</td>
+<td style="text-align: right;">64.51</td>
+<td style="text-align: right;">76.71</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">9</td>
+<td style="text-align: left;">isSimple_GA</td>
+<td style="text-align: right;">70.19</td>
+<td style="text-align: right;">1.26</td>
+<td style="text-align: right;">0.17</td>
+<td style="text-align: right;">70.62</td>
+<td style="text-align: right;">60.18</td>
+<td style="text-align: right;">64.14</td>
+<td style="text-align: right;">76.23</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">perm_zs</td>
+<td style="text-align: right;">69.28</td>
+<td style="text-align: right;">2.68</td>
+<td style="text-align: right;">-3.77</td>
+<td style="text-align: right;">95.62</td>
+<td style="text-align: right;">41.59</td>
+<td style="text-align: right;">62.57</td>
+<td style="text-align: right;">75.99</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">11</td>
+<td style="text-align: left;">Corr_XY_M</td>
+<td style="text-align: right;">61.86</td>
+<td style="text-align: right;">1.20</td>
+<td style="text-align: right;">0.19</td>
+<td style="text-align: right;">80.62</td>
+<td style="text-align: right;">45.13</td>
+<td style="text-align: right;">54.67</td>
+<td style="text-align: right;">69.04</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">8</td>
+<td style="text-align: left;">perimPoly</td>
+<td style="text-align: right;">61.27</td>
+<td style="text-align: right;">1.40</td>
+<td style="text-align: right;">9.65</td>
+<td style="text-align: right;">79.38</td>
+<td style="text-align: right;">52.21</td>
+<td style="text-align: right;">53.93</td>
+<td style="text-align: right;">68.62</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">12</td>
+<td style="text-align: left;">Corr_M</td>
+<td style="text-align: right;">54.91</td>
+<td style="text-align: right;">1.35</td>
+<td style="text-align: right;">0.10</td>
+<td style="text-align: right;">87.50</td>
+<td style="text-align: right;">36.28</td>
+<td style="text-align: right;">47.52</td>
+<td style="text-align: right;">62.29</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">Perimeter_perc</td>
+<td style="text-align: right;">54.10</td>
+<td style="text-align: right;">0.77</td>
+<td style="text-align: right;">0.03</td>
+<td style="text-align: right;">78.12</td>
+<td style="text-align: right;">38.05</td>
+<td style="text-align: right;">46.77</td>
+<td style="text-align: right;">61.43</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">Area_perc</td>
+<td style="text-align: right;">48.70</td>
+<td style="text-align: right;">0.63</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">75.62</td>
+<td style="text-align: right;">38.05</td>
+<td style="text-align: right;">41.02</td>
+<td style="text-align: right;">56.38</td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 3%">
+<col style="width: 21%">
+<col style="width: 7%">
+<col style="width: 6%">
+<col style="width: 12%">
+<col style="width: 15%">
+<col style="width: 15%">
+<col style="width: 8%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Feature</th>
+<th style="text-align: right;">AUC</th>
+<th style="text-align: right;">DP</th>
+<th style="text-align: right;">threshold</th>
+<th style="text-align: right;">sensitivity</th>
+<th style="text-align: right;">specificity</th>
+<th style="text-align: right;">ci_low</th>
+<th style="text-align: right;">ci_high</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">Perimeter_zs</td>
+<td style="text-align: right;">81.18</td>
+<td style="text-align: right;">2.40</td>
+<td style="text-align: right;">1.41</td>
+<td style="text-align: right;">66.94</td>
+<td style="text-align: right;">85.23</td>
+<td style="text-align: right;">75.97</td>
+<td style="text-align: right;">86.39</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">14</td>
+<td style="text-align: left;">GLM_Valid_areazs</td>
+<td style="text-align: right;">80.87</td>
+<td style="text-align: right;">2.41</td>
+<td style="text-align: right;">0.35</td>
+<td style="text-align: right;">64.52</td>
+<td style="text-align: right;">86.58</td>
+<td style="text-align: right;">75.65</td>
+<td style="text-align: right;">86.09</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">13</td>
+<td style="text-align: left;">isValid_perm_M</td>
+<td style="text-align: right;">80.10</td>
+<td style="text-align: right;">2.35</td>
+<td style="text-align: right;">0.22</td>
+<td style="text-align: right;">64.52</td>
+<td style="text-align: right;">85.91</td>
+<td style="text-align: right;">74.79</td>
+<td style="text-align: right;">85.41</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">isValidStruct_M</td>
+<td style="text-align: right;">77.73</td>
+<td style="text-align: right;">2.18</td>
+<td style="text-align: right;">0.28</td>
+<td style="text-align: right;">60.48</td>
+<td style="text-align: right;">85.91</td>
+<td style="text-align: right;">72.15</td>
+<td style="text-align: right;">83.31</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">Area_zs</td>
+<td style="text-align: right;">72.94</td>
+<td style="text-align: right;">1.89</td>
+<td style="text-align: right;">0.08</td>
+<td style="text-align: right;">75.00</td>
+<td style="text-align: right;">69.80</td>
+<td style="text-align: right;">66.75</td>
+<td style="text-align: right;">79.12</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">SelfInter</td>
+<td style="text-align: right;">72.88</td>
+<td style="text-align: right;">1.81</td>
+<td style="text-align: right;">1.06</td>
+<td style="text-align: right;">79.84</td>
+<td style="text-align: right;">61.74</td>
+<td style="text-align: right;">66.92</td>
+<td style="text-align: right;">78.84</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">9</td>
+<td style="text-align: left;">isSimple_GA</td>
+<td style="text-align: right;">71.52</td>
+<td style="text-align: right;">1.53</td>
+<td style="text-align: right;">0.28</td>
+<td style="text-align: right;">62.90</td>
+<td style="text-align: right;">73.83</td>
+<td style="text-align: right;">65.43</td>
+<td style="text-align: right;">77.61</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">7</td>
+<td style="text-align: left;">areaPoly_GA</td>
+<td style="text-align: right;">70.61</td>
+<td style="text-align: right;">1.34</td>
+<td style="text-align: right;">0.94</td>
+<td style="text-align: right;">74.19</td>
+<td style="text-align: right;">57.72</td>
+<td style="text-align: right;">64.46</td>
+<td style="text-align: right;">76.75</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">perm_zs</td>
+<td style="text-align: right;">65.83</td>
+<td style="text-align: right;">2.26</td>
+<td style="text-align: right;">-2.53</td>
+<td style="text-align: right;">94.35</td>
+<td style="text-align: right;">37.58</td>
+<td style="text-align: right;">59.37</td>
+<td style="text-align: right;">72.29</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">8</td>
+<td style="text-align: left;">perimPoly</td>
+<td style="text-align: right;">61.18</td>
+<td style="text-align: right;">1.27</td>
+<td style="text-align: right;">9.11</td>
+<td style="text-align: right;">77.42</td>
+<td style="text-align: right;">51.68</td>
+<td style="text-align: right;">54.43</td>
+<td style="text-align: right;">67.93</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">12</td>
+<td style="text-align: left;">Corr_M</td>
+<td style="text-align: right;">59.54</td>
+<td style="text-align: right;">0.89</td>
+<td style="text-align: right;">0.24</td>
+<td style="text-align: right;">64.52</td>
+<td style="text-align: right;">57.72</td>
+<td style="text-align: right;">52.79</td>
+<td style="text-align: right;">66.28</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">Perimeter_perc</td>
+<td style="text-align: right;">59.31</td>
+<td style="text-align: right;">0.85</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">59.68</td>
+<td style="text-align: right;">61.74</td>
+<td style="text-align: right;">52.53</td>
+<td style="text-align: right;">66.10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">11</td>
+<td style="text-align: left;">Corr_XY_M</td>
+<td style="text-align: right;">57.54</td>
+<td style="text-align: right;">1.07</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">85.48</td>
+<td style="text-align: right;">33.56</td>
+<td style="text-align: right;">50.77</td>
+<td style="text-align: right;">64.31</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">Area_perc</td>
+<td style="text-align: right;">54.19</td>
+<td style="text-align: right;">1.07</td>
+<td style="text-align: right;">0.21</td>
+<td style="text-align: right;">79.84</td>
+<td style="text-align: right;">42.95</td>
+<td style="text-align: right;">47.27</td>
+<td style="text-align: right;">61.12</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="sec-sm5-plot-all" class="level2">
+<h2 data-anchor-id="sec-sm5-plot-all">Appendix 5 Plot all</h2>
+<p>This exports many pdf’s. It plots each ID and condition z-score x and y coordinates. Since each coordinate is repeated 3 times, these are represented by triangles. The line paths connect average coordinates to visualize forms (stimulus are ordered, i.e.&nbsp;1 to 9, Monday to Sunday, January to December). Finally in the top right corner, each dots indicates if the ID would pass / fails depending on the criteria.</p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
