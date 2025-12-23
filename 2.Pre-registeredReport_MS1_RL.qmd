@@ -51,8 +51,8 @@ author:
         city: Brig-Glis
         region: Valais
         postal-code: 3900   
-abstract: "Sequence–space synaesthesia (SSS) is the experience reported by some people of spatial forms elicited by ordered symbolic sequences. SSS is identified using self-report measures (e.g., questionnaires) and behavioural consistency tests. Established consistency test's diagnostic features focus on stimulus-specific measures of distance between repetitions, therefore overlooking ordinal and geometric properties of space-forms. In the *phase I* of this preregistered study, we attempt at optimizing SSS diagnostics from consistency test by extracting novel geometric features on a space-form level. We evaluate classification performances of old and new features in a large (N = 685)  aggregated sample from three independent datasets. We harness a geographic toolbox to quantify topological space–sequence forms. Receiver operating characteristic (ROC) analyses are conducted to assess discriminative performances of each features. The results show that permuted topological validity of the space-forms and perimeter between stimuli performs equally well in detecting SSS. In *phase II*, we will examine predictive validity of the selected features on an independent dataset that has yet to be collected. *Phase I* findings highlight the relevance of topological principles for space–sequence representations and attempts at optimizing consistency tests's ability at detecting SSS."
-keywords: [Space sequence synaesthesia, consistency test]
+abstract: "Sequence–space synaesthesia (SSS) is the experience reported by some people of spatial forms elicited by ordered symbolic sequences. SSS is identified using self-reports (e.g. questionnaires) and behavioural consistency tests. Existing consistency test's diagnostic features focus on stimulus-specific metrics of the distance between repeated responses to the same stimuli, therefore overlooking ordinal and geometric properties of spatial-forms. In the *phase I* of this preregistered study, we attempt at optimizing SSS diagnostics from consistency test by extracting novel geometric features on a spatial-form level. We evaluate classification performances of old and new features in a large (N = 685) aggregated sample from three independent datasets. We harness a geographic toolbox to quantify topological spatial-forms. Receiver operating characteristic (ROC) analyses are conducted to assess discriminative performances of each features. The results show that permuted topological validity of the spatial-forms and perimeter between stimuli performs equally well in detecting SSS. In *phase II*, we will examine predictive validity of the selected features on an independent dataset that has yet to be collected. *Phase I* findings highlight the relevance of topological principles for sequence-space representations and attempts at optimizing consistency tests's ability at detecting SSS."
+keywords: [Sequence space synaesthesia, Synaesthesia/synesthesia, consistency test, space, time, numbers]
 author-note:
   disclosures:
     conflict of interest: The author has no conflict of interest to declare.
@@ -107,73 +107,74 @@ spatial positions. For example, numbers, weekdays or months (synesthetic
 *inducers*) are represented as arranged into specific spatial positions
 in space (synesthetic *concurrent*). The synaesthetic space forms are
 characteristic and form complex and variable geometric forms. Those
-geometrc forms might be different for each categories (i.e. number-forms
-[@galton1880], weekdays and months), with forms such as ellipses,
-zig-zags or curbed lines [@flournoy1893]. While SSS is a specific
-"sub-type" of synaesthesia it also largely overlaps with other types.
-For example, colour-grapheme synaesthesia where a grapheme *inducer*
-triggers a *concurrent* colour (i.e. "A" seen as red), co-occurs at 71 %
-to 76 % with SSS [@sagiv2006]. Across different synesthetic subtypes
-sub-types, self-reported SSS tend to cluster together [@ward2022],
-indicating a degree of internal homogeneity and justifying to study it
-as a distinct phenomenon.
+geometric forms might be different for each categories (i.e.
+number-forms [@galton1880], weekdays and months), with forms such as
+ellipses, zig-zags or curbed lines [@flournoy1893]. While SSS is a
+specific "subtype" of synaesthesia it also largely overlaps with other
+types. For example, colour-grapheme synaesthesia where a grapheme
+*inducer* triggers a *concurrent* colour (i.e. "A" seen as red),
+co-occurs at 71 % to 76 % with SSS [@sagiv2006]. Across different
+synaesthetic subtypes subtypes, self-reported SSS tend to cluster
+together [@ward2022], indicating a degree of internal homogeneity and
+justifying to study it as a distinct phenomenon.
 
 Spatial-forms are idiosyncratic, which results in considerable
 heterogeneity in how this phenomenon is manifested across individuals.
 One source of heterogeneity is given by dimensionality: some SSS
-experiences involve three-dimensional (3D) and two-dimensional (2D)
-spatial arrangement [@eagleman2009a; @price2013]. Another source is the
-reference frame, for example , the spatial forms take place in an
-external space around the body (*i.e.* projector) or in an egocentric
-internal space (*i.e.* associator) [@dixon2004; @smilek2007]. Further
-variability can be explained by temporal-spatial properties, such as
-manipulation of their spatial forms such as "zooming" in and out,
-rotating or shifting perspectives [@gould2014; @jarick2009]. Lastly, the
-shape, complexity and layout of the spatial forms are also heterogeneous
-such as forming for example ovals, lines or zig-zags or loops. With some
-recurring shapes being more frequent, such as ovals for months
-[@eagleman2009a].
+experiences spatial-forms involve three-dimensional (3D) and
+two-dimensional (2D) arrangements [@eagleman2009a; @price2013]. Another
+source is the reference frame, for example, the spatial-forms might take
+place in an external space around the body (*i.e.* projector) or in an
+egocentric internal space (*i.e.* associator) [@dixon2004; @smilek2007].
+Further variability can be explained by temporal-spatial properties and
+mental-manipulation of spatial forms such as "zooming" in and out or
+rotating or shifting perspectives at will [@gould2014; @jarick2009].
+Lastly, the shape, complexity and layout of the spatial forms are also
+heterogeneous such as forming for example ovals, lines or zig-zags or
+loops. With some recurring shapes being more frequent across SSS, such
+as ovals for months [@eagleman2009a].
 
 Despite the after mentioned heterogeneities, SSS is also
-phenomenological characterized [@seron1992]. *Automaticity*: the
-*inducer* automatically triggers the *concurrent*. *Unidirectionality*:
-while the *inducer* triggers the concurrent, the concurrent does not
-trigger the inducer. *Developmentally early*: the experience was already
-present during childhood. *Consciousness*: The concurrent is consciously
-perceived. *Consistency*: the inducer-concurrent pair remains stable in
-time within subject. These distinctions can be quantified with
-self-reported questionnaire (i.e. for development and consciousness), or
-more objectively using behavioural tests such as consistency tests
-[@baron-cohen1993].
+phenomenological characterized, arguably there might be five main
+characteristics for synesthesia in general and specifically SSS
+[@seron1992; @deroy2013]. *Automaticity*: the inducer automatically
+triggers the concurrent. *Unidirectionality*: while the *inducer*
+triggers the concurrent, the concurrent does not trigger the inducer.
+*Developmentally*: the experience was already present during childhood.
+*Consciousness*: The concurrent is consciously perceived. *Consistency*:
+the inducer-concurrent pair remains stable in time within subject. While
+some of these characteristics can be captured with self-reported
+questionnaire (i.e. for development and consciousness), other can be
+quantified more objectively using behavioural tests such as consistency
+tests [@baron-cohen1993].
 
 ## Consistency tests {#sec-consistency-tests}
 
-The rationale behind consistency tests is to measure the variability in
-*inducer*-*concurrent* associations over time. These test are used as an
-objective validation, or genuineness of self-reported synaesthetes, and
-therefore mainly useful in experimental settings to compare synaesthetes
-with control and characterize synaesthetic experiences and their
-origins. Consistency tests have proven effective for colour-grapheme
-synaesthesia. Measures of individual consistency can be derived using
-colour pickers while repeatedly presenting the same inducer (i.e. "A").
-The quantification of the distance between concurrents from the same
-inducers (i.e. similar reds) is therefore crucial for discriminating
-consistent synaesthetes from controls. For colour-grapheme, the
-euclidean distance in CIE L\*u\*v colour space, which is designed for
-perceptual uniformity, yields optimal classification accuracy when using
-a cut-off estimated as deduced from a larger representative sample
-[@rothen2013a]. A similar rationale to that used for colour-grapheme
-synaesthesia has been applied to characterize SSS.
+The rationale behind consistency tests is to measure the within subject
+variability in *inducer*-*concurrent* associations over time.
+Consistency tests test are usually used as an objective validation, or
+genuineness, of self-reported synaesthetes, and therefore mainly useful
+in experimental settings. Consistency tests have proven effective for
+colour-grapheme synaesthesia. Measures of individual consistency can be
+derived using colour pickers while repeatedly presenting the same
+inducer (i.e. "A"). The quantification of the distance between
+concurrents from the same inducers is used to discriminate consistent
+synaesthetes from controls. Specifically, the euclidean distance in CIE
+L\*u\*v colour space, which is designed for perceptual uniformity,
+yields optimal classification accuracy when using a cut-off estimated as
+deduced from a larger representative sample [@rothen2013a]. A similar
+rationale to that used for colour-grapheme synaesthesia has been applied
+to characterize SSS from consistency tests.
 
-In SSS consistency test's task, instead of using a colour picker,
-participants are asked to repeatedly position each inducer on the
-computer screen according to the spatial location of their concurrent
-experience. Brang et al.[-@brang2010], evaluated consistency as the
-distance between repeated responses to the same inducer or stimuli (e.g.
-January and January) relative to adjacent stimuli (e.g. February). A
-response was defined as consistent if it fell within 1.96 *z* scores.
-However, this criterion was noted to be potentially too conservatory, as
-it identified synaesthesia in 4 of 81 self-reported synaesthetes.
+The task of SSS consistency test's uses, instead of a colour picker, to
+repeatedly position each inducer on the computer screen according to the
+spatial location of their concurrent experience. Brang et
+al.[-@brang2010] for example evaluated consistency as the distance
+between repeated responses to the same inducer or stimuli (e.g. January
+and January) relative to adjacent stimuli (e.g. February). A response
+was defined as consistent if it fell within 1.96 *z* scores. However,
+this criterion was noted to be potentially too conservatory, as it
+identified synaesthesia in 4 of 81 self-reported synaesthetes.
 Geometrical features such as area and perimeter between the coordinates
 of repeated inducers have been used as a measure of the distance between
 same inducers, hence as a metric for consistency. Less consistent
@@ -182,69 +183,54 @@ A cut-off corresponding to less than 0.203 % average responses area in
 proportion to the total screen area to classify as SSS has been
 suggested [see also @ward2018].
 
-However, several general caveats of consistency tasks using response
-level metrics have been identified. Some geometrical features may favour
-certain space-forms [@ward2018] in particular those with linear or
-highly regular spatial layouts, i.e. elliptical patterns for months
-[@flournoy1893; @eagleman2009a; @brang2010]. Another concern is that
-participants that respond always with the same position, for example
-when not knowing the response, will have artificially high consistencies
-[@rothen2016]. This has led to alternative approaches such as to
-additionally include standard deviation of responses and questionnaire
-cut-off [@ward2018] and permutation-based comparison of individual
-responses to chance levels for colour-grapheme [@root2021] and SSS
-[@ward2022a].
+However, several general caveats of consistency tasks using concurrent
+or stimulus level metrics have been identified. Some geometrical
+features may favour certain spatial-forms [@ward2018] in particular
+those with linear or highly regular spatial layouts, i.e. elliptical
+patterns for months [@flournoy1893; @eagleman2009a; @brang2010]. Another
+concern is that participants that respond always with the same position,
+for example when not knowing the response, will have artificially high
+consistencies with those metrics [@rothen2016]. This has led to
+alternative approaches such as to add tthe standard deviation of
+responses, questionnaire cut-off [@ward2018] or permutation-based
+comparison of individual responses to chance levels for colour-grapheme
+[@root2021] and SSS [@ward2022a].
 
 ## Present study
 
 The goal of this registered report is to compare different consistency
 features on their classification performances of individuals with SSS
 and controls using Receiver Operator Characteristics (ROC) analyses. In
-the present *Phase I*, we merge previously available datasets to
+the present *Phase I*, we merge four previously available datasets to
 replicate established consistency test methods from the literature and
 to evaluate additional, novel features. These new features are designed
-to take advantage of two properties of synesthetic responses.
+to take advantage of the sequentiality or ordinality between the
+responses and the geometrical properties of these spatial forms.
 
-First, synesthetic spatial forms follow ordinal rules (e.g. Monday →
-Tuesday → Wednesday). Some studies have systematically investigated
+Synesthetic spatial forms follow ordinal rules (e.g. Monday → Tuesday →
+Wednesday). In the domain of numerical cognition, ordinality has been
+identified as an important information when processing sequences
+[@lyons2013]. Some studies of SSS have systematically investigated
 ordinality by investigating metrics of adjacent inducer-concurrent pairs
 such as distances [@brang2010] or angles [@eagleman2009a]. However,
 ordinality of the concurrent space-form might be particularly relevant
 considering all the stimuli of a certain category (i.e. weekdays or
-months). Second, the space forms of the concurrents often take the form
-of structured spatial configuration space-forms such as lines or
-polygons that may follow distinctive geometrical rules. For example
-circular layouts have been already described in early accounts of number
-forms [@galton1880; @flournoy1893].
-
-Attempting to capture both sequential and geometrical properties of
-synesthetic forms, we harnessed a geospatial analysis package
-[@pebesma2018] to extract geometrical features from participant's 2D
-(x,y) coordinate responses. This package allows, for example, to build
-and analyse strings or polygons and then extract multiple geometrical
-descriptors or features. These individual geometrical features are then
-compared using ROC analyses to compare their classification performances
-of syntheses and controls.
+months). The spatial forms of the concurrents is oft spatially
+structured into configuration such as lines or polygons that may follow
+distinctive geometrical rules. For example linear layouts have been
+described in early accounts of number forms [@galton1880;
+@flournoy1893].
 
 In the present *phase I*, we compare ROC on three merged datasets using
 the same task on both SSS and control groups [@rothen2016, @ward2022a;
 @vanpetersen2020a]. Several analytical approaches were evaluated. First,
 we aimed to reproduce the diagnostic criteria based on stimulus-level
-consistency metrics, such as area and perimeter.
-
-Second, we explored a new approach base on comparing geometrical
-features across repetitions of the same categories (weekday, month and
-numbers).
-
-Third, we applied higher-order analytical approaches such including
-permutation-based methods. On the one hand, we reproduce Root et al.
-[-@root2021] permutation test for colour-grapheme synaesthesia and
-adapted it to SSS as in Ward [-@ward2022a]). On the other hand, we
-implemented permutations across repetitions to derive a permuted measure
-of consistency. Specifically, instead of using repetitions in
-chronological order, we randomized the order of stimulus presentation
-and extract the geometrical feature from x,y coordinates of same
-stimulus categories in non-chronological order.
+consistency metrics, such as area and perimeter. Second, we explored a
+new approach base on comparing geometrical features across repetitions
+of the same categories (weekday, month and numbers). Individual
+geometrical features are then compared using ROC analyses on their
+correct classification performances of pre-defined SSS and control
+groups.
 
 In a future *phase II*, we will assess whether the features identified
 *Phase I* generalize and are validated on an independent dataset that is
@@ -268,7 +254,7 @@ for the stimuli, only numbers from 0 to 9 are included here (excluding
 @tbl-mytable1.
 
 |   | Dataset | [@rothen2016] | [@vanpetersen2020] | [@ward2022a] | Ward 2 (personal communication) |
-|----|----|----|----|----|----|
+|------------|------------|------------|------------|------------|------------|
 |  |  |  |  |  |  |
 | Descriptive | Group |  |  |  |  |
 | N | Synaesthete | 33 | 23 | 252 | 88 |
@@ -689,9 +675,9 @@ descriptions from the data by Pr. Ward (i.e.
 also included questionnaire responses. We describe the self-reported
 profiles for the stimulus categories used in the consistency test (i.e.
 number, weekdays and month), see @fig-myplot1. From this venn-diagram we
-see that 240 of the SSS report having space-forms for Numbers, Days and
-Month; 42 only Days and Month; 21 only Number and Day. Also, 127
-controls report space-forms for either Days, Numbers, Months or
+see that 240 of the SSS report having spatial-forms for Numbers, Days
+and Month; 42 only Days and Month; 21 only Number and Day. Also, 127
+controls report spatial-forms for either Days, Numbers, Months or
 combinations.
 
 ```{r}
@@ -747,25 +733,39 @@ the literature [@rothen2016; @ward2022a; @vanpetersen2020a; @root2021].
 These methods compute consistency metrics at the stimulus level, they
 asses the consistency for each stimulus *within* the repetitions.
 
-Second, we extract features at the space-form level. Taking the stimuli
-as an ordered sequence we can consider them as a geometrical segments
-(i.e. open geometrical form) and polygons (i.e. closed geometrical
-form), similarly as originally described in @galton1880. First, we
-consider the space-forms as segments, from here we compute the number of
-self-intersections. We harnessed a geography package to extract
-geometry-based features. Informed by the ordinality of the stimulus, we
-defined segments and polygon by conditions and repetitions. The
-rationale here is to determine whether, when considering the stimuli as
-ordered coordinates (i.e. as segments or polygon) they remain consistent
-*between* repetitions for each individuals.
+Second, we extract features at the space-form level *between*
+repetitions. Taking the stimuli as an ordered sequence we can consider
+them as a geometrical segments (i.e. open geometrical form) and polygons
+(i.e. closed geometrical form), similarly as originally described in
+@galton1880. The first extracted feature is self-intersection.
+Considering the spatial-forms as segments, we count the number of
+self-intersections from these segments. Then, we harnessed a geospatial
+analysis package [@pebesma2018] to extract geometry-bssed features from
+participant's 2D (x,y) coordinate responses. This package allows, for
+example, to build and analyse strings or polygons and then extract
+multiple geometrical descriptors or features. Informed by the ordinality
+of the stimulus, we defined segments and polygon by conditions and
+repetitions. The rationale here is to determine whether, when
+considering the stimuli as ordered coordinates (i.e. as segments or
+polygon) they remain consistent *between* repetitions for each
+individuals.
 
-Since these methods are also rely on repetition order we also compute
-the best AUC features by permuting them. We predicted that permuted
-averaged features would yield superior classification performance
-(higher AUC values) compared to chronologically ordered features. The
-rationale is that genuine synaesthetes should exhibit stable spatial
-forms across repetitions regardless of presentation order, whereas
-controls would show random variation
+In addition, we applied higher-order analytical approaches such
+including permutation-based methods. On the one hand, we reproduce Root
+et al. [-@root2021] permutation test for colour-grapheme synaesthesia
+and adapted it to SSS as in Ward [-@ward2022a]). On the other hand, we
+implemented permutations across repetitions to derive a permuted measure
+of consistency. Specifically, instead of using repetitions in
+chronological order, we randomized the order of stimulus presentation
+and extract the geometrical feature from x,y coordinates of same
+stimulus categories in non-chronological order. Since these methods are
+also rely on repetition order we also compute the best AUC features by
+permuting them. We predicted that permuted averaged features would yield
+superior classification performance (higher AUC values) compared to
+chronologically ordered features. The rationale is that genuine
+synaesthetes should exhibit stable spatial forms across repetitions
+regardless of presentation order, whereas controls would show random
+variation.
 
 Each feature's performance in classifying SSS from controls was compared
 with Receiver Operating Characteristics (ROC) analyses. Area Under the
@@ -794,7 +794,7 @@ groups, we attempted two additional approaches: first, testing
 subsamples based on percentiles of the questionnaire score sample
 distribution (see @sec-sm2-correlation-with-self-report). The rationale
 is that a good consistency test should have similar discriminative
-performance for strong SSS and weaker SSS. To do this, we resampled the
+performance for strong SSS and weaker SSS. To do this, we re-sampled the
 SSS and controls based on their questionnaire distribution by
 percentiles (i.e., comparing 10% highest questionnaire scores vs. 10%
 lowest, then 20% vs. 20%, etc.). Second we correlated the questionnaire
@@ -803,6 +803,10 @@ consistency test. Finally, since we will attempt to predict the best
 diagnostic features of a to be collected dataset, we also carried
 analyses across the different datasets separately, to test whether each
 consistency test's feature remain constant, see @sec-SM3byds .
+
+Code and data for "one-click" reproducibility of this pre-registration
+is available on git-hub:
+<https://github.com/remLach/SpaceSequenceSynDiagnostic>.
 
 ## *Phase I.* Features extraction {#sec-phase-i.-analysis}
 
@@ -1825,8 +1829,8 @@ rm(tmp)
 ## Higher-order analyses
 
 Some features might be more suited when having well defined samples such
-as "strong" SSS and controls with no space-forms at all than when tested
-on more general population. To test the stability of AUC of all
+as "strong" SSS and controls with no spatial-forms at all than when
+tested on more general population. To test the stability of AUC of all
 features, we computed them across several percentiles based on the
 questionnaire scores. Again, only the data from Pr. Ward is included
 there. We computed AUC, sensitivity and sensibility on sub samples based
@@ -1882,7 +1886,7 @@ Our investigation of four datasets found two main features leading to
 the optimal classification of SSS from control: standardized perimeter
 between repetitions and permuted topological validity. While perimeter
 is calculated on the stimulus level, i.e. distance between repeated
-stimuli, topological validity is calculated on the whole space-form
+stimuli, topological validity is calculated on the whole spatial-form
 level, e.g. x,y coordinates formed by Monday to Sunday. Both criteria
 display bimodal distributions across the groups (see @fig-myplot3
 @tbl-mytb05). We also obtain variable best features by datasets, in
@@ -1892,7 +1896,8 @@ the data by Pr. Ward that contains questionnaire data, we obtain similar
 AUC and DP for more extreme Synaesthete and Control groups when
 sub-sampled by questionnaire's score distribution percentiles (see
 @fig-myplot5). However, perimeter lead to slightly higher correlation
-with the questionnaire (r = .58) than topological validity (r = .50).
+with the questionnaire (r = .58) than permuted topological validity (r =
+.50).
 
 ## Limitations {#sec-limitations}
 
@@ -1900,59 +1905,64 @@ Although an optimal test to classify SSS might be particularly relevant
 for experimental purposes, several important limitations need to be
 considered. First, consistency tests contain only a limited set of
 sequential stimuli (i.e. months, weeks and the first ten natural
-numbers). Other ordinal categories such as temperature, clock time,
-musical keys might be more relevant for some individuals with SSS. For
-numbers specifically, better consistencies might be obtained using a
-larger set size (i.e. including decades and hundreds), as descriptively
+numbers) that could potentially elicit synaesthetic experiences. Other
+ordinal categories such as temperature, clock time, musical keys might
+be more relevant for some individuals with SSS. For numbers
+specifically, better consistency tests might be obtained using a larger
+set size (i.e. including decades and hundreds), as descriptively
 interesting form changes occur at different decimals in base-10 number
 systems [@galton1880].
 
-Second, the use of diagnostic cut-offs assumes categorical distinctions
+Second, the use of diagnostic cutoffs assumes categorical distinctions
 between groups, but SSS may exist on a continuum and scores might be
 more suitable [@price2013]. This limitation is related to the
-circularity mentioned previously: diagnostic cut-offs as calculated here
+circularity mentioned previously: diagnostic cutoffs as calculated here
 depend on how SSS and controls are classified in the first place
 [@simner2012]. Measures of other characteristics of synaesthesia such as
 automaticity or visual Gabor detection might be necessary to establish
-external validity [@ward2018]). Indeed, determining the prevalence of
-SSS in the general population requires definitional choices that lead to
-more conservative or lenient criteria[@jonas2014; @brang2010;
-@sagiv2006; @ward2018]. Indeed, current prevalence estimates spans
-between 4.4 % [@brang2013], 8.1 % [@ward2018] and 14 % [@seron1992].
+external validity [@ward2018]. Indeed, determining the prevalence of SSS
+in the general population requires definitional choices that might be
+base on more conservative or lenient criteria [@jonas2014; @brang2010;
+@sagiv2006; @ward2018]. These difficulties are reflected in the span of
+current prevalence estimates: 4.4 % [@brang2013], 8.1 % [@ward2018] and
+14 % [@seron1992].
 
-Third, as shown in @sec-SM3byds, we find variable optimal criteria
-varies across datasets. he differences across datasets might be due to
-different sampling biases, for example [@vanpetersen2020] recruited SSS
+Third, as shown in @sec-SM3byds, we find that the optimal criteria can
+vary across datasets. In other word, we obtain different AUC depending
+on the datasets. These differences might be explained tbydifferent
+sampling mehtods biases, for example [@vanpetersen2020] recruited SSS
 from over one hundred candidates to maximise participant reporting
-synesthetic experiences. Another possible explanation may relate to the
-tasks option to skip responses, leaving empty cases for some
+synesthetic experiences. Additionally, the orginal classification into
+control and SSS are not consistent across studies and it might be useful
+to have several validation measures as pointed out in the limitation
+[see @ward2018].
+
+Another possible explanation may be methodological and related to the
+option to skip responses in the task, leaving empty cases for some
 participants. Indeed, having fewer responses (i.e., fewer coordinates)
-increases the likelihood of producing a valid spatial form. Conversely,
-perimeter and area are differentially affected by missing responses.
+increases the likelihood of producing a valid spatial form also in
+controls. Conversely, perimeter and area are differentially affected by
+missing responses.
 
 <!--#  It is also possible that SSS are not actually inconsistent [@root2025; @eagleman2007] or that non self-reported SSS are consistent [@itoh2024]. Another possibility might have to do with the original classification of SSS. Indeed 55 % (127 of 231) of the controls from the data provided by Pr. Ward, report at least a space-form for Number Day or Month, see @fig-myplot1. Therefore some controls might also give consistent responses. Sequence-space associations could also be learned or memorized, leading to high consistency in non-synaesthetes as found for colour-grapheme [@ovallefresa2019].  -->
 
 ## Topological validity
 
-Surprisingly, topological validity of the space-forms led to similar
-results than the perimeter (or the distance) between the responses. This
-result might be informative about how SSS map ordinal stimuli in space.
-Indeed, it seems the patterns of space-forms follow topological rules
-analogous to geographical space structures. One of the advantages of
-using topological validity is that it would classify responses with the
-same coordinates as controls compared to area and perimeter.
-
-Analogies between maps and neuroscience have a long history (i.e.
-retinotopy, sonotopy or somatotopy) [@eagleman2009]. Therefore
-space-forms might originate from the mapping between ordinal or
+Surprisingly, permuted topological validity of the spatial-forms led to
+similar results than the perimeter (or the distance) between the
+responses. This result might be informative about how SSS map ordinal
+stimuli in space. Indeed, it seems the patterns of spatial-forms follow
+topological rules analogous to geographical ang geometry-based space
+structures. Analogies between maps and neuroscience have a long history
+(i.e. retinotopy, sonotopy or somatotopy) [@eagleman2009]. Therefore
+spatial-forms might originate from the mapping between ordinal or
 sequential stimuli on idiosyncratic visuo-spatial abilities following
-topological rules.
+topological rules. One of the advantages of using topological validity
+is that it also classifies responses with the same coordinates as
+invalid and hence inconsistent, while using the area and perimeter
+metrics they would qualify as highly consistent responses.
 
-Interestingly, ordinality is very important an important semantic
-property of numbers (REF). Moreover, that numbers are acquired
-sequentially (i.e. 1 is learned before 2) (REF). Hence the importance of
-ordinality in SSS is coherent with developmental accounts of
-Synaesthesia [@price2013].
+<!--#  Interestingly, ordinality is a very important semantic property of numbers, one of the categories used for SSS [@lyons2013]. Numbers are acquired sequentially (i.e. 1 →  2 →  3, ect. [@gelman1978] which would fit developmental accounts of the acquisition of SSS [@price2013].  -->
 
 ## Intermediary Conclusion {#sec-conclusions}
 
@@ -2358,14 +2368,15 @@ corrplot(abs(sel_CorMat), method = 'circle', is.corr = FALSE, col.lim = c(0,1),c
 # corrplot::corrplot(abs(sel_CorMat), p.mat = sel_CorMat_test$p, method = 'color', is.corr = FALSE, type = 'upper', col.lim=c(0, 1), insig='blank')
 ```
 
-## Appendix 5 Code to visualize all space-forms
+## Appendix 5 Code to visualize all spatial-forms
 
 This exports many pdf's. It plots each ID and condition z-score x and y
 coordinates. Since each coordinate is repeated 3 times, these are
 represented by triangles. The line paths connect average coordinates to
 visualize forms (stimulus are ordered, i.e. 1 to 9, Monday to Sunday,
 January to December). Finally in the top right corner, each dots
-indicates if the ID would pass / fails depending on the criteria.
+indicates if the ID would pass (green dot) / fails (red dot) depending
+on the criteria.
 
 ```{r}
 # Match ds and ds_Q criteria
