@@ -1,22 +1,5 @@
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
-
-
-\caption{\label{fig-Ex01}Deisgn for novel method for consistency test:
-from between trial varibility to Segment and polygons formed by the
-space-forms using geography tools.}
-
-\centering{
-
-\pandocbounded{\includegraphics[keepaspectratio]{RPlot02.png}}
-
-}
-
-\end{figure*}
-\efloatseparator
- 
-\begin{figure*}[hbt]
-\ifnextchar[{\eatarg}{}
 [!htbp]
 
 {\caption{{Venn diagram of the types of self-reported
@@ -33,7 +16,7 @@ SSS}{\label{fig-myplot01}}}}
  
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
-[!htbp]
+[H]
 
 {\caption{{Design for novel method for consistency test: from between
 trial varibility to Segment and polygons formed by the space-forms using
@@ -52,7 +35,7 @@ geography tools.}{\label{fig-myplot00}}}}
 [!htbp]
 
 {\caption{{Receiver Operating Characteristic (ROC) curves of all
-features}{\label{fig-myplot2}}}}
+tests}{\label{fig-myplot2}}}}
 
 \pandocbounded{\includegraphics[keepaspectratio]{2.RegisteredReport_MS2_files/figure-pdf/fig-myplot2-1.pdf}}
 

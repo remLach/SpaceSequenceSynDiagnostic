@@ -193,10 +193,10 @@ distance between concurrents from the same inducers is used to
 discriminate consistent synaesthetes from controls. Specifically, the
 euclidean distance in CIE L\*u\*v colour space, which is designed for
 perceptual uniformity, yields optimal classification accuracy when using
-a cut-off estimated as deduced from a larger representative
-sample[@rothen2013a]. A similar rationale to that used for
-colour-grapheme synaesthesia has been applied to characterize SSS from
-consistency tasks.
+a cut-off estimated as deduced from a larger representative sample
+[@rothen2013a]. A similar rationale to that used for colour-grapheme
+synaesthesia has been applied to characterize SSS from consistency
+tasks.
 
 In the SSS consistency task, participants complete multiple rounds of
 the same stimuli (e.g., digits, days of the week, and months of the
@@ -225,7 +225,7 @@ not knowing the response, will have artificially high consistencies with
 those metrics [@rothen2016]. This has led to alternative approaches such
 as to add the standard deviation of responses, questionnaire cut-off
 [@ward2018] or permutation-based comparison of individual responses to
-chance levels for colour-grapheme[@root2021] and SSS [@ward2022a].
+chance levels for colour-grapheme [@root2021] and SSS [@ward2022a].
 Finally, these consistency tests evaluate the variability of responses
 to the same stimuli, therefore the ordinality between stimuli is not
 taken into account. Synaesthetic spatial-forms follow ordinal rules
@@ -253,16 +253,12 @@ control groups [@ward2022a]. First, we aimed to reproduce established
 consistency test methods based on stimulus-level consistency metrics,
 such as area and perimeter. Second, we explored a new approach comparing
 geometrical features across repetitions of the same categories (weekday,
-month and numbers), such as segments and polygons. These novel features
-are designed to take advantage of the sequentiality or ordinality
-between the responses and the geometrical properties at the spatial-form
-level, see @fig-myplot00. All the consistency tests are then compared
-using ROC analyses on their correct classification performances of
-self-reported SSS and control groups.
-
-![Deisgn for novel method for consistency test: from between trial
-varibility to Segment and polygons formed by the space-forms using
-geography tools.](RPlot02.png){#fig-Ex01 pos="'H'" fig-align="center"}
+month and numbers), such as segments and polygons. These novel tests are
+designed to take advantage of the sequentiality or ordinality between
+the responses and the geometrical properties at the spatial-form level,
+see @fig-myplot00. All the consistency tests are then compared using ROC
+analyses on their correct classification performances of self-reported
+SSS and control groups.
 
 In a future study, we will assess whether the tests identified in the
 present study generalize and are validated on an independent dataset
@@ -656,13 +652,13 @@ met these criteria. Two datasets were collected in laboratory settings
 [https://osf.io/6hq94](https://osf.io/6hq94/files/osfstorage)) and
 @vanpetersen2020 (see also
 <https://data.ru.nl/collections/di/dcc/DSC_2018.00019_653>). The two
-others came from on-line testing @ward2022a (see also
-[https://osf.io/nu5v4](https://osf.io/nu5v4/overview)) and an additional
-dataset was gently provided by private communications with Professor
-Ward. To match the other datasets, stimuli of the weekdays and months
-categories were translated from Dutch to English in the dataset from
-[@vanpetersen2020]. For the number category we included only digits from
-0 to 9 that where presented across all datasets (i.e. excluding the
+others came from on-line testing @ward2022a (see
+also<https://osf.io/nu5v4>) and an additional dataset was gently
+provided by private communications with Professor Ward. To match the
+other datasets, stimuli of the weekdays and months categories were
+translated from Dutch to English in the dataset from
+\[@vanpetersen2020\]. For the number category we included only digits
+from 0 to 9 that where presented across all datasets (i.e. excluding the
 stimuli "50" and "100" for numbers in @vanpetersen2020).
 
 From the merged datasets, we kept `r N3` from the total `r N1`
@@ -767,14 +763,10 @@ constraint that no stimulus was repeated until all unique stimuli (N =
 
 We reproduced the tests extracted from consistency tasks found in the
 literature such as area and perimeter between repetitions [@rothen2016;
-@ward2022a; @vanpetersen2020].
-
-#### Area and perimeter between repetitions
-
-Formally, the area (see [@eq-area]) and perimeter (see [@eq-perim]) are
-calculated from the triangle (i.e. given three repetitions) formed by
-the *x* and *y* coordinates of the three repetitions of each stimuli
-(i.e. *(x1, y1), (x2, y2), (x3, y3)*).
+@ward2022a; @vanpetersen2020]. Formally, the area (see [@eq-area]) and
+perimeter (see [@eq-perim]) are calculated from the triangle (i.e. given
+three repetitions) formed by the *x* and *y* coordinates of the three
+repetitions of each stimuli (i.e. *(x1, y1), (x2, y2), (x3, y3)*).
 
 $$
 Area = \frac{|x1y2 +x2y3 + x3y1 – x1y3 – x2y1 – x3y2|}{2}
@@ -821,11 +813,11 @@ The rationale is that synaesthetes consistencies should be closer (?).
 
 ### Consistency tests on the *space-form level*
 
-For the novel consistency tests, we extracted features at the
-spatial-form level for each repetition separately. Taking the stimuli as
-an ordered sequence we can consider them as a geometrical segments (i.e.
-open geometrical form) and polygons (i.e. closed geometrical form),
-similarly as originally described in @galton1880.
+For the novel consistency tests, we extracted geometrical features at
+the spatial-form level for each repetition separately. Taking the
+stimuli as an ordered sequence we can consider them as a geometrical
+segments (i.e. open geometrical form) and polygons (i.e. closed
+geometrical form), similarly as originally described in @galton1880.
 
 We harnessed a geospatial analysis, `r pakret::pkrt("sf")` to extract
 polyons and geometry-based features from participant’s 2D (x,y)
@@ -862,28 +854,27 @@ valid if it satisfies the following criteria: (1) if polygon rings are
 simple (i.e., they do not touch or self-intersect), (2) boundary rings
 to not cross (3) boundary rings may only touch points tangentially (4)
 rings that define holes are contained within the exterior ring (5) the
-polygon rings must not splits the polygon [@postgis].
-
-Topological simplicity evaluates whether a geometric object has a simple
-structure without self-intersections or self-tangencies. According to
-the OGC Simple Features Specification [@herring2010], a polygon boundary
-is considered simple if it does not pass through the same point more
-than once [@postgis]. For polygons, simplicity requires that each ring
-does not self-intersect or self-touch. Note that simplicity is a
-condition for validity: a polygon can be simple but still invalid (e.g.,
-if an interior ring extends outside the exterior ring).
+polygon rings must not splits the polygon [@postgis]. Topological
+simplicity evaluates whether a geometric object has a simple structure
+without self-intersections or self-tangencies. According to the OGC
+Simple Features Specification [@herring2010], a polygon boundary is
+considered simple if it does not pass through the same point more than
+once [@postgis]. For polygons, simplicity requires that each ring does
+not self-intersect or self-touch. Note that simplicity is a condition
+for validity: a polygon can be simple but still invalid (e.g., if an
+interior ring extends outside the exterior ring).
 
 For each participant we tested for topological validity and simplicity
 across individual 3 categories (weekdays, month and numbers) and 3
-repetitions, hence 9 forms. The binary outcome (1 = is valid, 0 =
-invalid) was then averaged across all 9 forms. Hence, it can span from 1
-(all 9 are valid/simple) to 0 (none of the 9 forms are valid/simple).
-Thus, the topological validity and simplicity score ranges from 0 (none
-of the nine polygons are valid/simple) to 1 (all nine polygons are
-valid). For example, if a participant’s polygon for weekdays were valid
-across all three repetitions, months were valid in two of three
-repetitions, and numbers were invalid in all repetitions, the
-topological validity score would be 5/9 ≈ 0.56.
+repetitions, hence 9 space-forms or polygons. The binary outcome (1 = is
+valid, 0 = invalid) was then averaged across all 9 forms. Hence, it can
+span from 1 (all 9 are valid/simple) to 0 (none of the 9 forms are
+valid/simple). Thus, the topological validity and simplicity score
+ranges from 0 (none of the nine polygons are valid/simple) to 1 (all
+nine polygons are valid). For example, if a participant’s polygon for
+weekdays were valid across all three repetitions, months were valid in
+two of three repetitions, and numbers were invalid in all repetitions,
+the topological validity score would be 5/9 ≈ 0.56.
 
 #### Compactness score
 
@@ -911,7 +902,7 @@ repetitions in chronological order, we shuffled the repetition order
 between stimulus presentation (i.e. Monday (repetition 2) `→` Tuesday
 (repetition 3) `→` Wednesday (repetition 1), ect) and extracted the
 geometrical feature from x,y coordinates of same stimulus categories in
-non-chronological order The form-based features computed before were
+non-chronological order The form-based tests computed before were
 relying on the chronologically ordered repetitions. For example, when a
 stimulus such as Monday was repeated three times, the coordinates for
 the first presentation of Monday were always paired with the coordinates
@@ -926,7 +917,7 @@ repetition order, for example Monday (repetition 1), Tuesday (repetition
 3), Wednesday (repetition 2), ect. We predicted that this permuted-based
 consistency would yield to better classification performance (higher AUC
 values) compared to chronologically ordered features. The rationale is
-that genuine synaesthetes would have consistent topological features of
+that genuine synaesthetes would have a consistently valid topology of
 spatial-forms repetitions regardless of presentation order, whereas
 controls would show random variation. The permutation scores were
 calculated for topological validity and Polsby–Popper score.
@@ -1552,6 +1543,7 @@ rm(ds_perm, ds_Perm_perID, tmp, All_n, All_n2, All_n3, ID_all, ID_group)
 #| apa-note: "Example participant for months"
 #| fig-format: png
 #| dpi: 300
+#| fig-pos: "H"
 
 gp1 <- ds %>%
   filter(ID %in%  "1025_MaJo") %>%
@@ -1584,7 +1576,7 @@ gp3 <- ds_segm %>%
   geom_sf(alpha = 0.4) +
   guides(colour="none") +
   theme_void() + 
-  labs(title = "Space-from Segment") +
+  labs(title = "Space-form Segment") +
   theme(plot.title = element_text(hjust = 0.5)) 
 
 gp4 <- ggplot() +
@@ -1781,7 +1773,7 @@ Results_ROCcomp <- data.frame(
 
 ```{r}
 #| label: fig-myplot2
-#| fig-cap: "Receiver Operating Characteristic (ROC) curves of all features"
+#| fig-cap: "Receiver Operating Characteristic (ROC) curves of all tests"
 #| apa-note: "Grey line indicates chance level"
 
 nFeat <- length(ROC_curves)
@@ -1852,7 +1844,7 @@ SortFeat <- All_ROC_round$Feature # Pass further the AUC sorted features
 
 ```{r}
 #| label: tbl-mytb03 
-#| tbl-cap: "ROC analyses of all features"
+#| tbl-cap: "ROC analyses of all tests"
 #| ft.align: left
 
 # library(flextable)
@@ -1871,7 +1863,7 @@ knitr::kable(All_ROC_round)
 
 ```{r}
 #| label: tbl-mytb04
-#| tbl-cap: "Descriptives of each features"
+#| tbl-cap: "Descriptives of each test"
 #| ft.align: left
 #| apa-notes: "Mean (Standart Deviation) of all the consistency tests"
 
@@ -1976,10 +1968,9 @@ Descriptively, the triangle area (in % screen size) between repetition
 for SSS was surprisingly larger than in previous studies: 0.26% (*SD =
 0.52%*) compared to 0.15% (*SD = 0.13 %*) in @rothen2016 and 0.14 % (*SD
 = 0.17*) % in @ward2018, see @tbl-mytb04. These values also differ
-between the available datasets (See @fig-apx08). These differences could
-be mitigated by using individually standardized coordinates M = 0.05
-(*SD = 0.06*) @rothen2016, M = 0.08 (*SD = 0.15*) @ward2022a, M = 0.09
-(*SD = 0.15*), Ward2, see also @tbl-mytb04.
+between the available datasets (See @fig-apx08). However, those
+differences could be mitigated by using individually standardized
+coordinates, see @tbl-mytb04.
 
 ## ROC analyses
 
@@ -2002,8 +1993,7 @@ and permuted validity tests
 Additionally, the permuted validity led to significantly higher AUC than
 the non permuted one (D =
 `r round(Results_ROCcomp[Results_ROCcomp$Feature == "isValidStruct_M",]$D,2)`,
-*p* \< .05). Both criteria display bimodal distributions across the
-groups (see @fig-apx01).
+*p* \< .05).
 
 Hence, the two best AUC performances are from the averaged permuted
 validity score (AUC =
@@ -2012,115 +2002,108 @@ validity score (AUC =
 `r round(All_ROC[All_ROC$Feature == "isValid_perm_M",]$threshold,2)`
 corresponding to
 `r round(All_ROC[All_ROC$Feature == "isValid_perm_M",]$threshold,2)*9`
-valid of 9 forms) and the other for standardized perimeter between the
-repetitions of each stimuli (AUC =
+valid of 9 forms) and the standardized perimeter between the repetitions
+of each stimuli (AUC =
 `r round(All_ROC[All_ROC$Feature == "Perimeter_zs",]$AUC,2)`; DP =
 `r round(All_ROC[All_ROC$Feature == "Perimeter_zs",]$DP,2)`, cut-off =
 `r round(All_ROC[All_ROC$Feature == "Perimeter_zs",]$threshold,2)`
-z-scores). However, at the proposed cut-off, the permuted validity leads
-to higher specificity than perimeter
+z-scores). At the proposed cut-off, the permuted validity leads to
+higher specificity than perimeter
 (`r round(All_ROC[All_ROC$Feature == "isValid_perm_M",]$specificity,2)`
 vs.
 `r round(All_ROC[All_ROC$Feature == "Perimeter_zs",]$specificity,2)`)
-indicating better rejection of controls (i.e. less false negatives) but
+indicating better rejection of controls (i.e. less false negatives), but
 lower sensitivity
 (`r round(All_ROC[All_ROC$Feature == "isValid_perm_M",]$sensitivity,2)`
 vs.
 `r round(All_ROC[All_ROC$Feature == "Perimeter_zs",]$sensitivity,2)`),
-indicating poorer detection of SSS (i.e. more false negatives). See
-@fig-apx01 for the densities of each standardized features suggesting
-bi-modal distribution.
+indicating poorer detection of SSS (i.e. more false negatives).
 
-In sum, the permuted validity and perimeter both provide similarly good
-AUC compared to the other consistency tests.
+In sum, the permuted validity on the space-form level and the perimeter
+of standardized coordinates on the stimulus level were the two equally
+optimal tests to classify controls and SSS.
 
 ## Further analyses
 
-We conducted further analyses by subsampling them based on the dataset
-source, questionnaire percentiles. The aim of these analyses was to test
-the stability of the classifications from different methods across
+We conducted further analyses by subsampling the dataset source and
+questionnaire percentiles. The aim of these analyses was to test the
+stability of the classifications from different methods across
 experiments (i.e. datasets) and sample characteristics (i.e.
 questionnaire scores). We also used a correlational approach to test for
 correlations between features and questionnaires.
 
-We sub-sampled the data based on the source of the data and found
-different features best fit different datasets, see @fig-myplotapx02.
-Interestingly the best features by datasets differ between the data
-sources. While the standardized area indeed lead to the best AUC for the
-data from @rothen2016, the perimeter leads to better AUC in @ward2018.
-The permuted validity leads to AUC \> 80 across all datasets.
+We sub-sampled the dataset source for the five most optimal tests (i.e.
+higher AUC) and recalculated AUC, sensitivity and sensibility. We found
+similar values for the different datasets, see @fig-myplotapx02.
 
-To test the stability of AUC of all features, we computed them across
-several percentiles based on the questionnaire scores. Again, only the
-data from Professor Ward is included there. We computed AUC, sensitivity
-and sensibility on sub samples based on the percentiles of the
-questionnaire scores [see @ward2018], taking the 10-0% highest
-questionnaire scores against the 10 % worst (i.e. 90-100 %) . We further
-sub-sampled by 10 % questionnaire scores and recalculated AUC,
-sensitivity and sensibility, see @fig-myplotapx03 for AUC, DP,
-sensitivity and specificity. Using this method we can see that the total
-AUC remains relatively stable across percentiles.
-
-Another important point addressed in the literature about consistency
-test is circularity. The circularity is given in that if consistency
-tests are used to classify SSS and controls, then those groups will by
-definition differ in consistency [@root2025]. Hence, we made a
-correlation matrix with the questionnaire scores and all the features,
-see Appendix. The two highest correlations are indeed between the
-questionnaire score and perimeter (r = .58) and permuted validity (r =
-.50), see @fig-myplotapx04.
+Including only the data by Professor Ward, we subsampled the
+participants depending on the perecntiles of the questionnaire scores
+(hence only the data from Professor Ward), taking the 10-0% highest
+questionnaire scores against the 10 % lowest (. (i.e. 90-100 %). Here
+also most of the values remain relatively stable independently from the
+questionnaire distribution of the samples, see @fig-myplotapx03. Another
+important point addressed in the literature about consistency test is
+circularity. The circularity is given in that if consistency tests are
+used to classify SSS and controls, then those groups will by definition
+differ in consistency [@root2025]. Hence, we made a correlation matrix
+with the questionnaire scores and all the tests, see Appendix. The two
+highest correlations are indeed between the questionnaire score and
+perimeter (r = .58) and permuted validity (r = .50), see
+@fig-myplotapx04.
 
 Some of the participants might have been originally mis-attributed to
-control or SSS, see @fig-myplotapx07. Descriptively, we also found about
-\~6 % of the full sample's synesthetes to be consistently classified as
-controls (i.e. consistent false positive) by the five methods with the
-highest AUC @fig-myplotapx08. \~3 % controls are consistently classified
-as SSS (i.e. consistent false negative) @fig-myplotapx09.
+control or SSS or there might be consistent controls and inconsistent
+synesthetes [see @root2025; @eagleman2007]. We found about \~6 % of the
+full sample's synesthetes to be consistently classified as controls
+(i.e. consistent false positive) by the five methods with the highest
+AUC, see , see @fig-myplotapx07 and @fig-myplotapx08. \~3 % controls are
+consistently classified as SSS (i.e. consistent false negative)
+@fig-myplotapx09.
 
-We also wanted to visualize the average space form of each category at
-the population level to see if there were qualitative differences
-between the forms. The figure in the appendix (@fig-myplotapx06), shows
-more circular patterns for months and more linear horizontal and
-vertical for numbers.
+Finally, we also wanted to visualize the average space form of each
+category at the population level to see if there were qualitative
+differences between the forms. The figure in the appendix
+(@fig-myplotapx06), shows more circular patterns for months and more
+linear horizontal and vertical for numbers.
 
 # Methods - future study {#sec-phase-ii-methods}
 
 Additional data will be collected in the future using the same
 consistency test, with the procedural exception that there will be four
 repetitions per stimuli instead of three ( @sachdeva2024, Stage 1
-in-principle acceptance). Hence for the stimulus levels feature we will
+in-principle acceptance). Hence for the stimulus levels tests we will
 compare the area and perimeter of a quadrilateral of four coordinates
 pairs instead of a triangle. Materials are more details on this study
 are pre-registered on OSF, including ample size and recruitment method
-[@sachdeva2024, Stage 1 in-principle acceptance]
-(<https://osf.io/6wn4m>).
+[@sachdeva2024, Stage 1 in-principle acceptance] (see also
+<https://osf.io/6wn4m>).
 
 We will compute the same ROC analyses as in this pre-registration on all
-the features. Since we obtain different best AUC per features depending
-on the dataset (see @fig-myplotapx02) it is likely that the best
-features here will not match with the best feature in the to be
-collected dataset.
+the tests. Since we obtain different best AUC per tests depending on the
+dataset (see @fig-myplotapx02) it is likely that the best test here will
+not match with the best test in the to be collected dataset.
 
 # Discussion - present study
 
 Our investigation of four datasets found two main consistency tests
 leading to the optimal classification of SSS from control: standardized
-perimeter on the stimulus level and permuted topological validity on the
-space-form level. Hence, the area test from @rothen2016 led to worse
-classification than the perimeter test with a larger sample. Furthermore
-we could prove similar performances using a different approach based on
-the space-form level (i.e. topological validity).
+perimeter between stimulus repetitions and permuted topological validity
+on the space-form level.
 
-Further analyses indicates variable optimal tests in terms of AUC
-depending on the datasets (see @fig-myplotapx02). Considering only the
-data by Professor Ward that contains questionnaire data, we comparable
-patterns of AUC and DP for more extreme Synaesthete and Control groups
-when sub-sampled by questionnaire's score distribution percentiles (see
-@fig-myplotapx03). Nevertheless the standardized perimeter seems to lead
-to better AUC and DP in more extreme scores. Also, the standardized
-perimeter lead to slightly higher correlation with the questionnaire
-scores (r = .57) than permuted topological validity (r = .51), see
-@fig-myplotapx04.
+Further analyses show variabilities between the test's AUC exists
+depending on the dataset source, which could explain why we could not
+replicate @rothen2016's area but rather found the perimeter as a more
+optimal test. The stability across varying percentiles of the
+synesthesia questionnaire's score suggest the tests work as well for
+more marked forms of SSS (note however that this analysis was limited
+Professor Ward's data). The standardized perimeter also leads to
+slightly higher correlation with the questionnaire scores (r = .57) than
+permuted topological validity (r = .51), see @fig-myplotapx04.
+
+In sum, while we could prove similar performances using a different
+approach based on the space-form level (i.e. topological validity), we
+found similar classification performances than using stimulus-repetition
+level test such as perimeter.
 
 ## Limitations {#sec-limitations}
 
@@ -2162,18 +2145,18 @@ reporting synesthetic experiences.
 ## Topological validity
 
 Surprisingly, permuted topological validity of the spatial-forms led to
-similar results than the perimeter (or the distance) between the
-responses. This result might be informative about how SSS map ordinal
-stimuli in space. Indeed, it seems the patterns of spatial-forms follow
-topological rules analogous to geographical and geometry-based space
-structures. Analogies between maps and neuroscience have a long history
-[i.e. retinotopy, sonotopy or somatotopy @eagleman2009]. Therefore
-spatial-forms might originate from the mapping between ordinal or
-sequential stimuli on idiosyncratic visuo-spatial abilities following
-topological rules. One of the advantages of using topological validity
-is that it also classifies responses with the same coordinates as
-invalid and hence inconsistent, while using the area and perimeter
-metrics they would qualify as highly consistent responses.
+similar results than the perimeter test. This novel result might be
+informative about how SSS map ordinal stimuli in space. Indeed, it seems
+the patterns of spatial-forms follow topological rules analogous to
+geographical and geometry-based space structures. Analogies between maps
+and neuroscience have a long history [i.e. retinotopy, sonotopy or
+somatotopy @eagleman2009]. Therefore spatial-forms might originate from
+the mapping between ordinal or sequential stimuli on idiosyncratic
+visuo-spatial abilities following topological rules. One of the
+advantages of using topological validity is that it also classifies
+responses with the same coordinates as invalid and hence inconsistent,
+while using the area and perimeter metrics they would qualify as highly
+consistent responses.
 
 <!--#  Interestingly, ordinality is a very important semantic property of numbers, one of the categories used for SSS [@lyons2013]. Numbers are acquired sequentially (i.e. 1 →  2 →  3, ect. [@gelman1978] which would fit developmental accounts of the acquisition of SSS [@price2013].  -->
 
@@ -2182,8 +2165,8 @@ metrics they would qualify as highly consistent responses.
 The present study compared traditional stimulus-level consistency tests
 with novel form-level geometric tests for detecting SSS. We found
 optimal classification performance from permuted topological validity
-and standardized perimeter between repetitions. Despite not yelding to
-better clasisfication than stimulus level methods, this new method is
+and standardized perimeter between repetitions. Despite not yielding to
+better classification than stimulus level methods, this new method is
 theoretically meaningful since genuine synesthetes should produce more
 compact and topologically valid structures compared to controls.
 Similarly, the perimeter test captures the stability of the overall
@@ -2217,10 +2200,10 @@ distribution (see @apx-byquestperc). The rationale is that a good
 consistency test should have similar discriminative performance for
 strong SSS and weaker SSS. To do this, we re-sampled the SSS and
 controls based on their questionnaire distribution by percentiles (i.e.,
-comparing 10% highest questionnaire scores vs. 10% lowest, then 20%
-vs. 20%, etc.). In addition, we correlated the questionnaire scores with
-the results from different features extracted from the consistency test,
-see @apx-correlation-with-self-report.
+comparing 10% highest questionnaire scores vs. 10% lowest, then 20% vs.
+20%, etc.). In addition, we correlated the questionnaire scores with the
+results from different features extracted from the consistency test, see
+@apx-correlation-with-self-report.
 
 We also wanted to visually characterize whether certain patterns occur
 more frequently for some categories than others (i.e. circular pattern
@@ -2235,12 +2218,12 @@ The following R packages were used for the data visualization in the
 appendix:
 `r pakret::pkrt_list("ggridges","cowplot","ggalluvial","corrplot")`
 
-# Feature distributions {#apx-featDensity}
+# Test's distributions {#apx-featDensity}
 
-Regarding the distributions of each features across the SSS vs.
-controls, @fig-apx01 we compared the density plots of each standardized
-criteria (in order to make them comparable) which visually suggests
-bimodal distribution.
+Regarding the distributions of each tests across the SSS vs. controls,
+@fig-apx01 we compared the density plots of each standardized criteria
+(in order to make them comparable) which visually suggests bimodal
+distribution.
 
 ```{r}
 #| label: fig-apx01
@@ -2344,7 +2327,7 @@ three methods with the best AUC, see @fig-apx08. Descriptively, we also
 looked a the distributions of each methods across SSS and controls
 @fig-myplotapx02. Note that the dataset labelled as Ward 2 has more
 synaesthetes than controls (5:1 ratio). Note that some of the tests led
-to 100 % Specificity in Van Petersen dataset.
+to 100 % Specificity in @vanpetersen2020 dataset.
 
 ```{r}
 #| label: tbl-mytbapx02
@@ -2553,7 +2536,7 @@ plot_grid(gp_AUC, gp_DP,gp_Sensitivity,gp_Specificity,
 #| apa-note: 
 #|    - Red = Classified as Synesthetes, Blue =  as controls. 
 #|    - All method's score have been standardized (*z-score*). x axis treamed between -3 and 3 z-scores. Vertical line indicate respectively 25 and 75 percentiles of each distributions.
-#| fig-cap: Density plots of all the features comparing SSS and controls by dataset
+#| fig-cap: Density plots of all the tests comparing SSS and controls by dataset
 
 
 ds_Q_zs <- ds_Q %>%
@@ -2763,8 +2746,8 @@ plot_grid(gp_AUC, gp_DP,gp_Sensitivity,gp_Specificity,
 # Correlation with self-report {#apx-correlation-with-self-report}
 
 The best criterion should also best correlate with SSS self-reported
-questionnaire score.\
-Works only with Ward's aggregated data, see @fig-myplotapx04.
+questionnaire score. Works only with Ward's aggregated data, see
+@fig-myplotapx04.
 
 ```{r}
 #| label: fig-myplotapx04
@@ -3023,7 +3006,7 @@ it as such.
 
 ```{r}
 #| label: fig-myplotapx08
-#| fig-cap: Synaesthetes who consistently *fail* all five tests
+#| fig-cap: Synaesthetes who consistently *fail* all five tests (blue in the alluvial plot)
 
 ds %>% 
   filter(ID  %in% ID_SynFail5Test) %>%
@@ -3043,7 +3026,7 @@ ds %>%
 
 ```{r}
 #| label: fig-myplotapx09
-#| fig-cap: Controls who consistently *pass* all five tests
+#| fig-cap: Controls who consistently *pass* all five tests (red in the alluvial plot)
 ds %>% 
   filter(ID  %in% ID_CtlPass5Test) %>%
   group_by(stimulus) %>%
@@ -3072,6 +3055,7 @@ ds %>%
 # bind_rows(row1,row2)
 ```
 
+````{=html}
 <!--# 
 
 # Code to visualize all spatial-forms
@@ -3136,4 +3120,4 @@ for(i in 1:(round(length(IDlist)/(N_rows*N_cols)*3)+1)){
 ```
 
  -->
-
+````
