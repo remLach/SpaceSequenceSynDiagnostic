@@ -60,7 +60,7 @@ dataset Ward 2. Before: before participant exclusion
 \ifnextchar[{\eatarg}{}
 
 
-{\caption{{ROC analyses of all features}{\label{tbl-mytb03}}}
+{\caption{{ROC analyses of all tests}{\label{tbl-mytb03}}}
 \vspace{-20pt}}
 
 \begin{longtable}[]{@{}
@@ -119,7 +119,7 @@ specificity
 \ifnextchar[{\eatarg}{}
 
 
-{\caption{{Descriptives of each features}{\label{tbl-mytb04}}}
+{\caption{{Descriptives of each test}{\label{tbl-mytb04}}}
 \vspace{-20pt}}
 
 \begin{longtable}[]{@{}
