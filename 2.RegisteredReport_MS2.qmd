@@ -269,14 +269,14 @@ acceptance, see also <https://osf.io/6wn4m>).
 # In the following I upload and merge the data from Ward, Rothen and Van Peters. Data is stored into a full dataset ds (i.e. 1 row per trial) and a dataset per participant ds_Quest (i.e. 1 row per participant).
 
 ###  Ward Data
-ds_syn       <- read_excel("raw_synaesthetes_consistency_anon.xlsx")
+ds_syn       <- read_excel("Data/raw_synaesthetes_consistency_anon.xlsx")
 ds_syn$group <- "Syn"
-ds_ctl       <- read_excel("raw_controls_consistency_anon.xlsx")
+ds_ctl       <- read_excel("Data/raw_controls_consistency_anon.xlsx")
 ds_ctl$group <- "Ctl"
 
-ds_Q_syn       <- read_excel("raw_synaesthetes_questionnaire_anon.xlsx")
+ds_Q_syn       <- read_excel("Data/raw_synaesthetes_questionnaire_anon.xlsx")
 ds_Q_syn$group <- "Syn"
-ds_Q_ctl       <- read_excel("raw_controls_questionnaire_anon.xlsx")
+ds_Q_ctl       <- read_excel("Data/raw_controls_questionnaire_anon.xlsx")
 ds_Q_ctl$group <- "Ctl"
 
 # Merge wards datafiles:
@@ -289,7 +289,7 @@ ds <- ds %>%
  
 ### Rothen Data
 
-ds_Rothen <- read.csv("~/Documents/SpaceSequenceSynDiagnostic/SpaceSequenceSynDiagnostic/rawdata.txt", sep="")
+ds_Rothen <- read.csv("Data/rawdata.txt", sep="")
 
 ### Rename variables to match datasets
 
@@ -364,7 +364,7 @@ ds$Cond[ds$stimulus %in% c("January", "February", "March", "April", "May","June"
 
 ```{r MergeVanPeters}
 ### ADD Van Petersen Cortex data
-filedir <- "~/Documents/SpaceSequenceSynDiagnostic/VanPetersen/Cortex/di.dcc.DSC_2018.00019_653/Consistency test/Preprocessed data/"
+filedir <- "Data/vanPeterPerID/"
 fn <- paste0(filedir,dir(filedir))
 
 ds_PeterCor <- read_excel(fn[1],
@@ -385,7 +385,7 @@ for(i in 2:length(fn)){
 }
 
 # Here information about group:
-ds_PeterCor_Q <- read_excel("~/Documents/SpaceSequenceSynDiagnostic/VanPetersen/Cortex/di.dcc.DSC_2018.00019_653/Consistency test/Final data files/Consistency_scores.xlsx")
+ds_PeterCor_Q <- read_excel("Data/Consistency_scores.xlsx")
 
 names(ds_PeterCor_Q)[names(ds_PeterCor_Q) == "PPcode"] <- "ID"
 names(ds_PeterCor)[names(ds_PeterCor) == "Code"] <- "ID"
@@ -467,7 +467,7 @@ rm(ds_PeterCor_Q,ds_PeterCor,ds_i, ID, fn,ColNames_ds,i,ID_IN)
 ```{r MergeWard2}
 # This data was provided by Jamie by mail. The data is prepared in a separeate file
 # Preserve "?" in the colnames: 
-ds_Ward2 <- read.csv2("~/Documents/SpaceSequenceSynDiagnostic/SpaceSequenceSynDiagnostic/WardData2.csv", fileEncoding = "UTF-8", check.names = FALSE)
+ds_Ward2 <- read.csv2("Data/WardData2.csv", fileEncoding = "UTF-8", check.names = FALSE)
 ds_Ward2$ID <- ds_Ward2$session_id 
 ds_Ward2$dataSource <- "Ward2"
 
@@ -1462,7 +1462,7 @@ write.csv2(ds_perm_pp, "permuted_pp.csv")
 ```
 
 ```{r, AveragePermute}
-ds_perm <- read.csv2("permuted_isValid.csv")
+ds_perm <- read.csv2("Data/permuted_isValid.csv")
 
 ## ATTENTION; RECOMPUTE THE PERMUTATION WITH THE ACTUAL DATASET then remove this
 ds_perm <- ds_perm %>% filter(ID %in% ds_Q$ID)
@@ -1497,7 +1497,7 @@ feature_direction <- c(feature_direction,"moreSyn")
 ```
 
 ```{r, AveragePermutepp}
-ds_perm_pp <- read.csv2("permuted_pp.csv")
+ds_perm_pp <- read.csv2("Data/permuted_pp.csv")
 
 ds_Perm_perID <-  ds_perm_pp %>% 
   rowwise() %>% 
