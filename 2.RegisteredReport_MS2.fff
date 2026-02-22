@@ -1,0 +1,62 @@
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+
+\caption{\label{fig-Ex01}Deisgn for novel method for consistency test:
+from between trial varibility to Segment and polygons formed by the
+space-forms using geography tools.}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{RPlot02.png}}
+
+}
+
+\end{figure*}
+\efloatseparator
+ 
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+[!htbp]
+
+{\caption{{Venn diagram of the types of self-reported
+SSS}{\label{fig-myplot01}}}}
+
+\pandocbounded{\includegraphics[keepaspectratio]{2.RegisteredReport_MS2_files/figure-pdf/fig-myplot01-1.pdf}}
+
+\vspace{-20pt}
+\noindent \emph{Note.} Only~data from Pr. Ward is represented here. SSS
+= Sequence-space synaesthesia
+
+\end{figure*}
+\efloatseparator
+ 
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+[!htbp]
+
+{\caption{{Design for novel method for consistency test: from between
+trial varibility to Segment and polygons formed by the space-forms using
+geography tools.}{\label{fig-myplot00}}}}
+
+\pandocbounded{\includegraphics[keepaspectratio]{2.RegisteredReport_MS2_files/figure-pdf/fig-myplot00-1.png}}
+
+\vspace{-20pt}
+\noindent \emph{Note.} Example~participant for months
+
+\end{figure*}
+\efloatseparator
+ 
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+[!htbp]
+
+{\caption{{Receiver Operating Characteristic (ROC) curves of all
+features}{\label{fig-myplot2}}}}
+
+\pandocbounded{\includegraphics[keepaspectratio]{2.RegisteredReport_MS2_files/figure-pdf/fig-myplot2-1.pdf}}
+
+\vspace{-20pt}
+\noindent \emph{Note.} Grey~line indicates chance level
+
+\end{figure*}
