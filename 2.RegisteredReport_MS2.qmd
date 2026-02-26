@@ -59,19 +59,20 @@ author-note:
 bibliography: references.bib
 numbered-lines: true
 format:
-#  apaquarto-pdf:
-#   number-sections: true
-#    floatsintext: false
-#    documentmode: man
-#   a4paper: true
-#    donotrepeattitle: true
-  apaquarto-html:
-    crossrefs-hover: true
-    floatsintext: true
-    hypothesis: true
-project:
-  type: website
-  output-dir: docs
+  apaquarto-pdf:
+    number-sections: true
+    floatsintext: false
+    documentmode: man
+    a4paper: true
+    donotrepeattitle: true
+    keep-tex: true
+#  apaquarto-html:
+#    crossrefs-hover: true
+#    floatsintext: true
+#    hypothesis: true
+# project:
+#  type: website
+#  output-dir: docs
 #  apaquarto-typst: 
 #    fig-format: png
 execute:
