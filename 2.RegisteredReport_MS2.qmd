@@ -59,15 +59,16 @@ author-note:
 bibliography: references.bib
 numbered-lines: true
 format:
-  apaquarto-pdf:
+#  apaquarto-pdf:
 #   number-sections: true
-    floatsintext: false
-    documentmode: man
-    a4paper: true
-    donotrepeattitle: true
-#  apaquarto-html:
-#    crossrefs-hover: true
-#    floatsintext: true
+#    floatsintext: false
+#    documentmode: man
+#   a4paper: true
+#    donotrepeattitle: true
+  apaquarto-html:
+    crossrefs-hover: true
+    floatsintext: true
+    hypothesis: true
 #  apaquarto-typst: 
 #    fig-format: png
 execute:
@@ -656,10 +657,10 @@ others came from on-line testing @ward2022a (see
 also<https://osf.io/nu5v4>) and an additional dataset was gently
 provided by private communications with Professor Ward. To match the
 other datasets, stimuli of the weekdays and months categories were
-translated from Dutch to English in the dataset from
-\[@vanpetersen2020\]. For the number category we included only digits
-from 0 to 9 that where presented across all datasets (i.e. excluding the
-stimuli "50" and "100" for numbers in @vanpetersen2020).
+translated from Dutch to English in the dataset from [@vanpetersen2020].
+For the number category we included only digits from 0 to 9 that where
+presented across all datasets (i.e. excluding the stimuli "50" and "100"
+for numbers in @vanpetersen2020).
 
 From the merged datasets, we kept `r N3` from the total `r N1`
 participants. First, we excluded `r round(((All_n - All_n2)/All_n),2)` %

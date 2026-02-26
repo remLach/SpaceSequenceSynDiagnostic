@@ -1,0 +1,15 @@
+readr
+readxl
+tidyr
+dplyr
+RColorBrewer
+pakret
+ggplot2
+ggridges
+ggalluvial
+ggVennDiagram
+ggforce
+cowplot
+corrplot
+sf
+pROC
