@@ -185,24 +185,24 @@ Improving Consistency Test by Harnessing Cartography Tools.}
 ordinal sequences (e.g., numbers, days of the week, or months of the
 year) are experienced as occupying specific spatial locations. This
 perceptual condition is identified using self-reports
-(e.g.~questionnaires) and behavioural consistency tasks. Existing
-consistency tests measure the spatial distance between responses to
-repeated stimuli, but they ignore the ordinal and geometric features of
-spatial-forms. This preregistered study consists of a present and future
-analyses. In the present analyses, we optimise SSS diagnostics from
-consistency test by extracting novel geometric features at the
-spatial-form level. To do this, we first evaluate classification
-performances of old and new features in a large (N = 685) aggregated
-sample from four available and independent datasets. We then harness a
-geographic toolbox to extract metrics from the spatial-forms level.
-Finally, receiver operating characteristic (ROC) analyses are conducted
-to assess the discriminative performances of each method. The results
-show that permuted topological validity of spatial-forms and the
-perimeter between stimuli performs equally well in detecting SSS. In a
-future study, we will examine predictive validity of the selected
-methods on an independent dataset that has yet to be collected. Findings
-from the present study highlight the relevance of topological principles
-for sequence-space representations and aims to optimise the ability of
+(e.g.~questionnaires) and behavioural consistency test methods. Existing
+consistency methods measure the spatial distance between responses to
+repeated stimuli, but they ignore the ordinal and geometric properties
+of spatial-forms. This preregistered study consists of a present and
+future analyses. In the present analyses, we optimise SSS diagnostics
+from consistency test by extracting novel tests at the spatial-form
+level. To do this, we first evaluate classification performance of old
+and new methods in a large (N = 685) aggregated sample from four
+available and independent datasets. We then harness a geographic toolbox
+to extract metrics from the spatial-forms level. Finally, receiver
+operating characteristic analyses are conducted to assess the
+discriminative performances of each method. The results show that
+permuted topological validity of spatial-forms and the perimeter between
+stimuli performs equally well in detecting SSS. In a future study, we
+will examine predictive validity of the selected methods on an
+independent dataset that has yet to be collected. Findings from the
+present study highlight the relevance of topological principles for
+sequence-space representations and aim to optimise the ability of
 consistency tests to detect SSS. }
 
 \keywords{Sequence space
@@ -328,36 +328,32 @@ Lachelin, Psychology, UniDistance Suisse, Schinerstrasse
 
 \section{Introduction}\label{sec-introduction}
 
-Sequence-Space Synaesthesia (SSS) or visuo-spatial forms is the
+Sequence-Space Synaesthesia (SSS), or visuo-spatial forms, is the
 phenomenon where people visualize ordered sequences in particular
 spatial positions. For example, numbers, weekdays or months (synesthetic
 \emph{inducers}) are represented as arranged into specific spatial
-positions in space (synesthetic \emph{concurrent}). The synaesthetic
-spatial-forms can be complex and have variable geometric forms. Those
-geometric forms might be different for each categories
-(i.e.~number-forms weekdays and months), with forms such as ellipses,
-zig-zags or curbed lines Flournoy (\citeproc{ref-flournoy1893}{1893}).
-SSS are usually identified using questionnaires and consistency tests.
-An individual is identified as SSS based on the variability at the
-stimulus level between repeated responses: less variable responses being
-an indicator of the consistent response characteristic of SSS. However,
-stimulus level consistency can also be achieved by responding to the
-same position for all stimuli. Furthermore, it might favour linear over
-circular spatial-forms and is not informed about the ordinality between
-stimuli (e.g.~1 \texttt{→} 2 \texttt{→} 3, etc.). Here, we aim at
-optimizing the identification of SSS from consistency tasks using
-geometrical characteristics of spatial-forms from ordered stimuli or
-inducers.
+positions in space (synesthetic \emph{concurrents}). The synaesthetic
+spatial-forms can be complex and have variable geometric forms. These
+geometric forms might be different for each category (i.e.~number-forms
+weekdays and months), with forms such as ellipses, zig-zags or curbed
+lines (\citeproc{ref-flournoy1893}{Flournoy, 1893};
+\citeproc{ref-galton1880}{Galton, 1880}). However, the spatial-forms of
+individuals with SSS are consistent and automatic. Existing methods for
+classifying SSS and controls based on consistency tests have some
+limitations. The aim of the present study is to optimize consistency
+methods from aggregated and already available datasets by adopting.Then,
+in a future study, we aim to test and compare the optimal methods on
+data that has yet to be collected.
 
 SSS frequently co-occurs with other subtypes of synaesthesia and as for
-other subtypes of synaesthesia it's idiosyncratic. Colour-grapheme
+other subtypes of synaesthesia it is idiosyncratic. Colour-grapheme
 synaesthesia, where a grapheme \emph{inducer} triggers a
-\emph{concurrent} colour (i.e.~``A'' seen as red), co-occurs at 71 \% to
-76 \% with SSS (\citeproc{ref-sagiv2006}{Sagiv et al., 2006}).
+\emph{concurrent} colour (i.e.~``A'' seen as red), co-occurs at 71\% to
+76\% with SSS (\citeproc{ref-sagiv2006}{Sagiv et al., 2006}).
 Nevertheless, across different synaesthetic subtypes, self-reported SSS
 tend to cluster together (\citeproc{ref-ward2022}{Ward \& Simner,
-2022}), indicating a degree of internal homogeneity and justifying to
-study it as a distinct phenomenon. Spatial-forms are idiosyncratic,
+2022}), indicating a degree of internal homogeneity and justifying the
+study of it as a distinct phenomenon. Spatial-forms are idiosyncratic,
 which results in considerable heterogeneity in how this phenomenon is
 manifested across individuals. One source of heterogeneity is given by
 dimensionality: some SSS experiences can involve three-dimensional (3D)
@@ -372,29 +368,24 @@ projector) or in an egocentric internal space (\emph{i.e.} associator)
 be explained by temporal-spatial properties and mental-manipulation of
 spatial-forms such as ``zooming'' in and out or rotating or shifting
 perspectives at will (\citeproc{ref-gould2014}{Gould et al., 2014};
-\citeproc{ref-jarick2009}{Jarick et al., 2009}) Lastly, the shape,
+\citeproc{ref-jarick2009}{Jarick et al., 2009}). Lastly, the shape,
 complexity and layout of the spatial-forms are also heterogeneous such
 as forming for example ovals, lines, zig-zags or loops. With some
 recurring shapes being more frequent across SSS, such as ovals for
-months (\citeproc{ref-eagleman2009a}{Eagleman, 2009}).
-
-Despite the after mentioned heterogeneities, SSS is also
-phenomenological characterized. There might be five main characteristics
-for synaesthesia in general and specifically SSS
-(\citeproc{ref-deroy2013}{Deroy \& Spence, 2013};
-\citeproc{ref-seron1992}{Seron et al., 1992}). \emph{Automaticity}: the
-inducer automatically triggers the concurrent. \emph{Unidirectionality}:
-while the \emph{inducer} triggers the concurrent, the concurrent does
-not trigger the inducer. \emph{Developmentally}: the experience was
-already present during childhood. \emph{Consciousness}: The concurrent
-is consciously perceived. \emph{Consistency}: the inducer-concurrent
-pair remains stable in time within subject. While some of these
-characteristics can be captured with self-reported questionnaire
-(i.e.~for development and consciousness), other can be quantified more
-objectively using behavioural tasks such as consistency tests
-(\citeproc{ref-baron-cohen1993}{Baron-Cohen et al., 1993}).
+months (\citeproc{ref-eagleman2009a}{Eagleman, 2009}). Despite the
+idiosyncracity of the space-forms, these are characterized by
+consistency and geometrical properties.
 
 \subsection{Consistency tests}\label{sec-consistency-tests}
+
+Individuals with SSS are usually identified using questionnaires and
+consistency tests. . However, stimulus level consistency can also be
+achieved by responding to the same position for all stimuli.
+Furthermore, it might favour linear over circular spatial-forms and is
+not informed about the ordinality between stimuli (e.g.~1 \texttt{→} 2
+\texttt{→} 3, etc.). Here, we aim at optimizing the identification of
+SSS from consistency tasks using geometrical characteristics of
+spatial-forms from ordered stimuli or inducers.
 
 Consistency tests are extracted form behavioural tasks used to evaluate
 how stable synesthetic experiences are over time
@@ -402,19 +393,17 @@ how stable synesthetic experiences are over time
 \citeproc{ref-rothen2016}{2016}). They do this by presenting the same
 stimuli repeatedly and assessing how similar participant's responses are
 across repetitions (i.e.~\emph{inducer}-\emph{concurrent} associations).
-High consistency is often taken as evidence for synaesthesia.
+An individual is identified as SSS based on the variability at the
+stimulus level between repeated responses: less variable responses being
+an indicator of the consistent response characteristic of SSS.
 Consistency tests have proven effective for colour-grapheme
 synaesthesia. Measures of individual consistency can be derived using
 colour pickers while repeatedly presenting the same inducer
 (i.e.~``A''). The quantification of the distance between concurrents
 from the same inducers is used to discriminate consistent synaesthetes
-from controls. Specifically, the euclidean distance in CIE L*u*v colour
-space, which is designed for perceptual uniformity, yields optimal
-classification accuracy when using a cut-off estimated as deduced from a
-larger representative sample (\citeproc{ref-rothen2013a}{Rothen et al.,
-2013}). A similar rationale to that used for colour-grapheme
-synaesthesia has been applied to characterize SSS from consistency
-tasks.
+from controls (\citeproc{ref-rothen2013a}{Rothen et al., 2013}). A
+similar rationale to that used for colour-grapheme synaesthesia has been
+applied to characterize SSS from consistency tasks.
 
 In the SSS consistency task, participants complete multiple rounds of
 the same stimuli (e.g., digits, days of the week, and months of the
@@ -429,11 +418,14 @@ conservatory, as it identified synaesthesia in 4 of 81 self-reported
 synaesthetes. Geometrical features such as area and perimeter between
 the coordinates of repeated inducers have further been used as a measure
 of the distance between same inducers, hence as a metric for
-consistency. Less consistent responses leading to smaller triangle
+consistency. Less consistent responses lead to smaller triangle
 perimeters and area (\citeproc{ref-rothen2016}{Rothen et al., 2016}). A
-cut-off corresponding to less than 0.203 \% average responses area in
-proportion to the total screen area to classify as SSS has been
-suggested (see also \citeproc{ref-ward2018}{Ward et al., 2018}).
+cut-off has been proposed whereby individuals are classified as SSS if
+their average response area is smaller than 0.203\% of the total screen
+area (see also \citeproc{ref-ward2018}{Ward et al., 2018}).
+
+\subsection{Limitations of current methods of consistency
+tests}\label{limitations-of-current-methods-of-consistency-tests}
 
 However, several general caveats of consistency tests using concurrent
 or stimulus level metrics have been identified. Some tests may favour
@@ -529,9 +521,9 @@ numbers in Van Petersen et al. (\citeproc{ref-vanpetersen2020}{2020})).
 From the merged datasets, we kept 685 from the total 689 participants.
 First, we excluded 0.02 \% empty trials (i.e.~skipped responses)
 including trials flagged for having the same x or y coordinates across
-conditions and repetitions, causing the depletion n = 2 participants(as
-in \citeproc{ref-rothen2016}{Rothen et al., 2016};
-\citeproc{ref-ward2018}{Ward et al., 2018}). n = 2 participants were
+conditions and repetitions, causing the depletion (n = 2) participants
+(as in \citeproc{ref-rothen2016}{Rothen et al., 2016};
+\citeproc{ref-ward2018}{Ward et al., 2018}). (n = 2) participants were
 excluded for having less than 4 coordinate points since polygons need at
 least four coordinate. Note therefore, that 31 participants of the final
 sample did not have responses in all three conditions X repetition
@@ -550,10 +542,10 @@ Synaesthetes & N before & N after & Age \\
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-(\citeproc{ref-rothen2016}{Rothen et al., 2016}) & 33 & 32 & 23.1 \\
-(\citeproc{ref-vanpetersen2020}{Van Petersen et al., 2020}) & 23 & 22 &
+Rothen et al. (\citeproc{ref-rothen2016}{2016}) & 33 & 32 & 23.1 \\
+Van Petersen et al. (\citeproc{ref-vanpetersen2020}{2020}) & 23 & 22 &
 23.2 \\
-(\citeproc{ref-ward2022a}{Ward, 2022}) & 252 & 252 & 37.2 \\
+Ward (\citeproc{ref-ward2022a}{2022}) & 252 & 252 & 37.2 \\
 Ward 2 & 90 & 90 & NA \\
 Total: & 398 & 396 & \\
 \end{longtable}
@@ -576,10 +568,10 @@ Controls & N before & N after & Age \\
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-(\citeproc{ref-rothen2016}{Rothen et al., 2016}) & 37 & 37 & 28.2 \\
-(\citeproc{ref-vanpetersen2020}{Van Petersen et al., 2020}) & 21 & 21 &
+Rothen et al. (\citeproc{ref-rothen2016}{2016}) & 37 & 37 & 28.2 \\
+Van Petersen et al. (\citeproc{ref-vanpetersen2020}{2020}) & 21 & 21 &
 21.6 \\
-(\citeproc{ref-ward2022a}{Ward, 2022}) & 215 & 213 & 19.9 \\
+Ward (\citeproc{ref-ward2022a}{2022}) & 215 & 213 & 19.9 \\
 Ward 2 & 18 & 18 & NA \\
 Total & 291 & 289 & \\
 \end{longtable}
@@ -590,16 +582,12 @@ dataset Ward 2. Before: before participant exclusion
 
 \end{table}
 
-Regarding the synaesthets profiles, detailed participant information
+Regarding the synaesthetes profiles, detailed participant information
 such as questionnaire responses were only available from the two
 datasets from the data by Professor Ward (i.e.~a majority of 573
 participants). We described the self-reported profiles for the stimulus
 categories used in the consistency test (i.e.~number, weekdays and
-month), see Figure~\ref{fig-myplot01}. From this Venn-diagram we see
-that 240 of the SSS report having spatial-forms for Numbers, Days and
-Month; 42 only Days and Month; 21 only Number and Day. Also, 127
-controls report spatial-forms for either Days, Numbers, Months or
-combinations.
+month), see Figure~\ref{fig-myplot01}.
 
 \begin{figure}[!htbp]
 
@@ -616,14 +604,14 @@ SSS}{\label{fig-myplot01}}}}
 
 \subsection{Procedure}\label{procedure}
 
-For the consistency task, each stimuli were presented randomly and
+For the consistency task, stimuli were presented randomly and
 sequentially centrally on the screen. Participant were instructed to
 click on the screen position where they visualize them. In Van Petersen
 et al. (\citeproc{ref-vanpetersen2020}{2020}) and Rothen et al.
 (\citeproc{ref-rothen2016}{2016}) the participants were allowed to skip
 responses.
 
-Stimulus included here were 7 weekdays (Monday to Sunday), 12 months
+Stimuli included here were 7 weekdays (Monday to Sunday), 12 months
 (January to December) and 9 numbers (0 to 9). For all the data from
 Professor Ward the stimuli were presented in randomized order with the
 constraint that no stimulus was repeated until all unique stimuli (N =
@@ -687,6 +675,16 @@ consistent \emph{between} repetitions for each individuals. We extracted
 the topological validity, topological simplicity and a compactness score
 for each polygons (i.e.~3 conditions X 3 repetitions: 9 polygons per
 participants.
+
+The space-form-based methods hence rely on the chronologically ordered
+repetitions. For example, when a stimulus such as Monday was repeated
+three times, the coordinates for the first presentation of Monday were
+always paired with the coordinates for the first presentation of Tuesday
+to construct segments or polygons. However, if synesthetic forms are
+truly consistent, they should remain stable independently of the
+chronological order of stimulus presentation. Hence, we also calculated
+two of the following methods by permuting the repetitions within each
+condition (see Section~\ref{sec-permutation-based-feature-extraction}).
 
 \paragraph{Segment
 self-intersections.}\label{segment-self-intersections}
@@ -753,38 +751,30 @@ in SSS than controls. Formally, the Polsby--Popper score is calculated
 from the polygon's area and perimeter Equation~\ref{eq-PP}:
 
 \begin{equation}\phantomsection\label{eq-PP}{
-score = \frac{4\pi \cdot Area}{Perimeter^2}
+P - P\ score = \frac{4\pi \cdot Area}{Perimeter^2}
 }\end{equation}
 
 \paragraph{Permutation-based feature
-extraction.}\label{permutation-based-feature-extraction}
+extraction.}\label{sec-permutation-based-feature-extraction}
 
 Finally, we implemented permutations of the repetition order to derive a
 permuted measure of consistency. Specifically, instead of using
 repetitions in chronological order, we shuffled the repetition order
 between stimulus presentation (i.e.~Monday (repetition 2) \texttt{→}
 Tuesday (repetition 3) \texttt{→} Wednesday (repetition 1), ect) and
-extracted the geometrical feature from x,y coordinates of same stimulus
-categories in non-chronological order The form-based tests computed
-before were relying on the chronologically ordered repetitions. For
-example, when a stimulus such as Monday was repeated three times, the
-coordinates for the first presentation of Monday were always paired with
-the coordinates for the first presentation of Tuesday to construct
-segments or polygons. However, if synesthetic forms are truly
-consistent, they should remain stable independently of the chronological
-order of stimulus presentation. Hence, we permute the repetitions within
-each condition. Specifically, for each participant and each category, we
-randomized the response repetition order. For example segments for
-weekdays were constructed with the x,y coordinates where randomly
-permuted across repetition order, for example Monday (repetition 1),
-Tuesday (repetition 3), Wednesday (repetition 2), ect. We predicted that
-this permuted-based consistency would yield to better classification
-performance (higher AUC values) compared to chronologically ordered
-features. The rationale is that genuine synaesthetes would have a
-consistently valid topology of spatial-forms repetitions regardless of
-presentation order, whereas controls would show random variation. The
-permutation scores were calculated for topological validity and
-Polsby--Popper score.
+extracted the geometrical feature from x,y coordinates of stimuli from
+the same categories in non-chronological order. Specifically, for each
+participant and each category, we randomized the response repetition
+order. For example segments for weekdays were constructed with the x,y
+coordinates randomly permuted across repetition order, for example
+Monday (repetition 1), Tuesday (repetition 3), Wednesday (repetition 2),
+ect. We predicted that this permuted-based consistency would yield to
+better classification performance (higher AUC values) compared to
+chronologically ordered features. The rationale is that genuine
+synaesthetes would have a consistently valid topology of spatial-forms
+repetitions regardless of presentation order, whereas controls would
+show random variation. The permutation scores were calculated for
+topological validity and Polsby--Popper score.
 
 \subsubsection{Receiver Operator Characteristic
 analyses}\label{receiver-operator-characteristic-analyses}
@@ -974,23 +964,27 @@ highest AUC (81.16), all p-values false discovery rate (FDR) adjusted.
 ROC analyses are summarized in Table~\ref{tbl-mytb03} and
 Figure~\ref{fig-myplot2}. Interestingly, while the permuted validity
 leads to significantly larger AUC than the Polsby-Popper method,
-(\emph{D} = 2.2 , \emph{p} \textless{} .05, it led to similar AUC than
+(\emph{D} = 2.2 , \emph{p} \textless{} .05), it led to similar AUC than
 the standardized perimeter (\emph{D} = 1.47, \emph{p} \textless{} .05).
-This might be explained by the relatively lower sensitivity 59.7
-(although relatively higher sensitivity 87.54) of the Polsby-Popper test
-compared to the Perimeter (72.54) and permuted validity tests (70.78).
-Additionally, the permuted validity led to significantly higher AUC than
-the non permuted one (D = 3.14, \emph{p} \textless{} .05).
+This might be explained by the relatively lower sensitivity of 59.7
+compared to the Perimeter (72.54) and the permuted validity tests
+(70.78). The Polsby-Popper test also resulted in the largest
+discrimination power of all the tests (2.29 ) which is explained by the
+high specificity of 87.54, meaning this test outperformed the others in
+correctly classifying SSS, but was relatively relaxed in classifying
+controls as SSS. Additionally, the permuted validity led to
+significantly higher AUC than the non permuted one (D = 3.14, \emph{p}
+\textless{} .05).
 
 Hence, the two best AUC performances are from the averaged permuted
 validity score (AUC = 81.16; DP = 2.13, cut-off = 0.17 corresponding to
 1.53 valid of 9 forms) and the standardized perimeter between the
 repetitions of each stimuli (AUC = 78.8; DP = 2.06, cut-off = 1.73
 z-scores). At the proposed cut-off, the permuted validity leads to
-higher specificity than perimeter (78.55 vs. 75.78) indicating better
-rejection of controls (i.e.~less false negatives), but lower sensitivity
-(70.78 vs. 72.54), indicating poorer detection of SSS (i.e.~more false
-negatives).
+higher specificity than perimeter (78.55 vs. 75.78) indicating more
+accurate rejection of controls (i.e.~less false positives), but higher
+sensitivity (70.78 vs. 72.54), indicating less accurate detection of SSS
+(i.e.~more false negatives).
 
 In sum, the permuted validity on the space-form level and the perimeter
 of standardized coordinates on the stimulus level were the two equally
@@ -1003,7 +997,7 @@ questionnaire percentiles. The aim of these analyses was to test the
 stability of the classifications from different methods across
 experiments (i.e.~datasets) and sample characteristics (i.e.
 questionnaire scores). We also used a correlational approach to test for
-correlations between features and questionnaires.
+correlations between method's metrics and questionnaires.
 
 We sub-sampled the dataset source for the five most optimal tests (i.e.
 higher AUC) and recalculated AUC, sensitivity and sensibility. We found
@@ -1011,30 +1005,30 @@ similar values for the different datasets, see
 Figure~\ref{fig-myplotapx02}.
 
 Including only the data by Professor Ward, we subsampled the
-participants depending on the perecntiles of the questionnaire scores
-(hence only the data from Professor Ward), taking the 10-0\% highest
-questionnaire scores against the 10 \% lowest (. (i.e.~90-100 \%). Here
-also most of the values remain relatively stable independently from the
-questionnaire distribution of the samples, see
+participants depending on the percentiles of the questionnaire scores ,
+taking the 10\% highest questionnaire scores against the 10 \% lowest
+(i.e.~90-100 \%). Here also most of the values remain relatively stable
+independently from the questionnaire distribution of the samples, see
 Figure~\ref{fig-myplotapx03}. Another important point addressed in the
-literature about consistency test is circularity. The circularity is
-given in that if consistency tests are used to classify SSS and
-controls, then those groups will by definition differ in consistency
-(\citeproc{ref-root2025}{Root et al., 2025}). Hence, we made a
-correlation matrix with the questionnaire scores and all the tests, see
-Appendix. The two highest correlations are indeed between the
+literature about consistency test is circularity.
+
+The circularity is given in that if consistency tests are used to
+classify SSS and controls, then those groups will by definition differ
+in consistency (\citeproc{ref-root2025}{Root et al., 2025}). Hence, we
+made a correlation matrix with the questionnaire scores and all the
+tests, see Appendix. The two highest correlations are indeed between the
 questionnaire score and perimeter (r = .58) and permuted validity (r =
 .50), see Figure~\ref{fig-myplotapx04}.
 
 Some of the participants might have been originally mis-attributed to
 control or SSS or there might be consistent controls and inconsistent
 synesthetes (\citeproc{ref-eagleman2007}{Eagleman et al., 2007}; see
-\citeproc{ref-root2025}{Root et al., 2025}). We found about
-\textasciitilde6 \% of the full sample's synesthetes to be consistently
-classified as controls (i.e.~consistent false positive) by the five
-methods with the highest AUC, see , see Figure~\ref{fig-myplotapx07} and
+\citeproc{ref-root2025}{Root et al., 2025}). We found \textasciitilde6\%
+of the full sample's synesthetes to be consistently classified as
+controls (i.e. consistent false negatives) by the five methods with the
+highest AUC, see , see Figure~\ref{fig-myplotapx07} and
 Figure~\ref{fig-myplotapx08}. \textasciitilde3 \% controls are
-consistently classified as SSS (i.e.~consistent false negative)
+consistently classified as SSS (i.e.~consistent false positives)
 Figure~\ref{fig-myplotapx09}.
 
 Finally, we also wanted to visualize the average space form of each
@@ -1055,12 +1049,6 @@ triangle. Materials are more details on this study are pre-registered on
 OSF, including ample size and recruitment method
 (\citeproc{ref-sachdeva2024}{Sachdeva et al., 2024}, Stage 1
 in-principle acceptance) (see also \url{https://osf.io/6wn4m}).
-
-We will compute the same ROC analyses as in this pre-registration on all
-the tests. Since we obtain different best AUC per tests depending on the
-dataset (see Figure~\ref{fig-myplotapx02}) it is likely that the best
-test here will not match with the best test in the to be collected
-dataset.
 
 \section{Discussion - present study}\label{discussion---present-study}
 
@@ -1163,12 +1151,6 @@ yet-to be acquired dataset.
 
 \phantomsection\label{refs}
 \begin{CSLReferences}{1}{0}
-\bibitem[\citeproctext]{ref-baron-cohen1993}
-Baron-Cohen, S., Harrison, J., Goldstein, L. H., \& Wyke, M. (1993).
-Coloured Speech Perception: Is Synaesthesia what Happens when Modularity
-Breaks Down? \emph{Perception}, \emph{22}(4), 419--426.
-\url{https://doi.org/10.1068/p220419}
-
 \bibitem[\citeproctext]{ref-brang2013}
 Brang, D., Miller, L. E., McQuire, M., Ramachandran, V. S., \& Coulson,
 S. (2013). Enhanced mental rotation ability in time-space synesthesia.
@@ -1184,11 +1166,6 @@ geography of time. \emph{Consciousness and Cognition}, \emph{19}(1),
 \bibitem[\citeproctext]{ref-ggalluvial}
 Brunson, J. C., \& Read, Q. D. (2023). \emph{{ggalluvial}: Alluvial
 plots in 'ggplot2'}. \url{http://corybrunson.github.io/ggalluvial/}
-
-\bibitem[\citeproctext]{ref-deroy2013}
-Deroy, O., \& Spence, C. (2013). Why we are not all synesthetes (not
-even weakly so). \emph{Psychonomic Bulletin \& Review}, \emph{20}(4),
-643--664. \url{https://doi.org/10.3758/s13423-013-0387-2}
 
 \bibitem[\citeproctext]{ref-dixon2004}
 Dixon, M. J., Smilek, D., \& Merikle, P. M. (2004). Not all synaesthetes
