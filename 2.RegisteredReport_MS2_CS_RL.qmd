@@ -131,20 +131,13 @@ phenomenon where people visualize ordered sequences in particular
 spatial positions. For example, numbers, weekdays or months (synesthetic
 *inducers*) are represented as arranged into specific spatial positions
 in space (synesthetic *concurrent*). The synaesthetic spatial-forms can
-be complex and have variable geometric forms. Those geometric forms
-might be different for each categories (i.e. number-forms weekdays and
+be complex and have variable geometric forms. These geometric forms
+might be different for each category (i.e. number-forms weekdays and
 months), with forms such as ellipses, zig-zags or curbed lines
-[@galton1880,@flournoy1893]. SSS are usually identified using
-questionnaires and consistency tests. An individual is identified as SSS
-based on the variability at the stimulus level between repeated
-responses: less variable responses being an indicator of the consistent
-response characteristic of SSS. However, stimulus level consistency can
-also be achieved by responding to the same position for all stimuli.
-Furthermore, it might favour linear over circular spatial-forms and is
-not informed about the ordinality between stimuli (e.g. 1 `→` 2 `→` 3,
-etc.). Here, we aim at optimizing the identification of SSS from
-consistency tasks using geometrical characteristics of spatial-forms
-from ordered stimuli or inducers.
+[@galton1880,@flournoy1893]. However, spaital-forms of individuals with
+SSS are consistent and automatic. Methods to classify SSS and controls
+using consistency are however heterogeneous. The aim of the present
+study is to optimize consistency methods to classify SSS and controls.
 
 SSS frequently co-occurs with other subtypes of synaesthesia and as for
 other subtypes of synaesthesia it’s idiosyncratic. Colour-grapheme
@@ -167,41 +160,51 @@ and out or rotating or shifting perspectives at will [@gould2014;
 @jarick2009] Lastly, the shape, complexity and layout of the
 spatial-forms are also heterogeneous such as forming for example ovals,
 lines, zig-zags or loops. With some recurring shapes being more frequent
-across SSS, such as ovals for months [@eagleman2009a].
+across SSS, such as ovals for months [@eagleman2009a]
+<!--# I think with this paragraph, it’s difficult to see how it is connected to your research question (especially the bit about co-occurence with other types of synesthesia). I wonder if you need some sentences that connect the premise of this paragraph back to the main research question. -->.
 
 Despite the after mentioned heterogeneities, SSS is also
-phenomenological characterized. There might be five main characteristics
-for synaesthesia in general and specifically SSS [@seron1992;
-@deroy2013]. *Automaticity*: the inducer automatically triggers the
-concurrent. *Unidirectionality*: while the *inducer* triggers the
-concurrent, the concurrent does not trigger the inducer.
-*Developmentally*: the experience was already present during childhood.
-*Consciousness*: The concurrent is consciously perceived. *Consistency*:
-the inducer-concurrent pair remains stable in time within subject. While
-some of these characteristics can be captured with self-reported
-questionnaire (i.e. for development and consciousness), other can be
-quantified more objectively using behavioural tasks such as consistency
-tests [@baron-cohen1993].
+phenomenological characterized
+<!--# I think these five characteristics are quite well-established in synesthesia, right? So, I wonder if it would better to say generally that there are five main characteristics for synesthesia. -->.
+There might be five main characteristics for synaesthesia in general and
+specifically SSS [@seron1992; @deroy2013]. *Automaticity*: the inducer
+automatically triggers the concurrent. *Unidirectionality*: while the
+*inducer* triggers the concurrent, the concurrent does not trigger the
+inducer. *Developmentally*: the experience was already present during
+childhood. *Consciousness*: The concurrent is consciously perceived.
+*Consistency*: the inducer-concurrent pair remains stable in time within
+subject. While some of these characteristics can be captured with
+self-reported questionnaire (i.e. for development and consciousness),
+other can be quantified more objectively using behavioural tasks such as
+consistency tests
+<!--# I think consistency is the only one that is captured using consistency tests. The others are all captured using self-report (atleast so far). -->[@baron-cohen1993].
 
 ## Consistency tests {#sec-consistency-tests}
+
+Individuals with SSS are usually identified using questionnaires and
+consistency tests. . However, stimulus level consistency can also be
+achieved by responding to the same position for all stimuli.
+Furthermore, it might favour linear over circular spatial-forms and is
+not informed about the ordinality between stimuli (e.g. 1 `→` 2 `→` 3,
+etc.). Here, we aim at optimizing the identification of SSS from
+consistency tasks using geometrical characteristics of spatial-forms
+from ordered stimuli or inducers.
 
 Consistency tests are extracted form behavioural tasks used to evaluate
 how stable synesthetic experiences are over time [@rothen2013a;
 @rothen2016]. They do this by presenting the same stimuli repeatedly and
 assessing how similar participant's responses are across repetitions
-(i.e. *inducer*-*concurrent* associations). High consistency is often
-taken as evidence for synaesthesia. Consistency tests have proven
-effective for colour-grapheme synaesthesia. Measures of individual
-consistency can be derived using colour pickers while repeatedly
-presenting the same inducer (i.e. “A”). The quantification of the
-distance between concurrents from the same inducers is used to
-discriminate consistent synaesthetes from controls. Specifically, the
-euclidean distance in CIE L\*u\*v colour space, which is designed for
-perceptual uniformity, yields optimal classification accuracy when using
-a cut-off estimated as deduced from a larger representative sample
-[@rothen2013a]. A similar rationale to that used for colour-grapheme
-synaesthesia has been applied to characterize SSS from consistency
-tasks.
+(i.e. *inducer*-*concurrent* associations). An individual is identified
+as SSS based on the variability at the stimulus level between repeated
+responses: less variable responses being an indicator of the consistent
+response characteristic of SSS. Consistency tests have proven effective
+for colour-grapheme synaesthesia. Measures of individual consistency can
+be derived using colour pickers while repeatedly presenting the same
+inducer (i.e. “A”). The quantification of the distance between
+concurrents from the same inducers is used to discriminate consistent
+synaesthetes from controls [@rothen2013a]. A similar rationale to that
+used for colour-grapheme synaesthesia has been applied to characterize
+SSS from consistency tasks.
 
 In the SSS consistency task, participants complete multiple rounds of
 the same stimuli (e.g., digits, days of the week, and months of the
@@ -215,10 +218,13 @@ potentially too conservatory, as it identified synaesthesia in 4 of 81
 self-reported synaesthetes. Geometrical features such as area and
 perimeter between the coordinates of repeated inducers have further been
 used as a measure of the distance between same inducers, hence as a
-metric for consistency. Less consistent responses leading to smaller
+metric for consistency. Less consistent responses lead to smaller
 triangle perimeters and area [@rothen2016]. A cut-off corresponding to
 less than 0.203 % average responses area in proportion to the total
-screen area to classify as SSS has been suggested [see also @ward2018].
+screen area to classify as SSS has been suggested [see also @ward2018]
+<!--# I am unsure as to what this sentence means. -->.
+
+## Limitations of current methods of consistency tests
 
 However, several general caveats of consistency tests using concurrent
 or stimulus level metrics have been identified. Some tests may favour
