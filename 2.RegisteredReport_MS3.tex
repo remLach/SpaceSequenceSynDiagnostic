@@ -560,7 +560,7 @@ illustrating the novel method's design.
 \section{Methods - phase I}\label{methods---phase-i}
 
 Code and data for ``one-click'' reproducibility of this manuscript
-including the following analyses are available on git-hub
+including the following analyses are available on GitHub
 (\url{https://github.com/remLach/SpaceSequenceSynDiagnostic}). All the
 analyses are conducted in R, using the following packages `pROC' v.
 1.19.0.1 (\citeproc{ref-pROC}{Robin et al., 2011}), `sf' v. 1.0.21
@@ -868,7 +868,7 @@ is \emph{1.44}
 \paragraph{Topological validity and
 simplicity.}\label{topological-validity-and-simplicity}
 
-We assessed topological propetries using geometric validation test. We
+We assessed topological propertries using geometric validation test. We
 reasoned that space-forms from SSS should follow some topological rules
 reflecting the ordinality properties of the stimulus. A direct analogy
 comes from cartography, given spatial continuity underlying these
@@ -889,9 +889,9 @@ according to the Open Geospatial Consortium (OGC) Simple Features
 Specification (\citeproc{ref-herring2010}{Herring, 2010}). A polygon is
 considered topologically valid if it satisfies the following criteria:
 (1) if polygon rings are simple (i.e., they do not touch or
-self-intersect), (2) boundary rings to not cross (3) boundary rings may
+self-intersect), (2) boundary rings do not cross (3) boundary rings may
 only touch points tangentially (4) rings that define holes are contained
-within the exterior ring (5) the polygon rings must not splits the
+within the exterior ring (5) the polygon rings must not split the
 polygon (\citeproc{ref-postgis}{\emph{PostGIS 3.6.2dev Manual}, n.d.}).
 \pdfcomment[icon=Check,color={0 0 1}]{NR22: there is some repetition}
 Note that simplicity is a condition for validity: a polygon can be
@@ -918,9 +918,9 @@ repetitions (0,1,0), then the topological validity score would be 4/9 ≈
 We then implemented a compactness score of the space-formed polygons. We
 used the score developed to quantify the gerrymandering of political
 district Polsby and Popper (\citeproc{ref-polsby1991}{1991}). In the
-context of geo-politicy, gerrymandering is a politically motivated
+context of geopolitics, gerrymandering is a politically motivated
 strategy of redefining electoral district's boundaries to advantage a
-political party. As a consequences, the compactness of districts
+political party. As a consequence, the compactness of districts
 redefined by political motivations are less likely to be compact than if
 they would follow geomorphological properties. We expected SSS
 space-form polygons to be more compact for SSS than controls since those
@@ -949,7 +949,7 @@ extraction.}\label{sec-permutation-based-feature-extraction}
 If synesthetic forms are truly consistent, they should remain stable
 independently of the experimental order in which the stimulus is
 presented, see Figure~\ref{fig-01}. Hence, we re-calculated the three
-most per formant tests (i.e.~leading to higher Area under the Curve) by
+most performant tests (i.e.~leading to higher Area under the Curve) by
 permuting the repetition order within each condition (see
 Section~\ref{sec-permutation-based-feature-extraction}). We predicted
 that this permuted-based consistency would yield to better
@@ -1024,7 +1024,7 @@ that the dataset with the largest number of participants
 (i.e.~with an area of 0.26\%, see Table~\ref{tbl-apx02}). It is
 important to note that since each method uses different metrics, these
 cannot directly be compared to each others. Hence the rightmost columns
-of Table~\ref{tbl-04} also reports standardozed z-score descriptives
+of Table~\ref{tbl-04} also reports standardized z-score descriptives
 allowing comparison across different metrics. Furthermore note some the
 directionality differs between the methods (i.e.~the area method is
 expected to be smaller for SSS in contrast to validity methods that are
@@ -1056,7 +1056,7 @@ Permuted P-P [score/9] & 0.11 (0.17) & 0.41 (0.33) & -0.56 (0.56) & 0.40 (1.06) 
 \end{tabular*}
 \begin{minipage}{\linewidth}
 \vspace{.05em}
-Note: mean (standard deviation) of all the consistency tests. The two rightmost columns display the same descriptives in z-score transformed values, enhabling comparison across different metrics. Z-scores were calculated for all participants, separately for each test.\\
+Note: mean (standard deviation) of all the consistency tests. The two rightmost columns display the same descriptives in z-score transformed values, enabling comparison across different metrics. Z-scores were calculated for all participants, separately for each test.\\
 \end{minipage}
 
 \end{table}
@@ -1174,7 +1174,7 @@ controls and SSS to the standardized coordinate's perimeter method.
 \subsection{Further analyses}\label{further-analyses}
 
 We conducted further analyses by sub-sampling the dataset source and
-questionnaire percentiles, see appendixes. The first aim of these
+questionnaire percentiles, see Appendixes. The first aim of these
 analyses was to test the stability of the classifications from different
 methods across experiments (i.e.~datasets) and sample characteristics
 (i.e.~questionnaire scores).
@@ -1649,6 +1649,13 @@ consistently are classified as controls by different methods as well as
 a group of control who are consistently classified as synaesthetes, see
 \hyperref[apx-alluvial]{Appendix~F}.
 
+Finally, we wanted to visualize false positives and negatives of the
+consistency methods. We averaged the space-forms of false positives and
+negatives
+\hyperref[apx-false-positive-and-negative-analysis]{Appendix~G}. But
+individual space-forms can also be explored in
+\hyperref[apx-all-participants-spatial-forms]{Appendix~H}.
+
 The following R packages were used for the data visualization in the
 appendix: `ggridges' v. 0.5.7 (\citeproc{ref-ggridges}{Wilke, 2025b}),
 `cowplot' v. 1.2.0 (\citeproc{ref-cowplot}{Wilke, 2025a}), `ggalluvial'
@@ -1776,7 +1783,7 @@ controls by dataset}{\label{fig-apx03}}}}
 controls.
 
 All method's score have been standardized (\emph{z-score}). x axis
-treamed between -3 and 3 z-scores. Vertical line indicate respectively
+trimmed between -3 and 3 z-scores. Vertical line indicate respectively
 20, 50 (median) and 80 percentiles of each distributions.
 
 \end{figure}
@@ -1871,10 +1878,12 @@ Figure~\ref{fig-apx07}.
 \pandocbounded{\includegraphics[keepaspectratio]{2.RegisteredReport_MS3_files/figure-pdf/fig-apx07-1.png}}
 
 \vspace{-20pt}
-\noindent \emph{Note.} Red~= Controls, Blue = Synaesthetes. Highlighted
-in blue are Synesthetes who are classified as control by all 5 tests.
-Highlighted in red are controls who are classified as synesthetes by all
-5 tests.
+\noindent \emph{Note.} Blue~= Synaesthetes, Red = Controls. Each line
+represents a participants classification in SSS or control by each test
+at the given threshold. Blue highligh are Synesthetes who are
+systematically classified as control by all 5 tests. Red highlight are
+controls who are systematically classified as synesthetes by all 5
+tests.
 
 \end{figure}
 
@@ -1962,10 +1971,10 @@ false positives and negatives}
 \end{figure}%
 
 \section{All participants spatial
-forms}\label{apx-sec-all-participants-spatial-forms}
+forms}\label{apx-all-participants-spatial-forms}
 
 Here we report the code to plot each participant and categories in
-z-score x and y coordinates. At the top right corner, the first coured
+z-score x and y coordinates. At the top right corner, the first coloured
 dot indicates if the participant self-reports as SSS (green) or not
 (red). The following dots indicates if the participant passes (green) or
 fails (red) the given consistency test.

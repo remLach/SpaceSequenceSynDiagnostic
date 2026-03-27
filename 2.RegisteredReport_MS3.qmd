@@ -929,7 +929,7 @@ plot_grid(gp1,gp2,gp3,gp4,gp5,gp6,gp7,
 # Methods - phase I
 
 Code and data for “one-click” reproducibility of this manuscript
-including the following analyses are available on git-hub
+including the following analyses are available on GitHub
 (<https://github.com/remLach/SpaceSequenceSynDiagnostic>). All the
 analyses are conducted in R, using the following packages
 `r pakret::pkrt_list("pROC", "sf")` and for visualization
@@ -1228,7 +1228,7 @@ knitr::include_graphics("Fig04.pdf")
 
 #### Topological validity and simplicity
 
-We assessed topological propetries using geometric validation test. We
+We assessed topological propertries using geometric validation test. We
 reasoned that space-forms from SSS should follow some topological rules
 reflecting the ordinality properties of the stimulus. A direct analogy
 comes from cartography, given spatial continuity underlying these
@@ -1248,9 +1248,9 @@ according to the Open Geospatial Consortium (OGC) Simple Features
 Specification [@herring2010]. A polygon is considered topologically
 valid if it satisfies the following criteria: (1) if polygon rings are
 simple (i.e., they do not touch or self-intersect), (2) boundary rings
-to not cross (3) boundary rings may only touch points tangentially (4)
+do not cross (3) boundary rings may only touch points tangentially (4)
 rings that define holes are contained within the exterior ring (5) the
-polygon rings must not splits the polygon [@postgis].
+polygon rings must not split the polygon [@postgis].
 `r nr("there is some repetition", done = 1)` Note that simplicity is a
 condition for validity: a polygon can be simple but still invalid (e.g.,
 if an interior ring extends outside the exterior ring).
@@ -1274,9 +1274,9 @@ repetitions (0,1,0), then the topological validity score would be 4/9 ≈
 
 We then implemented a compactness score of the space-formed polygons. We
 used the score developed to quantify the gerrymandering of political
-district @polsby1991. In the context of geo-politicy, gerrymandering is
-a politically motivated strategy of redefining electoral district's
-boundaries to advantage a political party. As a consequences, the
+district @polsby1991. In the context of geopolitics, gerrymandering is a
+politically motivated strategy of redefining electoral district's
+boundaries to advantage a political party. As a consequence, the
 compactness of districts redefined by political motivations are less
 likely to be compact than if they would follow geomorphological
 properties. We expected SSS space-form polygons to be more compact for
@@ -1304,9 +1304,9 @@ displays circular space-form, see @fig-03.
 
 If synesthetic forms are truly consistent, they should remain stable
 independently of the experimental order in which the stimulus is
-presented, see @fig-01. Hence, we re-calculated the three most per
-formant tests (i.e. leading to higher Area under the Curve) by permuting
-the repetition order within each condition (see
+presented, see @fig-01. Hence, we re-calculated the three most
+performant tests (i.e. leading to higher Area under the Curve) by
+permuting the repetition order within each condition (see
 @sec-permutation-based-feature-extraction). We predicted that this
 permuted-based consistency would yield to better classification
 performance (higher AUC values) compared to non-permuted methods.
@@ -2291,7 +2291,7 @@ studies studies: 0.14% (*SD = 0.13%*) in @rothen2016 and 0.14% (*SD =
 participants [@ward2022a] is driving this difference (i.e. with an area
 of 0.26%, see @tbl-apx02). It is important to note that since each
 method uses different metrics, these cannot directly be compared to each
-others. Hence the rightmost columns of @tbl-04 also reports standardozed
+others. Hence the rightmost columns of @tbl-04 also reports standardized
 z-score descriptives allowing comparison across different metrics.
 Furthermore note some the directionality differs between the methods
 (i.e. the area method is expected to be smaller for SSS in contrast to
@@ -2396,7 +2396,7 @@ gt(tbl_out) |>
     columns = where(is.numeric)
   ) %>%
   tab_footnote(
-    footnote = "Note: mean (standard deviation) of all the consistency tests. The two rightmost columns display the same descriptives in z-score transformed values, enhabling comparison across different metrics. Z-scores were calculated for all participants, separately for each test.")
+    footnote = "Note: mean (standard deviation) of all the consistency tests. The two rightmost columns display the same descriptives in z-score transformed values, enabling comparison across different metrics. Z-scores were calculated for all participants, separately for each test.")
 
 rm(tmp)
 # Sanity Check: The descriptives for Area_perc calculated here are the ~same as in Ward
@@ -2582,7 +2582,7 @@ controls and SSS to the standardized coordinate's perimeter method.
 ## Further analyses
 
 We conducted further analyses by sub-sampling the dataset source and
-questionnaire percentiles, see appendixes. The first aim of these
+questionnaire percentiles, see Appendixes. The first aim of these
 analyses was to test the stability of the classifications from different
 methods across experiments (i.e. datasets) and sample characteristics
 (i.e. questionnaire scores).
@@ -2785,6 +2785,11 @@ participant is classified by each test. From this we found a group of
 Synaesthetic who consistently are classified as controls by different
 methods as well as a group of control who are consistently classified as
 synaesthetes, see @apx-alluvial.
+
+Finally, we wanted to visualize false positives and negatives of the
+consistency methods. We averaged the space-forms of false positives and
+negatives @apx-false-positive-and-negative-analysis. But individual
+space-forms can also be explored in @apx-all-participants-spatial-forms.
 
 The following R packages were used for the data visualization in the
 appendix:
@@ -3207,7 +3212,7 @@ plot_grid(gp_AUC, gp_DP,gp_Sensitivity,gp_Specificity,
 #| label: fig-apx03
 #| apa-note: 
 #|    - Red = Classified as Synesthetes, Blue =  as controls. 
-#|    - All method's score have been standardized (*z-score*). x axis treamed between -3 and 3 z-scores. Vertical line indicate respectively 20, 50 (median) and 80 percentiles of each distributions.
+#|    - All method's score have been standardized (*z-score*). x axis trimmed between -3 and 3 z-scores. Vertical line indicate respectively 20, 50 (median) and 80 percentiles of each distributions.
 #| fig-cap: Density plots of all the consistency tests comparing SSS and controls by dataset
 
 
@@ -3564,8 +3569,8 @@ the highest AUC, see dark red lines in @fig-apx07.
 ```{r}
 #| label: fig-apx07
 #| fig-cap: "Alluvial plot of test passing"
-#| apa-note: "Red = Controls, Blue = Synaesthetes. Highlighted in blue are Synesthetes who are classified as control by all 5 tests. Highlighted in red are controls who are classified as synesthetes by all 5 tests."
-
+#| apa-note: "Blue = Synaesthetes, Red = Controls. Each line represents a participants classification in SSS or control by each test at the given threshold. Blue highligh are Synesthetes who are systematically classified as control by all 5 tests. Red highlight are controls who are systematically classified as synesthetes by all 5 tests."
+#| fig-position: H
 
 
 AllList       <- list(Group = ds_Q$ID[ds_Q$group == "Syn"])
@@ -3727,7 +3732,7 @@ ds %>%
 # bind_rows(row1,row2)
 ```
 
-# False positive and negative analysis
+# False positive and negative analysis {#apx-false-positive-and-negative-analysis}
 
 To visualize whether one of the consistency tests is biased towards the
 classification of one category, we selected the false positives and
@@ -3868,10 +3873,10 @@ ds_adj_here %>%
        y = "y [ centered z-score]")
 ```
 
-# All participants spatial forms {#sec-all-participants-spatial-forms}
+# All participants spatial forms {#apx-all-participants-spatial-forms}
 
 Here we report the code to plot each participant and categories in
-z-score x and y coordinates. At the top right corner, the first coured
+z-score x and y coordinates. At the top right corner, the first coloured
 dot indicates if the participant self-reports as SSS (green) or not
 (red). The following dots indicates if the participant passes (green) or
 fails (red) the given consistency test.
