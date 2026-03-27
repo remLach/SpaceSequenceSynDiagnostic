@@ -81,6 +81,9 @@ local divcaption = function(div)
       div.content = div.content:walk { RawInline = function(ri) return {} end }
       div.content = div.content:walk { Para = caption_formatter }
     end
+    if FORMAT == "latex" then
+      return{figuretitlediv,pandoc.RawBlock("latex","\\vspace{0.5em}"),figurecationdiv}
+    end
     return div
   end
 end
