@@ -1,0 +1,1178 @@
+---
+main_topsize: 0.13 #percent coverage of the poster
+main_bottomsize: 0.1
+title: "Optimizing Consistency Methods"
+author:
+  - name: Rémy Lachelin
+    corresponding: true
+    orcid: 0000-0002-8485-7153
+    email: remy.lachelin@fernuni.ch
+    main: true
+    affil: 1
+  - name: Chhavi Sachdeva
+    corresponding: false
+    orcid: 0000-0002-0074-4371
+    email: chhavi.sachdeva@unidistance.ch
+    main: 1
+    affil: 1
+  - name: Nicolas Rothen
+    corresponding: false
+    orcid: 0000-0002-8874-8341
+    email: nicolas.rothen@fernuni.ch
+    affil: 1
+affiliation:
+  - num: 1
+    address: Department of Psychology, UniDistance Suisse
+main_findings:
+  - "Mapping **Synesthetic Sequences in Space**: Improving **Consistency Test** by Harnessing **Cartography Tools**"
+# logoleft_name: Figures/UniDistance_logo.svg
+logoright_name: Figures/Unidistance_Logo_Blanc_CMYK.svg
+logoleft_name: Figures/Logo_UniD_RL.png # download.svg
+
+output: 
+  # posterdownLaTeX::posterdown_latex: 
+  posterdown::posterdown_betterport:
+    self_contained: true
+    pandoc_args: --mathjax
+    number_sections: false
+    cache: true
+    # highlight: espresso
+    width: 9933px
+    height: 14043px
+
+format: pdf
+# poster_height: 46.81
+# poster_width: 33.11
+title_textsize: 70pt
+reference_textsize: 
+
+font_family: "Inter" # "Roboto"
+main_fontfamily: "Inter" # "Roboto"
+body_textsize: 42px # 45 in template
+primary_colour: "#004687" # color on from out to in
+secondary_colour: "#004687" # color from in to out. 1A = 10% alpha
+accent_colour: "#2f6db499"  # color inside the frame
+affiliation_textcol: "#2f6db499" # This, but can't change the title's colour (!)
+# "#2f6db4" #004687 #2f6db499
+bibliography: references.bib
+csl:  apa.csl # apa-numeric-superscript-brackets.csl # #
+link-citations: true
+---
+
+```{r eval=FALSE, include=FALSE}
+# Color palettes
+"#000000"
+"#2f6db4"
+"#2f6db499" # 50% transparency (?)
+
+# From: # pals::cols25()
+"#1F78C8"
+"#ff0000"
+"#33a02c"
+"#ff7f00"
+"#565656"
+# css block below is to make the logo larger.
+```
+
+```{css, echo=FALSE}
+#main-img-right {
+  width: 900px; 
+}
+```
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      warning = FALSE,
+                      tidy = FALSE,
+                      message = FALSE,
+                      fig.align = 'center',
+                      out.width = "100%")
+options(knitr.table.format = "html") 
+```
+
+```{r}
+############ Load R packages: ################
+# Render Formatting
+# library(papaja)
+library(RColorBrewer)
+# library(kableExtra)
+library(pakret) # R package in text citation
+# Plots
+library(ggplot2)
+library(ggridges)
+library(ggalluvial)
+library(ggVennDiagram)
+library(ggridges)
+library(ggforce)
+library(cowplot) # for multiplot in 1 figure
+library(corrplot)
+library(gt)
+# Data import
+library(readr)
+library(readxl)
+# Data wrangling:
+library(dplyr)
+library(tidyr)
+
+# geometry/geography feature package
+library(sf)
+# for ROC analyses:
+library(pROC) # See https://www.r-bloggers.com/2019/02/some-r-packages-for-roc-curves/
+
+# Make shure environment is empty
+rm(list = ls())
+
+
+## Load data:
+load("ds.RData")
+load("ds_Q.RData")
+load("feature_direction.RData")
+load("All_ROC.RData")
+load("Roc_Curves.RData")
+load("Results_ROCcomp.Rdata")
+```
+
+# Introduction
+
+**Sequence-Space Synaesthesia (SSS)**, is the phenomenon where people visualize ordered sequences in consistent spatial positions [@galton1880; @flournoy1893]. **Consistency tasks** classify SSS from controls by having participants indicate perceived spatial positions for a stimuli on a screen. Because of SSS internal spatial representations responses are more consistent than those of controls. Existing **consistency methods** [i.e. @rothen2016] test the spatial variability to the same stimuli, here we explored novel consistency methods.
+
+# Methods
+
+**Consistency tasks** measure the responses (as a *x,y* screen position) for weekdays (Mon-Sun), months (Jan-Dec) and numbers (1-9), each repeated three times. The novel **consistency methods** *B)* and *D)* evaluate participant's *space-form* consistency (Figure 1).
+
+```{r,fig.height=1.5, fig.width=6, dpi = 500, fig.retina = 2}
+#| label: fig-01
+
+
+# Sorry for the lengthy piping, I call sf later in the code, but want to build my first figure using it. 
+
+gp1 <- ds %>%
+  filter(ID %in%  "1025_MaJo") %>%
+  filter(Cond %in% "weekday")  %>%
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% 
+  arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>% # Start ggplot
+  ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus, colour = stimulus)) +
+  geom_polygon(alpha = 0.4) +
+  geom_point(size = 0.05, alpha = 0.5) +
+  # ggrepel::geom_text_repel(aes(x = x_zs, y = y_zs), size = 2, alpha = 0.5, segment.colour = NA) +
+  geom_text(aes(x = x_zs, y = y_zs), size = 2, alpha = 0.5, position = position_dodge2(width = 0.2)) +
+  scale_fill_discrete(guide="none") +
+  coord_equal() +
+  theme_void() + 
+  labs(title = "A) Within stimulus") +
+  theme(plot.title = element_text(hjust = 0.5, size = 8, family = "serif"))  + 
+  theme(aspect.ratio = NULL) + 
+  theme(legend.position="none") +
+  scale_colour_manual(values = pals::cols25(12)) +
+  scale_fill_manual(values = pals::cols25(12))
+
+gp2 <- ggplot() +
+  annotate("segment",
+           x = 0, xend = 0.2, y = 0, yend = 0,
+           linewidth = 1,
+           arrow = grid::arrow(type = "closed")) +
+  theme_void() + theme(aspect.ratio = NULL)
+
+gp3 <- ds %>%
+  filter(ID %in%  "1025_MaJo") %>%
+  filter(Cond %in% "weekday")  %>%
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% 
+  arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>% # Start ggplot
+  ggplot(aes(x = x_zs, y = y_zs, group = as.factor(repetition), label = stimulus, colour = as.factor(repetition))) +
+  geom_path(alpha = 0.4) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  # ggrepel::geom_text_repel(aes(x = x_zs, y = y_zs), size = 2, alpha = 0.5) +
+  geom_text(aes(x = x_zs, y = y_zs), size = 2, alpha = 0.5, position = position_dodge2(width = 0.2)) +
+  scale_fill_discrete(guide="none") +
+  coord_equal() +
+   labs(title = "B) Segments") +
+  theme_void() + 
+  theme(plot.title = element_text(hjust = 0.5, size = 8, family = "serif")) + 
+  theme(aspect.ratio = NULL) + 
+  theme(legend.position="none") +
+  scale_colour_manual(values = pals::cols25(3)) +
+  scale_fill_manual(values = pals::cols25(3))
+
+
+
+gp4 <- ggplot() +
+  annotate("segment",
+           x = 0, xend = 0.2, y = 0, yend = 0,
+           linewidth = 1,
+           arrow = grid::arrow(type = "closed")) +
+    theme_void() + theme(aspect.ratio = NULL)
+
+gp5 <- ds %>%
+  filter(ID %in%  "1025_MaJo") %>%
+  filter(Cond %in% "weekday")  %>%
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% 
+  arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>% # Start ggplot
+  ggplot(aes(x = x_zs, y = y_zs, group = as.factor(repetition), label = stimulus, fill = as.factor(repetition),  colour = as.factor(repetition))) +
+  geom_polygon(alpha = 0.4) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  # ggrepel::geom_text_repel(aes(x = x_zs, y = y_zs), size = 2, alpha = 0.5) +
+  geom_text(aes(x = x_zs, y = y_zs), size = 2, alpha = 0.5, position = position_dodge2(width = 0.2)) +
+  scale_fill_discrete(guide="none") +
+  coord_equal() +
+  theme_void() + 
+  labs(title = "C) Polygon") +
+  theme(plot.title = element_text(hjust = 0.5, size = 8, family = "serif")) +  
+  theme(aspect.ratio = NULL)  + 
+  theme(legend.position="none") +
+  scale_colour_manual(values = pals::cols25(3)) +
+  scale_fill_manual(values = pals::cols25(3))
+
+gp6 <- ggplot() +
+  annotate("segment",
+           x = 0, xend = 0.2, y = 0, yend = 0,
+           linewidth = 1,
+           arrow = grid::arrow(type = "closed")) +
+    theme_void() + theme(aspect.ratio = NULL)
+
+gp7 <- ds %>%
+  filter(ID %in%  "1025_MaJo") %>%
+  filter(Cond %in% "weekday")  %>%
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% 
+  arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>% # Start ggplot
+  mutate(repetition = sample(repetition)) %>%
+  ggplot(aes(x = x_zs, y = y_zs, group = as.factor(repetition), label = stimulus, fill = as.factor(repetition),  colour = as.factor(repetition))) +
+  geom_polygon(alpha = 0.4) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  # ggrepel::geom_text_repel(aes(x = x_zs, y = y_zs), size = 2, alpha = 0.5) +
+  geom_text(aes(x = x_zs, y = y_zs), size = 2, alpha = 0.5, position = position_dodge2(width = 0.2)) +
+  scale_fill_discrete(guide="none") +
+  coord_equal() +
+  theme_void() + 
+  labs(title = "D) Permuted polygon") +
+  theme(plot.title = element_text(hjust = 0.5, size = 8, family = "serif")) + 
+  theme(aspect.ratio = NULL)  + 
+  theme(legend.position="none") +
+  scale_colour_manual(values = pals::cols25(3)) +
+  scale_fill_manual(values = pals::cols25(3))
+
+# plot_grid(gp1,gp2,gp3,gp4,gp5, 
+#           nrow = 1)
+plot_grid(gp1,gp2,gp3,gp4,gp5,gp6,gp7,
+          nrow = 1, rel_widths = c(1, 0.3, 1, 0.3, 1, 0.3, 1),rel_heights = 0.8)
+```
+
+```{r}
+
+all_cols <- colnames(ds_Q)
+feature_list  <- all_cols[42:length(all_cols)]
+feature_list <- feature_list[1:12] # Full dataset also has the pass_
+```
+
+```{r,fig.height=6, fig.width=6, dpi = 500, fig.retina = 2}
+
+Feats <- as.matrix(t(rbind(feature_list,feature_direction)))
+# Not included because chunck order does not match in text figure numbering.
+ID_test_ds <- ds_Q %>%
+  select(ID,Area_perc:pp_perm_M) %>%
+  select(!c())
+
+Test_names <- colnames(ds_Q %>% select(Area_perc:pp_perm_M))
+
+header <- plot_grid(
+  ggdraw() + draw_label("Design", fontfamily = "serif", fontface = "bold", hjust = 1),
+  ggdraw() + draw_label("Method", fontface = "bold",fontfamily = "serif", hjust = 0.8),
+  ggdraw() + draw_label("Formula", fontface = "bold",fontfamily = "serif", hjust = 1.2),
+  ggdraw() + draw_label("Minimum", fontface = "bold",fontfamily = "serif", hjust = 1),
+  ggdraw() + draw_label("Maximum", fontface = "bold", fontfamily = "serif",hjust = 0.6),
+  ncol = 5 #, rel_widths = c(0.3,0.1,0.3,0.5,0.5)
+)
+
+subheader <- plot_grid(
+  ggdraw() + draw_label(" "), # placeholder
+  ggdraw() + draw_label(" "), # placeholder
+  ggdraw() + draw_label(" "), # placeholder
+  ggdraw() + draw_label("Space-form", fontfamily = "serif", size = 10),
+  ggdraw() + draw_label("Space-form",fontfamily = "serif", size = 10),
+  ncol = 5, rel_widths =  c(0.3,0.1,0.3,0.3,0.3)
+)
+
+row_fig <- vector("list", length(Test_names)+1)
+row_fig[[1]] <- header
+row_fig[[2]] <- subheader
+
+# plot_grid(plotlist = row_fig, ncol = 1,rel_widths = c(0.5,1,1))
+
+# List ID's woth data for all 3 conds:
+ID3Cond <- ds %>% 
+  group_by(ID) %>% 
+  summarize(nCond = length(unique(Cond))) %>% 
+  filter(nCond == 3) %>%
+  pull(ID)
+
+Categories <- c("A","A","A","A","B","C","C","C","C","D","C","D")
+formulas <- list(
+  expression(100*frac(P,A[screen])),
+  expression(A[zs]),
+  expression(100*frac(A,A[screen])),
+  expression(P[zs]),
+  expression(SelfIntersect[segm]),
+  expression(A[poly]),
+  expression(P[poly]),
+  expression(isSimple[poly]),
+  expression(isValid[poly]),
+  expression(isValid[perm]),
+  expression(frac(4*pi*A, P^2)),
+  expression(frac(4*pi*A[perm],P[perm]^2))
+)
+
+# We (rendomly) sample the participants, otherwise would have a diferent figure each time.
+set.seed(40)
+RowOrder <- c(10,11,4,9,12,5,6,8,2,7,3,1) # Dirty job, but so we have them by AUC
+n = 1
+# colList <- c("#a6cee3", "#FB6496",  "#ff7f00", "#FDBF6F", "#FFD700", "#b2df8a", "#33a02c", "#CAB2D6", "#ff0000", "#565656", "#6A33C2", "#1F78C8") # Dirty job again. In another life I will have the time to do this properly. 
+
+
+colList <- pals::cols25(12)
+colList <- colList[order( All_ROC$AUC, decreasing = TRUE)]
+
+for(test_i in RowOrder){
+  test_here <- Test_names[test_i]
+  
+  # Nice labels:
+  test_here <- recode(test_here, 
+                      "Area_perc" = "Area [screen size %]",
+                      "Area_zs" =  "Area [z-score]", 
+                      "Perimeter_perc" = "Perimeter [screen size %]",
+                      "Perimeter_zs" = "Perimeter [z-score]",
+                      "SelfInter" = "Segment self-intersections [n/9]",
+                      "areaPoly_GA" = "Area of the polygon [z-score]",
+                      "perimPoly" = "Perimeter of the polygon [z-score]" ,   
+                      "isSimple_GA" = "Simple topology [boolean/9]",
+                      "isValidStruct_M" = "Valid structure [boolean/9]",
+                      "isValid_perm_M" = "Permuted valid structure [boolean/9]",
+                      "pp_M" = "Polsby–Popper [score/9]",
+                      "pp_perm_M" = "Permuted P-P [score/9]"
+  )
+  
+  
+  # col1 <- ggdraw() + draw_label(test_here, angle = 0, size = 7, fontface = "bold")
+  col1 <-  ggdraw() + 
+    draw_grob(grid::rectGrob(gp = grid::gpar(fill = colList[n], col = NA)), # alpha =0.7
+    x = 0, y = -0.1, width = 1, height = 1) +  
+    draw_label(test_here, angle = 0, size = 5.5)
+  col2 <- ggdraw() + draw_label(Categories[test_i], size = 8)
+  col3 <- ggdraw() + draw_label(formulas[[test_i]], size = 8)
+  
+  ### Worst example
+  if(test_i ==1){
+    ID_min <- "32513"
+  } else if (test_i ==10) {
+    ID_min <- "161 FrCo"
+  } else{
+    ID_min <- ID_test_ds %>%
+      filter(ID %in% ID3Cond) |> 
+      slice_min( test_here <- .data[[Test_names[test_i]]], n = 1)
+    ID_min <- ID_min$ID
+    ID_min <- sample(ID_min,1) # some tests have several ID's as minimum
+  }
+  
+  col4 <- ds %>% 
+    filter(ID %in% ID_min) %>%
+    group_by(stimulus) %>%
+    arrange(stimulus) %>%
+    filter(Cond %in% "weekday") %>%
+    arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% 
+    arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>% # Start ggplot
+    ggplot(aes(x = x_zs, y = y_zs, group = as.factor(repetition), label = stimulus, fill = as.factor(repetition),  colour = as.factor(repetition))) +
+  geom_polygon(alpha = 0.4) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  # ggrepel::geom_text_repel(aes(x = x_zs, y = y_zs), size = 2, alpha = 0.5) +
+  geom_text(aes(x = x_zs, y = y_zs), size = 1, alpha = 0.7, position = position_dodge2(width = 0.2)) +
+  scale_fill_discrete(guide="none") +
+  coord_equal() +
+  theme_void() + 
+  theme(plot.title = element_text(hjust = 0.5, size = 8, family = "serif")) +  
+  theme(aspect.ratio = NULL)  + 
+  theme(legend.position="none") +
+  scale_colour_manual(values = pals::cols25(3)) +
+  scale_fill_manual(values = pals::cols25(3)) +
+    xlim(-2.2, 2.2) +
+    ylim(-2.2, 2.2)
+  
+  
+  ### Best example
+  ID_max <- ID_test_ds %>%
+    filter(ID %in% ID3Cond) |> 
+    slice_max( test_here <- .data[[Test_names[test_i]]], n = 1)
+  ID_max <- sample(ID_max$ID,1) # some tests have several ID's as minimum
+  
+  col5 <- ds %>% 
+    filter(ID %in% ID_max) %>%
+    group_by(stimulus) %>%
+    arrange(stimulus) %>%
+    filter(Cond %in% "weekday") %>%
+    arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% 
+    arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>% # Start ggplot
+    ggplot(aes(x = x_zs, y = y_zs, group = as.factor(repetition), label = stimulus, fill = as.factor(repetition),  colour = as.factor(repetition))) +
+    geom_polygon(alpha = 0.4) +
+    geom_point(size = 0.5, alpha = 0.5) +
+    # ggrepel::geom_text_repel(aes(x = x_zs, y = y_zs), size = 2, alpha = 0.5) +
+    geom_text(aes(x = x_zs, y = y_zs), size = 1, alpha = 0.5, position = position_dodge2(width = 0.2)) +
+    scale_fill_discrete(guide="none") +
+    coord_equal() +
+    theme_void() + 
+    theme(plot.title = element_text(hjust = 0.5, size = 8, family = "serif")) +  
+    theme(aspect.ratio = NULL)  + 
+    theme(legend.position="none") +
+    scale_colour_manual(values = pals::cols25(3)) +
+    scale_fill_manual(values = pals::cols25(3)) +
+    xlim(-2.2, 2.2) +
+    ylim(-2.2, 2.2)
+  
+  if(Feats[[test_i,2]] == "moreSyn"){
+    row_fig[[n+2]] <- plot_grid(col1,col2,col3,col5,col4, ncol = 5,rel_widths = c(0.3,0.1,0.3,0.3,0.3))
+  } else {
+    row_fig[[n+2]] <- plot_grid(col1,col2,col3,col4,col5, ncol = 5,rel_widths = c(0.3,0.1,0.3,0.3,0.3))
+  }
+  n <- n+1 
+}
+
+# add empty row at the end
+# row_fig[[n+2]] <- plot_grid(
+#   ggdraw() + draw_label(" "), # placeholder
+#   ggdraw() + draw_label(" "), # placeholder
+#   ggdraw() + draw_label(" "), # placeholder
+#   ncol = 5
+# )
+
+plot_grid(plotlist = row_fig, ncol = 1)
+# ggsave("fig-Poster.png", width = 20, height = 30, units = "cm")
+```
+
+::::: {style="display: flex; gap: 20px;"}
+::: {}
+![](Screenshot%202026-04-09%20at%2010.50.58.png){width="200"}
+:::
+
+::: {style="font-size:0.8em"}
+*isValid* evaluates if a polygon is topologically valid (i.e. blue polygons) or not (i.e. red polygons). Topologically valid is defined by the Open Geospatial Consortium [@herring2010] with the @postgis cartography tools.
+:::
+:::::
+
+<br>
+
+## Aggregated datasets of consistency tasks
+
+We aggregated four available datasets using the same consistency task [@rothen2016; @vanpetersen2020; @ward2022a] and Ward (2025, personal communication). Original groups are defined by self-report of having SSS or not (i.e. controls).
+
+```{r }
+# apa-note: Controls. Demographics were not provided in the dataset Ward 2. Before: before participant exclusion
+
+tribble(
+  ~Study, ~Syn_Final, ~Syn_Age,  ~Con_Final, ~Con_Age,
+  "Rothen (2016)",       32,  23.1, 37,  28.2,
+  "Ward (2022)",         252, 37.2, 213, 19.9,
+  "van Petersen (2020)", 22,  23.2, 21,  21.6,
+  "Ward (2026)",         90,  NA,   18,  NA,
+  "Total",               396, NA,   289, NA
+) %>%
+  gt() %>%
+  cols_label(
+    Study = "",
+    Syn_Final   = "N",
+    Syn_Age     = "Age",
+    Con_Final   = "N",
+    Con_Age     = "Age"
+  ) %>%
+  tab_spanner(
+    label = "SSS",
+    columns = c(Syn_Final, Syn_Age)
+  ) %>%
+  tab_spanner(
+    label = "Controls",
+    columns = c(Con_Final, Con_Age)
+  ) %>%
+  tab_options(table.font.size = 28) |>
+  opt_horizontal_padding(scale = 3) |>
+  tab_options(
+    table.border.top.color = "white",
+    table_body.hlines.color = "white",
+    table_body.border.top.color = "white",
+    table_body.border.top.width = px(1),
+    table_body.border.bottom.color = "black",
+    table.border.bottom.color = "white"
+  ) |>
+  # Ensure top header has border
+  tab_style(
+    style = list(cell_borders(sides = "top", color = "black", weight = px(2))),
+    locations = cells_body(columns = everything(), rows = 5)
+  )
+
+
+```
+
+# Results
+
+Receiver Operator Curves (ROC) of each consistency methods show the sensitivity (SSS classified as SSS) and sensibility (control as controls) by moving threshold for each consistency method.
+
+```{r, defineDPfun}
+DP <- function(sensitivity, specificity){
+  sensitivity = sensitivity/100
+  specificity = specificity/100
+  return(sqrt(3/pi)*(log(sensitivity/(1-sensitivity)) + log(specificity/(1-specificity))))
+}
+```
+
+```{r InitializeROC_fun}
+## Define function to compute ROC:
+Comp_ROC <- function(data, group_col, feature, ID, Ord){
+  # Ord: must be: moreSyn or moreCtl. Wheter feature value is moer in Syn or ctl.
+  if(!setequal(levels(data[[group_col]]), c("Syn","Ctl"))){
+    return(warning("group name must inculde: Syn Ctl"))
+    break
+  }
+  
+  if (Ord == "moreSyn") {
+    Dirhere <- "<"
+  } else if (Ord == "moreCtl") {
+    Dirhere <- ">"
+  } else {
+    return(warning("Ord must be moreSyn or moreCtl"))  
+  }
+  
+  ################ ROC analyses ################ 
+  ROC_here <- pROC::roc(data[[group_col]] ~ data[[feature]], data, 
+                  direction= Dirhere,
+                  percent=TRUE,
+                  ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+                  )
+  
+  # Best threshold using Youden's J
+  best_coords <- pROC::coords(ROC_here, "best", 
+                              ret = c("accuracy","threshold", "sensitivity","specificity","ppv","npv"), 
+                              best.method = "youden")
+  
+
+  auc_val <- as.numeric(pROC::auc(ROC_here))
+  ci_auc  <- ci.auc(ROC_here)
+  ciobj   <- pROC::ci.se(ROC_here, # CI of sensitivity
+               specificities=seq(0, 100, 5)) # over a select set of specificities
+
+  new_row <- data.frame(
+    Feature   = feature,
+    AUC        = round(auc_val, 4),
+    DP         = DP(as.numeric(best_coords[["sensitivity"]]),as.numeric(best_coords[["specificity"]])),
+    threshold  = as.numeric(best_coords[["threshold"]]),
+    sensitivity= as.numeric(best_coords[["sensitivity"]]),
+    specificity= as.numeric(best_coords[["specificity"]]),
+    accuracy =as.numeric(best_coords[["accuracy"]]),
+    # ci_low     = as.numeric(ci_auc[1]),
+    # ci_high    = as.numeric(ci_auc[3]),
+    stringsAsFactors = FALSE
+  )
+  
+  ################ Contingency table ################ 
+    if (Ord == "moreSyn") {
+    data$diagnosis <- ifelse(data[[feature]] >= best_coords$threshold,  "Test : Syn", "Test : Ctl")
+  } else if (Ord == "moreCtl") {
+    data$diagnosis <- ifelse(data[[feature]] >= best_coords$threshold,  "Test : Ctl","Test : Syn")
+  } else {
+    warning("Ord must be moreSyn or moreCtl")  
+  }
+  
+  tab_counts <- table(data[[group_col]], data$diagnosis)
+  
+  tab_percent <- prop.table(tab_counts, margin = 1) * 100
+  
+  result <- matrix(
+    paste0(tab_counts, " (", round(tab_percent, 1), "%)"),
+    nrow = nrow(tab_counts),
+    dimnames = dimnames(tab_counts)
+  )
+  
+  ################ General description ################ 
+  # Attention, na removed  
+  Descr_table <- data %>%
+    group_by(!!sym(group_col)) %>%
+    summarize(n = length(unique(!!sym(ID))), Mean = mean(!!sym(feature), na.rm = TRUE), SD = sd(!!sym(feature), na.rm = TRUE))
+
+  ################ Return outputs ################ 
+  return(list(ROC_properties = new_row, Coningency_table =result, Descr_table = Descr_table, ROC_curve = ROC_here, CI = ciobj))
+}
+```
+
+```{r compROCallFeat, eval=FALSE, include=FALSE}
+#| message: false
+#| warning: false
+
+if(length(feature_list) != length(feature_direction)){
+  warning("Attention unmatch feature list and direction")
+  message("Attention unmatch feature list and direction")
+}
+Feats <- as.matrix(t(rbind(feature_list,feature_direction)))
+
+# Now we will loop through features: INITIALIZE ROC_curves
+ROC_curves <- list()
+ROC_contingency <- list()
+
+# Initialize dataframe to collect relevant ROC values:
+All_ROC <- data.frame(Feature=character(),
+                      AUC         = character(),
+                      threshold   = integer(),
+                      sensitivity = integer(),
+                      specificity = integer(),
+                      ppv         = integer(),
+                      npv         = integer(),
+                      high_ci     = integer(),
+                      low_ci      = integer(),
+                      # power       = integer(),
+                      stringsAsFactors=FALSE)
+
+# Loop by features:
+for(fit_n in 1:length(Feats[,1])){
+  ROC_here <- Comp_ROC(ds_Q, "group", Feats[[fit_n,1]],"ID", Feats[[fit_n,2]])
+  
+  ROC_curves      <- c(ROC_curves,list(ROC_here$ROC_curve,ROC_here$ROC_properties$Feature))
+  All_ROC         <- rbind(All_ROC, ROC_here$ROC_properties)
+  # ROC_contingency <- c(ROC_contingency,list(ROC_here$Coningency_table,ROC_here$ROC_properties$Feature))
+}
+
+save(ROC_curves, file = "ROC_curves.RData")
+save(All_ROC, file = "All_ROC.RData")
+```
+
+```{r AUCtest, eval=FALSE, include=FALSE}
+# Multiple comparison issue (need ot adjust p val):
+# AUC_test  <- roc.test(ds_Q$group, ds_Q$isValid_perm_M, ds_Q$Perimeter_zs,  boot.n=1000, method = "bootstrap")
+# AUC_test2 <- roc.test(ds_Q$group, ds_Q$Perimeter_zs, ds_Q$isValidStruct_M,  boot.n=1000, method = "bootstrap")
+# AUC_test3 <- roc.test(ds_Q$group, ds_Q$isValid_perm_M, ds_Q$isValidStruct_M,  boot.n=1000, method = "bootstrap")
+
+# Compare ALL the features and adjust, but leads to the same results.
+nFeat    <- length(ROC_curves)
+Odd_idx  <- seq(1,nFeat,by=2)
+Pair_idx <- seq(2,nFeat,by=2)
+
+ROC_listed <- list()
+Feattype <- c()
+for(i in 1:nFeat){
+  ROC_listed[[i]] <- ROC_curves[[Odd_idx[i]]]
+  Feattype <- c(Feattype,ROC_curves[[Pair_idx[i]]])
+}
+
+allAUC  <- sapply(ROC_listed, auc)
+sel_auc <- which(allAUC == sort(allAUC, decreasing = TRUE)[1])
+toCompare_roc <- ROC_listed[[sel_auc]] 
+
+statistic <- sapply(seq_along(ROC_listed), function(i) {
+  if (i == sel_auc) return(NA)
+  roc.test(toCompare_roc, ROC_listed[[i]],  boot.n=1000,method = "bootstrap")$statistic
+})
+
+pvals <- sapply(seq_along(ROC_listed), function(i) {
+  if (i == sel_auc) return(NA)
+  roc.test(toCompare_roc, ROC_listed[[i]],  boot.n=1000,method = "bootstrap")$p.value
+})
+
+# Adjust for multiple comparison: the order is Feattype
+pvals_adj <- p.adjust(pvals, method = "fdr") # or fdr since exploratory, lead to the same.
+
+Results_ROCcomp <- data.frame(
+  Feature = Feattype,
+  D = statistic, 
+  pvals = pvals_adj,
+  isSign = (pvals_adj <.05)
+)
+
+save(Results_ROCcomp,"Results_ROCcomp.Rdata")
+```
+
+```{r fig.height=4, fig.width=4, dpi = 450}
+
+
+nFeat    <- length(ROC_curves)
+
+Odd_idx  <- seq(1,nFeat,by=2)
+Pair_idx <- seq(2,nFeat,by=2)
+
+ROC_listed <- list()
+Feattype <- c()
+for(i in 1:nFeat){
+  ROC_listed[[i]] <- ROC_curves[[Odd_idx[i]]]
+  Feattype <- c(Feattype,ROC_curves[[Pair_idx[i]]])
+}
+
+Feattype <- recode(Feattype, 
+                   "Area_perc" = "Area [screen size %]",
+                   "Area_zs" =  "Area [z-score]", 
+                   "Perimeter_perc" = "Perimeter [screen size %]",
+                   "Perimeter_zs" = "Perimeter [z-score]",
+                   "SelfInter" = "Segment self-intersections [n/9]",
+                   "areaPoly_GA" = "Area of the polygon [z-score]",
+                   "perimPoly" = "Perimeter of the polygon [z-score]" ,   
+                   "isSimple_GA" = "Simple topology [boolean/9]",
+                   "isValidStruct_M" = "Valid structure [boolean/9]",
+                   "isValid_perm_M" = "Permuted valid structure [boolean/9]",
+                   "pp_M" = "Polsby–Popper [score/9]",
+                   "pp_perm_M" = "Permuted P-P [score/9]"
+                  )
+
+
+Col_ROC <- pals::cols25(nFeat/2)
+ggroc(ROC_listed) +
+  geom_segment(aes(x = 0, xend = 100, y = 100, yend = 0),
+               color="grey", size = 0.01) +
+  coord_equal() +
+  scale_color_manual(labels = Feattype,values =Col_ROC) + # pals::brewer.pastel1(nFeat)
+  
+  annotate(geom = "curve", x = 78.55, y = 70.78 , xend = 24, yend = 69, 
+           curvature = .3, arrow = arrow(length = unit(2, "mm")), color = "#b2df8a", alpha = 0.5) +
+  annotate(geom = "text", x = 24, y = 69, label = expression(atop("Permuted Valid","structure")), 
+           hjust = "left", color = "#b2df8a", size = 3) +
+  
+  annotate(geom = "curve", x = 87.54, y = 59.70  , xend = 33, yend = 60, 
+           curvature = .3, arrow = arrow(length = unit(2, "mm")), color = "#CAB2D6", alpha = 0.5) +
+  annotate(geom = "text", x = 33, y = 60, label = "Polsby-Popper", 
+           hjust = "left", color = "#CAB2D6", size = 3) +
+  
+  
+  annotate(geom = "curve", x = 72.25, y = 75.78 , xend = 42, yend = 51, 
+           curvature = -.3, arrow = arrow(length = unit(2, "mm")), color = Col_ROC[4], alpha = 0.5) +
+  annotate(geom = "text", x = 42, y = 51, label = "Perimeter", 
+           hjust = "left", color = Col_ROC[4], size = 3) +
+  
+  theme(legend.position="right",legend.text=ggplot2::element_text(size=7)) +
+  papaja::theme_apa() +
+  theme(legend.title = element_blank()) +
+  theme(axis.text = element_text(size = 6),
+        axis.title = element_text(size = 8),
+        legend.position = "none") 
+```
+
+```{r}
+#| label: PrepRocRable
+# For tables, use gt() you will save the time I wasted. 
+# Avoid gt() and kableExtra(), my issue was that the caption was in the middle of the first line.
+# I tried all papaja::apa_table, lost much time (cross-referencing becomes a nightmare)
+# Apa quarto is lacking a way to handle column spanning 
+
+All_ROC_round <- All_ROC %>% 
+    mutate_if(is.numeric, round,2)
+All_ROC_round <- All_ROC_round[order(All_ROC_round$AUC, decreasing = TRUE), ]
+
+All_ROC_round <- All_ROC_round %>% 
+  mutate(Feature = recode(Feature, 
+                          "Area_perc" = "Area [screen size %]",
+                          "Area_zs" =  "Area [z-score]", 
+                          "Perimeter_perc" = "Perimeter [screen size %]",
+                          "Perimeter_zs" = "Perimeter [z-score]",
+                          "SelfInter" = "Segment self-intersections [n/9]",
+                          "areaPoly_GA" = "Area of the polygon [z-score]",
+                          "perimPoly" = "Perimeter of the polygon [z-score]" ,   
+                          "isSimple_GA" = "Simple topology [boolean/9]",
+                          "isValidStruct_M" = "Valid structure [boolean/9]",
+                          "isValid_perm_M" = "Permuted valid structure [boolean/9]",
+                          "pp_M" = "Polsby–Popper [score/9]",
+                          "pp_perm_M" = "Permuted P-P [score/9]"
+  )) 
+
+SortFeat <- All_ROC_round$Feature # Pass further the AUC sorted features
+```
+
+```{r}
+#| label: tbl-03 
+#| tbl-cap: "ROC analyses of all tests. "
+#| ft.align: left
+
+# library(flextable)
+# All_ROC_round |>
+# flextable(All_ROC_round) %>%
+#   flextable::theme_apa() |>
+#   autofit()
+   # kableExtra::kbl(booktabs = TRUE) 
+   # gt()
+# "AUC = Area Under the Curve. DP = Discrimination Power."
+# papaja::apa_table(All_ROC_round, 
+#                  caption = NULL,
+#                   label = NA)
+# knitr::kable(All_ROC_round)
+# colnames(All_ROC_round) <- c("Method", "  AUC  " , "DP" ,  "Cut-off", "Sensit." ,"Specif." ,"Accuracy") 
+
+colFeats <- pals::cols25(nFeat/2)
+colFeats <- colFeats[order( All_ROC$AUC, decreasing = TRUE)]
+All_ROC_round$color <- colFeats
+
+All_ROC_round  %>%
+  select(!DP) %>%
+  gt() %>% 
+  tab_options(table.font.size = 32) %>%
+  tab_style(
+    style = cell_fill(color = from_column("color")),
+    locations = cells_body(columns = c(Feature))) %>%
+  cols_hide(columns = c(color)) %>%
+  data_color(columns = c(AUC),
+             palette = c("firebrick", "forestgreen")) %>%
+  # data_color(columns = c(DP),
+  #            palette = c("firebrick", "forestgreen")) %>%
+  data_color(columns = c(sensitivity),
+             palette = c("firebrick", "forestgreen")) %>%
+  data_color(columns = c(specificity),
+             palette = c("firebrick", "forestgreen")) %>%
+  data_color(columns = c(accuracy),
+             palette = c("firebrick", "forestgreen")) %>%
+  cols_align(align = c("center"), columns = everything()) %>%
+  tab_footnote(footnote = "AUC = Area Under the Curve. Threshold calculated on the AUC with Youden's index.") %>%
+  cols_width(AUC ~ px(100),sensitivity ~ px(100),specificity~ px(100),specificity~ px(100),accuracy~ px(100))
+
+```
+
+**Permuted validity** and **standardized perimeter** led to comparably high AUC (*D* = `r round(Results_ROCcomp[Results_ROCcomp$Feature == "Perimeter_zs",]$D,2)`, *n.s.*). **Polsby-Popper**, differed from permuted validity (*D* = `r round(Results_ROCcomp[Results_ROCcomp$Feature == "pp_M",]$D,2)`, *p* \< .05).
+
+However some results varied depending on the datasets:
+
+```{r eval=FALSE, fig.height=5, fig.width=6, include=FALSE}
+
+ds_Q_zs <- ds_Q %>%
+  select(feature_list, group,ID, dataSource) %>%
+  mutate_at(feature_list,scale) 
+
+ds_Q_zs <- ds_Q_zs %>% 
+  pivot_longer(cols = !c(group,ID, dataSource),
+               names_to = "Feature",
+               values_to = "zs")
+
+
+ds_Q_zs <- ds_Q_zs %>% 
+  mutate(Feature = recode(Feature,
+                          "Area_perc" = "Area [screen size %]",
+                          "Area_zs" = "Area [z-score]", 
+                          "Perimeter_perc" = "Perimeter [screen size %]",
+                          "Perimeter_zs" = "Perimeter [z-score]",
+                          "perm_zs" = "Permuted Chance level [z-score]",
+                          "Self_Inter" = "Segment self-intersections [n/9]",
+                          "areaPoly_GA" = "Area of the polygon [z-score]",
+                          "perimPoly" = "Perimeter of the polygon [z-score]" ,
+                          "isSimple_GA" = "Simple topology [boolean/9]",
+                          "SelfInter" = "Segment self-intersections [n/9]",
+                          "isValidStruct_M" = "Valid structure [boolean/9]",
+                          "isValid_perm_M" =  "Permuted valid structure [boolean/9]",
+                          "pp_M" = "Polsby–Popper [score/9]",
+                          "pp_perm_M" = "Permuted P-P [score/9]"
+                 ))
+
+ds_Q_zs <- ds_Q_zs %>% mutate(group = recode(group,
+                                             "Syn" = "Sequence-Space Synaesthetes",
+                                             "Ctl" = "Controls"))
+ds_Q_zs <- ds_Q_zs %>% mutate(dataSource = recode(dataSource,
+                                                  "Rothen" = "Rothen 2016",
+                                                  "Ward" = "Ward 2020",
+                                                  "PeterCor" = "van Petersen 2020",
+                                                  "Ward2" = "Ward 2"))
+
+# So the features are sorted by AUC ;)
+ds_Q_zs$Feature <- factor(ds_Q_zs$Feature, levels = rev(All_ROC_round$Feature))
+
+ggplot(ds_Q_zs, aes(x = zs, y = Feature, fill = group, color  = group, point_color = group)) + 
+  geom_density_ridges(alpha = 0.5, 
+                      jittered_points = FALSE, 
+                      position = position_points_jitter(width = 0.05, height = 0), 
+                      scale = 1,
+                      quantile_lines = TRUE, quantiles = c(0.2, 0.5, 0.8)) +
+  xlim(-3, 3) +
+  papaja::theme_apa() +
+  scale_fill_manual(values = c("Sequence-Space Synaesthetes" = "steelblue",
+                               "Controls" = "firebrick")) +
+  scale_colour_manual(values = c("Sequence-Space Synaesthetes" = "steelblue",
+                               "Controls" = "firebrick")) +
+  labs(y = "Method", x = "z-score") +
+  facet_grid(~ dataSource) +
+  theme(legend.position = "none",axis.text=element_text(size=9)) +
+  theme(axis.text.y = element_text(angle = 20, hjust = 1, size = 8))
+```
+
+```{r eval=FALSE, include=FALSE}
+
+
+# AllList       <- list(Group = ds_Q$ID[ds_Q$group == "Syn"])
+ds_Q$pass_SynGroup <- ds_Q$group == "Syn"
+# 
+# All_ROC_round <- All_ROC %>% 
+#   mutate_if(is.numeric, round,2)
+# All_ROC_round <- All_ROC_round[order(All_ROC_round$AUC, decreasing = TRUE), ]
+# 
+# for(feat_i in 1:length(All_ROC_round$Feature) ){
+#   feat_here <- All_ROC_round$Feature[feat_i] 
+#   
+#   if(feat_i %in% c(2,3,4,5)){ # Sorry for the lazy programming here 
+#     
+#     ds_Q[[paste0("pass_",feat_here)]]  <- ds_Q[[feat_here]] >= All_ROC_round$threshold[feat_i]
+#     AllList[[feat_here]] <- (ds_Q$ID[ds_Q[[feat_here]] >= All_ROC_round$threshold[feat_i]])
+#     
+#   } else {
+#     
+#     ds_Q[[paste0("pass_",feat_here)]]  <- ds_Q[[feat_here]] <= All_ROC_round$threshold[feat_i]
+#     AllList[[feat_here]] <- (ds_Q$ID[ds_Q[[feat_here]] <= All_ROC_round$threshold[feat_i]])
+#   }
+# }
+
+df_long <- ds_Q %>%
+  filter(!ID %in%  "69253") %>%
+  select("ID", starts_with("pass")) %>%
+  mutate( ID = factor(ID),
+         Syngroup = factor(pass_SynGroup)) %>%
+  pivot_longer(
+    cols = starts_with("pass"),
+    names_to = "test",
+    values_to = "result"
+  )
+
+
+test_order <- c("pass_SynGroup", paste0("pass_", All_ROC[order(All_ROC$AUC, decreasing = TRUE), ]$Feature))
+df_long$test <- factor(df_long$test, levels = test_order)
+
+df_long <- df_long %>% 
+  filter(test %in% levels(df_long$test)[1:6]) %>%
+  mutate(test = recode(test, "pass_SynGroup" = "Group (red = SSS, blue = Controls",
+                       "pass_Perimeter_zs" = "Perimeter [z-score]",
+                       "pass_isValidStruct_M" = "Valid structure [mean binary/9]",
+                       "pass_Area_zs" = "Area [z-score]", 
+                       "pass_isValid_perm_M" =  "Permuted valid structure [mean binary/9]",
+                       "pass_SelfInter" = "Segment self-intersections [n/9]",
+                       "pass_perm_zs" = "Permuted Chance level [z-score]",
+                       "pass_pp_M" = "Polsby–Popper [score/9]"))
+
+
+## ID that fail all 5 tests (except the group one) among the controls
+df_long$test <- as.factor(df_long$test)
+
+ID_SynFail5Test <- df_long %>% 
+  filter(Syngroup %in% TRUE) %>% # Only synesthetes (TRUE = Syn)
+  filter(test %in% levels(df_long$test)[2:6]) %>%  # select first 5 tests
+  group_by(ID) %>% 
+  mutate(totRes = sum(result)) %>%
+  filter(totRes == 0) # 1 because we also have the Snygroup
+
+ID_SynFail5Test <- unique(ID_SynFail5Test$ID)
+
+## ID Ctl pass all tests (except the group one) 
+ID_CtlPass5Test <- df_long %>% 
+  filter(Syngroup %in% FALSE) %>% # Only controls 
+  filter(test %in% levels(df_long$test)[2:6]) %>%  # select first 5 tests
+  group_by(ID) %>% 
+  mutate(totRes = sum(result)) %>%
+  filter(totRes == 5) # 1 because we also have the Snygroup
+
+ID_CtlPass5Test <- unique(ID_CtlPass5Test$ID)
+
+df_long$Syngroup <- as.character(df_long$Syngroup)
+df_long$Syngroup[df_long$ID %in% ID_SynFail5Test] <- "Highlight"
+df_long$Syngroup[df_long$ID %in% ID_CtlPass5Test] <- "Highlight2"
+
+df_long %>%
+  filter(test %in% levels(df_long$test)[1:6]) %>%# Keep top10 for readability  
+  # mutate(result = !result) %>% # Hence true = Syn
+  ggplot(aes(x = test, stratum = factor(result),
+             alluvium = ID, # Keep the same color for the same ID across tests
+             fill = Syngroup, label = result)) +
+  geom_flow(stat = "alluvium",alpha = 1) +
+  geom_stratum(aes(fill = factor(result)), alpha = 0.6) +
+  scale_fill_manual(values = c("TRUE" = "steelblue",
+                               "FALSE" = "firebrick", 
+                               "Highlight" = "blue",
+                                "Highlight2" ="red")) +
+  theme_minimal() +
+  labs(x = "Test",
+       y = "Number of IDs") +
+  theme(axis.ticks.x=element_blank(),
+        panel.grid.major.x = element_blank(),
+        axis.text.x = element_text(angle = -30,hjust = 0.5,vjust =4),
+        legend.position = "none")
+```
+
+```{r AUCbyDataSource, fig.height=5, fig.width=6,}
+
+dataSources <- unique(ds$dataSource)
+AUC_ds <- vector("list", length(dataSources))
+
+
+for(i in 1:length(dataSources)){
+  
+  ds_here <- ds_Q %>% filter(dataSource %in% dataSources[i])
+  
+  # INITIALIZE ROC_curves
+  ROC_curves <- list()
+  ROC_contingency <- list()
+  
+  # Initialize dataframe to collect relevant ROC values:
+  Per_ds_ROC <- data.frame(Feature=character(),
+                        AUC = character(),
+                        threshold=integer(),
+                        sensitivity=integer(),
+                        specificity=integer(),
+                        ppv = integer(),
+                        npv = integer(),
+                        high_ci = integer(),
+                        low_ci = integer(),
+                        stringsAsFactors=FALSE)
+  
+  # Loop by features:
+  for(fit_n in 1:length(Feats[,1])){
+    ROC_here <- Comp_ROC(ds_here, "group", Feats[[fit_n,1]],"ID", Feats[[fit_n,2]])
+    
+    ROC_curves      <- c(ROC_curves,list(ROC_here$ROC_curve,ROC_here$ROC_properties$Feature))
+    Per_ds_ROC      <- rbind(Per_ds_ROC, ROC_here$ROC_properties)
+    ROC_contingency <- c(ROC_contingency,list(ROC_here$Coningency_table,
+                                              ROC_here$ROC_properties$Feature))
+  }
+  
+  Per_ds_round <- Per_ds_ROC %>% 
+    mutate_if(is.numeric, round,2)
+  
+  Per_ds_round <- Per_ds_round[order(Per_ds_round$AUC, decreasing = TRUE), ]
+  
+  
+   AUC_ds[[i]] <- data.frame(
+    Feature = Per_ds_round$Feature,
+    AUC = Per_ds_round$AUC,
+    DP =  Per_ds_round$DP,
+    Sensitivity = Per_ds_round$sensitivity,
+    Specificity = Per_ds_round$specificity,
+    accuracy = Per_ds_round$accuracy,
+    dataSource = dataSources[i],
+    N = length(ds_here$ID)
+  )
+}
+
+AUC_ds <- do.call(rbind, AUC_ds)
+
+# Comment the following if you want to see all features. I thought the figure were a bit overwhelming for my tiny cognitive capacities
+AUC_ds <- AUC_ds %>% 
+  #filter(dataSource != "Ward2") %>%
+  mutate(Feature = recode(Feature,
+                          "Area_perc" = "Area [screen size %]",
+                          "Area_zs" = "Area [z-score]", 
+                          "Perimeter_perc" = "Perimeter [screen size %]",
+                          "Perimeter_zs" = "Perimeter [z-score]",
+                          "perm_zs" = "Permuted Chance level [z-score]",
+                          "Self_Inter" = "Segment self-intersections [n/9]",
+                          "areaPoly_GA" = "Area of the polygon [z-score]",
+                          "perimPoly" = "Perimeter of the polygon [z-score]" ,
+                          "isSimple_GA" = "Simple topology [boolean/9]",
+                          "SelfInter" = "Segment self-intersections [n/9]",
+                          "isValidStruct_M" = "Valid structure [boolean/9]",
+                          "isValid_perm_M" =  "Permuted valid structure [boolean/9]",
+                           "pp_M" = "Polsby–Popper [score/9]",
+                          "pp_perm_M" = "Permuted P-P [score/9]")) %>%
+  filter(Feature %in%  All_ROC_round$Feature[1:5]) %>%
+  mutate(dataSource = recode(dataSource,"PeterCor" = "vanPetersen")) 
+
+```
+
+```{r fig.height=6, fig.width=6}
+
+Colors_here <- pals::cols25(nFeat/2)
+Colors_here <- Colors_here[order( All_ROC$AUC, decreasing = TRUE)]
+Colors_here <- c("#6A33C2","#FDBF6F","#b2df8a","#CAB2D6","#FB6496")
+
+# "#1F78C8" "#ff0000" "#33a02c"  "#ff7f00" "#565656" "#FFD700" "#a6cee3"    
+
+AUC_ds <- AUC_ds %>% 
+  mutate(dataSource = recode(dataSource,
+                             "Rothen" = "Rothen 2016",
+                             "Ward" = "Ward 2022",
+                             "vanPetersen" = "vanPetersen 2020",
+                             "Ward2" ="Ward 2025")) %>%
+  mutate(dataSource = factor(dataSource, levels=c("Rothen 2016",  "Ward 2022", "vanPetersen 2020","Ward 2025"))) 
+#  filter(dataSource != "Ward 2025") 
+
+AUC_ds$dataSource <- as.factor(AUC_ds$dataSource)
+
+gp_AUC <- ggplot(AUC_ds, aes(x = dataSource, y = AUC, group = Feature, colour = Feature)) +
+  geom_point() +
+  geom_line() +
+  scale_color_manual(values =Colors_here) + 
+  papaja::theme_apa() +
+   xlab('') +
+  ylim(20,100) +
+  theme(legend.position="none",axis.text.x = element_blank())
+
+# gp_DP <- ggplot(AUC_ds, aes(x = dataSource, y = DP, group = Feature, colour = Feature)) +
+#   geom_point() +
+#   geom_line() +
+#   scale_color_manual(values =pals::cols25(nFeat)) +
+#   papaja::theme_apa() +
+#   xlab(' ') +
+#   ylim(0,6) +
+#   theme(legend.position="none",axis.text.x = element_blank())
+
+gp_DP <- ggplot(AUC_ds, aes(x = dataSource, y = accuracy, group = Feature, colour = Feature)) +
+  geom_point() +
+  geom_line() +
+  scale_color_manual(values =Colors_here) +
+  papaja::theme_apa() +
+  xlab(' ') +
+  ylim(20,100)  +
+  theme(legend.position="none",axis.text.x = element_blank())
+
+gp_Sensitivity <- ggplot(AUC_ds, aes(x = dataSource, y = Sensitivity, group = Feature, colour = Feature)) +
+  geom_point() +
+  geom_line() +
+  scale_color_manual(values =Colors_here) + 
+  papaja::theme_apa() +
+  xlab(' ') +
+  ylim(20,100) +
+  theme(legend.position="none",axis.text.x = element_text(angle = 60, vjust = 0.8, hjust = 0.6, size = 8))
+
+gp_Specificity <- ggplot(AUC_ds, aes(x = dataSource, y = Specificity, group = Feature, colour = Feature)) +
+  geom_point() +
+  geom_line() +
+  scale_color_manual(values =Colors_here) + 
+  papaja::theme_apa() +
+  xlab(' ') +
+  ylim(20,100) +
+  theme(legend.position="none", axis.text.x = element_text(angle = 60, vjust = 0.8, hjust = 0.6, size = 8))
+
+
+legend <- get_legend(
+  ggplot(AUC_ds, aes(x = dataSource, y = Specificity, group = Feature, colour = Feature)) +
+    geom_point() +
+    papaja::theme_apa() +
+    scale_color_manual(values =Colors_here) +
+    guides(color = guide_legend(nrow = 2)) +
+    theme(legend.justification = c(0.22,0.1), legend.position = "bottom",
+           legend.text=ggplot2::element_text(size=8))
+)
+
+plot_grid(gp_AUC, gp_DP,gp_Sensitivity,gp_Specificity, 
+          labels = c("A","B","D","E"),
+          legend = legend, ncol=2,
+          rel_heights = c(1, 1.4, 0.21)) # height of each row. 3rd row is legend, 10% of the others. # height of each row. 3rd row is legend, 10% of the others.
+
+```
+
+# Discussion
+
+- `r colorize::colorize("Permuted validity","#b2df8a")` underlines the possible role of topological rules for SSS space-forms, with the `r round(All_ROC[All_ROC$Feature == "isValid_perm_M",]$threshold,2)` cut-off reflecting an average of `r round(All_ROC[All_ROC$Feature == "isValid_perm_M",]$threshold,2)*9` valid forms out of 9.
+
+- `r colorize::colorize("Polsby-popper","#CAB2D6")` score [@polsby1991], originally designed to measure district compactness, performs surprisingly well in distinguishing SSS from controls, tough it's low sensitivity.
+
+- `r colorize::colorize("Perimeter","#6A33C2")` captures spatial variability within stimuli.
+
+Earlier methods [@rothen2016] allowed controls to achieve artificially high consistency by clicking on the same position. While this limitation is adressed by novel methods. However, these interoduces a new issue: reduced detection of zig-zag SSS space-forms. Moreover, both methods lead to comparable classification performances. Overall, we find some heterogeneities in classification performances across datasets, motivating additional further valiadation in *Phase II* on yet-to-be collected data.
+
+In sum, `r colorize::colorize("validity","#b2df8a")` is as effective as previous methods for classifying SSS. Nevertheless, these results suggests the space-forms of SSS might be mapped following topographical rules such as for cartography.
+
+# References
+
+::: {style="font-size:0.5em"}
+This is a reproducible poster using `r pakret::pkrt("posterdown")`. Follow the QR code link for the code and data.
+:::
+
+```{r eval=FALSE, include=FALSE}
+# Once knitted, copy-paste this in the console for the pdf version:
+rmarkdown::render("SpaceSequenceSynDiagnostic/SpaceSequenceSynDiagnostic/Poster_Amsterdam/Poster_V5_nocaptions.Rmd")
+pagedown::chrome_print("SpaceSequenceSynDiagnostic/SpaceSequenceSynDiagnostic/Poster_Amsterdam/Poster_V5_nocaptions.html", output = "Poster_Amsterdam/Poster_V5_nocaptions.pdf")
+
+```
