@@ -27,7 +27,7 @@ main_findings:
   - "Mapping **Synesthetic Sequences in Space**: Improving **Consistency Test** by Harnessing **Cartography Tools**"
 # logoleft_name: Figures/UniDistance_logo.svg
 logoright_name: Figures/Unidistance_Logo_Blanc_CMYK.svg
-logoleft_name: Figures/Logo_UniD_RL.png # download.svg
+logoleft_name: Figures/qr-remlach-github-.svg # download.svg
 
 output: 
   # posterdownLaTeX::posterdown_latex: 
