@@ -1,0 +1,3440 @@
+---
+title: "Registered Report: Mapping Synaesthetic Sequences in Space with Novel Consistency Test"
+shorttitle: "Consistency Tests for Sequence-Space Synaesthesia"
+author:
+  - name: Rémy Lachelin
+    corresponding: true
+    orcid: 0000-0002-8485-7153
+    role: 
+      - Conceptualization
+      - Methodology
+      - Formal Analysis
+      - Data Curation
+      - Writing - Original Draft
+    email: remy.lachelin@fernuni.ch
+    affiliations:
+      - name: UniDistance Suisse
+        department: Faculty of Psychology
+        address: Schinerstrasse 18
+        city: 3900 Brig-Glis
+        region: Valais, Switzerland
+  - name: Chhavi Sachdeva
+    corresponding: false
+    orcid: 0000-0002-0074-4371
+    role: 
+      - Conceptualization
+      - Methodology
+      - Writing - Review & Editing
+    email: chhavi.sachdeva@unidistance.ch
+    affiliations:
+      - name: UniDistance Suisse
+        department: Faculty of Psychology
+        address: Schinerstrasse 18
+        city: 3900 Brig-Glis
+        region: Valais, Switzerland    
+  - name: Nicolas Rothen
+    corresponding: false
+    orcid: 0000-0002-8874-8341
+    role: 
+      - Conceptualization
+      - Writing - Review & Editing
+      - Supervision
+      - Project Administration
+      - Funding Acquisition
+    email: nicolas.rothen@fernuni.ch
+    affiliations:
+      - name: UniDistance Suisse
+        department: Faculty of Psychology
+        address: Schinerstrasse 18
+        city: 3900 Brig-Glis
+        region: Valais, Switzerland 
+abstract: "Sequence-space synaesthesia is a perceptual condition in which ordinal sequences (e.g., numbers, days of the week, or months of the year) are experienced at specific spatial locations. This perceptual condition is commonly identified using self-reports (e.g. questionnaires) and behavioural consistency test methods. Existing consistency methods measure the spatial distance between responses to repeated stimuli but ignore the ordinal and geometric properties of spatial forms. This Registered Report consists of an exploratory Phase I and a confirmatory registered Phase II. In Phase I, we evaluated established and novel consistency metrics in an aggregated sample of 685 participants from four independent datasets (396 self-reported synaesthetes and 289 controls). Established metrics quantified the distance between repeated responses to the same stimulus. Novel metrics used geospatial tools to represent each ordered sequence as a line or polygon and to quantify self-intersections, topological simplicity, validity and compactness. Receiver operating characteristic analyses indicated that permuted topological validity (AUC = 80.96%) and Polsby-Popper compactness score (AUC = 78.92%) did not significantly differ from standardised within-stimulus perimeter (AUC = 78.81%). In Phase II, we will examine the predictive validity of the metrics with an AUC of at least 75% in an independent dataset. Phase I suggests the relevance of topological principles for sequence-space representations and aims to optimise consistency tests to detect SSS."
+keywords: [sequence space synaesthesia, synaesthesia/synesthesia, consistency test, space, time, numbers]
+author-note:
+  disclosures:
+    conflict of interest: The authors have no conflict of interest to declare.
+bibliography: references.bib
+numbered-lines: true
+format:
+  # apaquarto-docx:
+  #   number-sections: true
+  #   floatsintext: true
+  #   documentmode: man
+  #   a4paper: true
+  #   donotrepeattitle: false
+  #   fig-format: png
+  apaquarto-pdf:
+    floatsintext: true
+    keep-tex: true
+    include-in-header:
+      text: |
+        \usepackage{xcolor}
+        \usepackage{caption}
+        \captionsetup[table]{skip=30pt}
+execute:
+  warning: false
+  message: false
+  cache: false
+editor: 
+  markdown: 
+    wrap: 72
+---
+
+```{r, libraries, message=FALSE, warning=FALSE}
+# To reproduce the manuscript:
+# 1. Download all the github repository (including data [.csv] and bibliography [.bib])
+# 2. Requires Quarto (RStudio) + apa-quarto template (https://github.com/wjschne/apaquarto).
+#     To install apa-quarto template:
+#     quarto::quarto_use_template("wjschne/apaquarto")
+#     (Or in the terminal: quarto use template wjschne/apaquarto )
+# 3. Requires the following packages to be installed 
+#     (i.e. install.package("package_name"))
+# 4. Install LateX engine to render to .pdf. (https://github.com/rstudio/tinytex).
+#     (Otherwise change the YAML above to render to html, typst or other supported formats)
+# 5. Click on render (current version is optimized for .pdf format (via LateX)).
+
+# Packages are sorted by anti-hierarchical importance for the code. That is, the least important package is loaded first and the most last. The reason is that R functions call priority is higher for the last loaded package. For example, conflicting functions (those with the same name across different packages), the last that has been loaded will be the one effectively used. 
+
+############ Load R packages: ################
+
+# Render Formatting
+library(pakret) # R package in text citation
+# Plots
+library(ggplot2)
+library(ggridges)
+library(ggalluvial)
+library(ggVennDiagram)
+library(ggforce)
+library(cowplot) # for multiplot in 1 figure
+library(corrplot)
+library(gt)
+# Data import
+library(readxl)
+# Data wrangling:
+library(tidyr)
+library(dplyr)
+# geometry/geography feature package
+library(sf)
+# for ROC analyses:
+library(pROC) # See https://www.r-bloggers.com/2019/02/some-r-packages-for-roc-curves/
+
+# Make shure environment is empty
+rm(list = ls())
+
+# Render to docx:
+# quarto render .../SpaceSequenceSynDiagnostic/SpaceSequenceSynDiagnostic/2.RegisteredReport_MS5.qmd -- to docx
+```
+
+# Introduction {#sec-introduction}
+
+Sequence-Space Synaesthesia (SSS), or visuo-spatial forms, is the
+phenomenon where people visualise ordinal sequences occupying specific
+spatial positions. For example, numbers, weekdays or months (i.e.
+inducers) are experienced as arranged in an ellipse, zigzag, curved line
+or other idiosyncratic configurations [@galton1880; @flournoy1893]. The
+experienced location or configuration is the concurrent. Spatial forms
+can differ across individuals and inducer categories, however within
+person inducer-concurrent mappings are described as automatic and
+consistent over time [@seron1992; @deroy2013]. Current consistency tasks
+operationalise consistency by measuring repeated spatial responses.
+Consistency metrics are then extracted to estimate the variability or
+distance between repeated responses. However, current metrics for
+classifying SSS from consistency-task data have important limitations
+[@brang2010; @rothen2016; @ward2022; @ward2018; @eagleman2007;
+@sagiv2006; @baron-cohen1987]. The present Registered Report therefore
+uses an exploratory *Phase I* to optimise consistency methods on
+available data. In the confirmatory *Phase II*, the optimal methods will
+be tested on new data. Consistency metrics face the challenge of
+developing a single metric capable of correctly testing multiple forms.
+
+## Testing Consistency {#sec-consistency-tests}
+
+Spatial forms are heterogeneous but consistent. They may be experienced
+in two or three-dimensional arrangements [@eagleman2009a; @price2013],
+in external (projector) or within an internal egocentric space
+(associator) [@dixon2004; @smilek2007], and from perspectives that can
+be zoomed, rotated, or shifted at will [@gould2014; @jarick2009].
+Lastly, their shapes also vary, including lines, ovals, loops and
+zigzags. With some recurring shapes being more frequent, for example,
+month forms are often oval [@eagleman2009a]. Despite the heterogeneity
+in dimensionality, reference frame, and shape, consistency tasks are
+objective measures for repeated response variability in time: repeated
+presentation of the same inducer should elicit comparable spatial
+responses for synaesthetes. However, several limitations have been
+identified for current consistency metrics.
+
+SSS is usually identified using phenomenological self-reports and
+consistency tasks. Questionnaires assess consistency, automaticity,
+directionality, and developmental onset. Consistency tasks assess the
+stability of inducer-concurrent mapping by repeatedly presenting each
+inducer and quantifying the variability of the corresponding responses
+[@rothen2013a; @rothen2016]. Lower variability is interpreted as greater
+consistency because synaesthetes can respond from their perceptual
+experience while non-synaesthetes can only be consistent by relying on a
+memorisation strategy. In grapheme-colour synaesthesia (GCS), for
+example, repeated colour selections for the same grapheme are compared
+in colour space [@rothen2013a]. An analogous rationale has been applied
+to SSS by comparing repeated spatial responses. However, existing SSS
+tasks discriminate self-reported synaesthetes from controls less
+accurately than established grapheme-colour tasks, see @tbl-01.
+
+::: {#tbl-01}
+|             |                              |                             |
+|:-----------:|:----------------------------:|:---------------------------:|
+|             | Grapheme-Colour Synaesthesia | Sequence-Space Synaesthesia |
+|             |        [@rothen2013a]        |        [@rothen2016]        |
+|     AUC     |             93%              |             76%             |
+| Sensitivity |             90%              |             88%             |
+| Specificity |             94%              |             77%             |
+
+: Consistency task performance for grapheme-colour and sequence-space
+synaesthesia. AUC = Area Under the Curve.
+:::
+
+In the SSS consistency task, participants complete multiple
+presentations of digits, weekdays, and months and click the screen
+location associated with each inducer/stimulus. The resulting responses
+are then used to test participants' consistency with consistency
+metrics. @brang2010, for example, evaluated the distance between
+repeated responses to the same inducer (e.g. January and January)
+relative to the distance between adjacent inducers (e.g. February). A
+response was defined as consistent if it fell within 1.96 *z-scores*.
+Their criterion however identified only 4 of 81 self-reported
+synaesthetes and may therefore have been too conservative. @rothen2016
+connected the three responses to the same inducer (e.g. the three clicks
+for January) into a triangle and calculated its area and perimeter;
+smaller triangles indicate more consistent responses. They proposed
+classifying participants as SSS when the mean triangle area was smaller
+than 0.203% of the screen area (see also @ward2018). This is currently
+the most widely used metric to test for genuine SSS.
+
+## Limitations of Current Consistency Metrics
+
+Current consistency tests have limitations. First, a participant can
+obtain an artificially high consistency score by repeatedly clicking on
+the same spatial location for every stimulus [@rothen2016]. In SSS,
+exclusion via visual inspection of these responses improved
+classification performances of the triangle area metric (i.e. Area Under
+the Curve = 85%, sensitivity = 87%, specificity = 81%; see @rothen2016).
+
+Second, certain consistency metrics may favour certain spatial forms
+[@ward2018]. Linear or highly regular forms, including elliptical month
+forms, may perform differently from irregular forms when considering
+only the distance between responses to repeated stimuli [@flournoy1893;
+@eagleman2009a; @brang2010]. This has led to including additional
+criteria such as adding standard deviation combined with questionnaire
+cut-off [@ward2018] and the comparison of individual scores with chance
+level permutation-based distributions in GCS [@root2021] and SSS
+[@ward2022a].
+
+Third, current consistency tests treat each inducer independently and
+therefore ignore the ordinal relationship among inducers. Inducers
+follow an ordered path or form (e.g. Monday `→` Tuesday `→` Wednesday,
+etc.), where ordinal information is central to sequence processing of
+numbers [@lyons2013]. Furthermore, previous SSS research has
+investigated metrics of adjacent inducer-concurrent pairs such as
+distances [@brang2010] or angles [@eagleman2009a]. Number forms may
+likewise be constructed from ordinal relations [@tang2008]. A form-level
+metric considering the spatial ordinal arrangement of all the stimuli
+within a certain category (i.e. weekdays or months) can therefore assess
+the coherence of these spatial forms rather than the variability between
+repetitions of the same stimuli.
+
+Fourth, number responses may reflect spatial-numerical associations that
+also occur in the general population. The spatial-numerical association
+of response codes (SNARC) effect describes faster left-hand responses to
+smaller numbers and faster right-hand responses to larger numbers
+[@dehaene1993; @hubbard2005a]. At the group level, the SNARC effect is
+robust and has been taken as evidence for an implicit left-to-right
+spatial representation of numbers (mental number line). Its reliability
+at the individual level is lower [@cipora2019; @ramos2026], and its
+origin remains debated [@bassomoro2018; @keus2005]. Nevertheless, a
+widespread left-to-right mental number line could help non-synaesthetes
+respond consistently to numbers, making number responses less diagnostic
+than weekday or month responses.
+
+## Present Study {#sec-present-study}
+
+These limitations motivate comparing stimulus-level and form-level
+consistency metrics. Stimulus-level metrics, such as distance, area and
+perimeter, describe the variability of repeated responses to one
+stimulus. Form-level metrics instead describe the whole ordered path of
+a sequence category (e.g. Monday to Sunday) within one repetition. We
+used cartography tools to represent each path as a line or polygon and
+to quantify its topological properties: whether the path crosses itself
+(self-intersection), whether the polygon is simple and valid according
+to geographic standards, and how compact it is. We expected
+synaesthetes' forms to cross themselves less often and to be more often
+valid and compact than controls' forms.
+
+This Registered Report consists of two phases. The present *Phase I* is
+an exploratory analysis merging four available datasets on consistency
+tasks to find the optimal consistency metrics. *Phase II* will be a
+confirmatory evaluation of the consistency metrics in an independent
+dataset of consistency tasks.
+
+*Phase I* had three aims. First, we reproduced established
+stimulus-level consistency metrics such as area and perimeter formed by
+repeated responses to each stimulus. Second, we constructed ordered
+paths (segments) and polygons for each sequence category and evaluated
+topological form-level metrics, see @fig-01. Third, we compared all the
+metrics using receiver operating characteristics (ROC) analyses based on
+self-reported SSS and control groups. We selected the optimal metrics
+based on the AUC. We retained metrics with an AUC of at least 75% for
+*Phase II* validation.
+
+In *Phase II*, we will evaluate whether the metrics and cutoffs
+generalise and are validated in an independent dataset that has not yet
+been analysed (@sachdeva2024, Stage 1 in-principle acceptance,
+<https://osf.io/6wn4m>).
+
+```{r Load data}
+# In the following I upload and merge the data from Ward, Rothen and Van Peters. Data is stored into a full dataset ds (i.e. 1 row per trial) and a dataset per participant ds_Quest (i.e. 1 row per participant).
+
+###  Ward Data
+ds_syn       <- read_excel("Data/raw_synaesthetes_consistency_anon.xlsx")
+ds_syn$group <- "Syn"
+ds_ctl       <- read_excel("Data/raw_controls_consistency_anon.xlsx")
+ds_ctl$group <- "Ctl"
+
+ds_Q_syn       <- read_excel("Data/raw_synaesthetes_questionnaire_anon.xlsx")
+ds_Q_syn$group <- "Syn"
+ds_Q_ctl       <- read_excel("Data/raw_controls_questionnaire_anon.xlsx")
+ds_Q_ctl$group <- "Ctl"
+
+# Merge wards datafiles:
+ds <- merge(ds_syn,ds_ctl, all = TRUE)
+ds_Q <- merge(ds_Q_syn,ds_Q_ctl, all = TRUE)
+
+# Ward only uses those who completed the Questionnaire (i.e. N = 215+252 = 467)
+ds <- ds %>% 
+  filter(session_id %in% unique(ds_Q$session_id))
+ 
+### Rothen Data
+
+ds_Rothen <- read.csv("Data/rawdata.txt", sep="")
+
+### Rename variables to match datasets
+
+# Remove duplicate (consistency = consistency_score) and unused columns:
+ds_Q$consistency <- NULL
+ds_Q$...36 <- NULL
+ds_Q$...37 <- NULL
+ds_Q$mean_simulation_Z <- NULL
+ds_Q$SD_simulation <- NULL
+ds_Q$`z-score`  <- NULL
+
+rm(ds_syn,ds_ctl,ds_Q_syn,ds_Q_ctl)
+
+ds$ID <- ds$session_id
+ds_Q$ID <- ds_Q$session_id
+
+ds_Q$dataSource <- "Ward"
+ds$dataSource   <- "Ward"
+
+# From Rothen:
+names(ds_Rothen)[names(ds_Rothen) == "Group"] <- "group"
+ds_Rothen$group <- as.factor(ds_Rothen$group)
+levels(ds_Rothen$group) <- c("Ctl","Syn")
+names(ds_Rothen)[names(ds_Rothen) == "Inducer"] <- "stimulus"
+names(ds_Rothen)[names(ds_Rothen) == "X"] <- "x"
+names(ds_Rothen)[names(ds_Rothen) == "Y"] <- "y"
+ds_Rothen$SynQuest <- ds_Rothen$group == "Syn"
+
+ds_Rothen$dataSource <- "Rothen"
+
+# From the paper (all the same since lab based):
+ds_Rothen$width  <- 1024
+ds_Rothen$height <- 768
+```
+
+```{r Merge1 Rothen and Ward data}
+## 0.2 Merge data:
+# remove non matching colnames: 
+ColNames_ds <- colnames(ds_Rothen)[colnames(ds_Rothen) %in% colnames(ds)]
+
+ds <- ds %>%
+  select(all_of(ColNames_ds))
+ds_Rothen <- ds_Rothen %>%
+  select(all_of(ColNames_ds))
+
+# Merge Data:
+ds   <- merge(ds,ds_Rothen, all = TRUE)
+
+# Because there is no questionnaire in Nicola's data:
+ds$SynQuest[ds$dataSource == "Rothen"] = "NaN"
+
+# Questionnaire:
+ID <- unique((ds_Rothen$ID))
+ds_Q_Rothen <- as.data.frame(ID)
+ds_Q_Rothen$dataSource <- "Rothen"
+ds_Q_Rothen <- merge(ds_Q_Rothen, ds_Rothen %>% group_by(ID) %>% select(ID, dataSource, group) %>% filter(row_number() == 1), by = c("ID","dataSource"))
+
+# Append rows:
+ds_Q$ID <- as.character(ds_Q$ID)
+ds_Q <-  bind_rows(ds_Q,ds_Q_Rothen)
+
+# Clear up:
+rm(ds_Q_Rothen, ds_Rothen)
+
+## 0.3 Wrangle dataset
+# Add Condition, i.e. stim type:
+ds$Cond <- NaN
+ds$Cond[ds$stimulus %in% c("1","2","3","4","5","6","7","8","9","0")] <- "number"
+ds$Cond[ds$stimulus %in% c("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday")] <- "weekday"
+ds$Cond[ds$stimulus %in% c("January", "February", "March", "April", "May","June","July","August","September","October","November","December")] <- "month"
+```
+
+```{r MergeVanPeters}
+### ADD Van Petersen Cortex data
+filedir <- "Data/vanPeterPerID/"
+fn <- paste0(filedir,dir(filedir))
+
+ds_PeterCor <- read_excel(fn[1],
+                                col_types = c("text", "numeric", "text", 
+                                              "text", "numeric", "numeric", "numeric", 
+                                              "numeric", "numeric", "numeric", 
+                                              "numeric", "numeric", "text", "text", 
+                                              "text", "numeric", "numeric", "numeric"))
+
+for(i in 2:length(fn)){
+  ds_i <- read_excel(fn[i],
+                     col_types = c("text", "numeric", "text", 
+                                   "text", "numeric", "numeric", "numeric", 
+                                   "numeric", "numeric", "numeric", 
+                                   "numeric", "numeric", "text", "text", 
+                                   "text", "numeric", "numeric", "numeric"))
+    ds_PeterCor <- merge(ds_PeterCor, ds_i, all = TRUE)
+}
+
+# Here information about group:
+ds_PeterCor_Q <- read_excel("Data/Consistency_scores.xlsx")
+
+names(ds_PeterCor_Q)[names(ds_PeterCor_Q) == "PPcode"] <- "ID"
+names(ds_PeterCor)[names(ds_PeterCor) == "Code"] <- "ID"
+
+ID_IN <- intersect(ds_PeterCor$ID, ds_PeterCor_Q$ID)
+ds_PeterCor <- ds_PeterCor %>%
+    filter(ID %in% ID_IN)
+ds_PeterCor_Q <- ds_PeterCor_Q %>%
+    filter(ID %in% ID_IN)
+
+# Merge data with group and all dataset: 
+ds_PeterCor <- ds_PeterCor_Q %>%
+  left_join(ds_PeterCor, by = "ID")
+
+# Rename to match:
+names(ds_PeterCor)[names(ds_PeterCor) == "Group"] <- "group"
+ds_PeterCor[ds_PeterCor$group == "SSS",]$group <- "Syn"
+ds_PeterCor[ds_PeterCor$group == "control",]$group <- "Ctl"
+names(ds_PeterCor)[names(ds_PeterCor) == "MouseClick.RESPCursorY"] <- "y"
+names(ds_PeterCor)[names(ds_PeterCor) == "MouseClick.RESPCursorX"] <- "x"
+names(ds_PeterCor)[names(ds_PeterCor) == "word"] <- "stimulus"
+names(ds_PeterCor)[names(ds_PeterCor) == "BlockList.Cycle"] <- "repetition"
+
+ds_PeterCor$width  <- 1920 # "screen with display resolution set to 1920 x 1080, controlled by a Dell computer running Windows 7."
+ds_PeterCor$height <- 1080
+ds_PeterCor$dataSource <- "PeterCor"
+
+ds_PeterCor <- ds_PeterCor %>%
+  select(all_of(ColNames_ds))
+
+# Translate, weekdays:
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "maandag"]   <- "Monday"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "dinsdag"]   <- "Tuesday"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "woensdag"]  <- "Wednesday"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "donderdag"] <- "Thursday"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "vrijdag"]   <- "Friday"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "zaterdag"]  <- "Saturday"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "zondag"]    <- "Sunday"
+
+# Translate, Monthc:
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "januari"]   <- "January"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "februari"]  <- "February"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "maart"]     <- "March"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "april"]     <- "April"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "mei"]       <- "May"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "juni"]      <- "June"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "juli"]      <- "July"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "augustus"]  <- "August"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "september"] <- "September"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "oktober"]   <- "October"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "november"]  <- "November"
+ds_PeterCor$stimulus[ds_PeterCor$stimulus == "december"] <- "December"
+
+# They added 2 numbers that are not in the other datasets:
+ds_PeterCor <- ds_PeterCor %>%
+    filter(stimulus != "50") %>%
+    filter(stimulus != "100")
+
+# MERGE  
+ds   <- merge(ds,ds_PeterCor, all = TRUE)
+
+# Questionnaire:
+names(ds_PeterCor_Q)[names(ds_PeterCor_Q) == "Group"] <- "group"
+ds_PeterCor_Q[ds_PeterCor_Q$group == "SSS",]$group <- "Syn"
+ds_PeterCor_Q[ds_PeterCor_Q$group == "control",]$group <- "Ctl"
+
+ds_PeterCor_Q$dataSource <- "PeterCor"
+
+ds_PeterCor_Q <- ds_PeterCor_Q %>%
+  select(ID, group, `Consistency All`, `Consistency Days`, `Consistency Months`,`Consistency Numbers`, dataSource)
+
+# Append rows:
+ds_Q <-  bind_rows(ds_Q,ds_PeterCor_Q)
+
+# Tidy workspace:
+rm(ds_PeterCor_Q,ds_PeterCor,ds_i, ID, fn,ColNames_ds,i,ID_IN)
+```
+
+```{r MergeWard2}
+# This data was provided by Jamie by mail. The data is prepared in a separeate file
+# Preserve "?" in the colnames: 
+ds_Ward2 <- read.csv2("Data/WardData2.csv", fileEncoding = "UTF-8", check.names = FALSE)
+ds_Ward2$ID <- ds_Ward2$session_id 
+ds_Ward2$dataSource <- "Ward2"
+
+# Add Cond
+ds_Ward2$Cond <- NaN
+ds_Ward2$Cond[ds_Ward2$stimulus %in% c("1","2","3","4","5","6","7","8","9","0")] <- "number"
+ds_Ward2$Cond[ds_Ward2$stimulus %in% c("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday")] <- "weekday"
+ds_Ward2$Cond[ds_Ward2$stimulus %in% c("January", "February", "March", "April", "May","June","July","August","September","October","November","December")] <- "month"
+
+# Now I somehow need to define the groups
+# If a response in the questionnaire then syn, if not then control.
+ds_Ward2$group <- NaN
+ds_Ward2$group[is.na(ds_Ward2$`Q1 . Some people routinely think about sequences as arranged in a particular spatial configuration (as in the examples below), do you think this might apply to you? (1=strongly agree, 5= strongly disagree)`)] <- "Ctl"
+ds_Ward2$group[!is.na(ds_Ward2$`Q1 . Some people routinely think about sequences as arranged in a particular spatial configuration (as in the examples below), do you think this might apply to you? (1=strongly agree, 5= strongly disagree)`)] <- "Syn"
+
+colNWard2 <- colnames(ds_Ward2)
+
+ds_Ward2_Q <- ds_Ward2 %>%  
+  select(c(ID, dataSource, colNWard2[colNWard2 %in% colnames(ds_Q)])) %>% 
+  group_by(ID) %>%
+  filter(row_number() == 1)
+
+ds_Ward2_Q <- as.data.frame(ds_Ward2_Q)
+ds_Ward2_Q$`questionnaire score` <- ds_Ward2_Q[,4] +  
+  rowSums(ds_Ward2_Q[,21:24]) +
+  rowSums(6 - ds_Ward2_Q[,25:28])
+
+## Merge
+ds         <- merge(ds,ds_Ward2, all = TRUE)
+ds_Q       <- merge(ds_Q,ds_Ward2_Q,all = TRUE)
+
+rm(ds_Ward2,ds_Ward2_Q)
+```
+
+```{r Wrangle data}
+# Now we can enrich our dataset and process  several checks
+# Add Condition, i.e. stim type:
+ds$Cond <- NaN
+ds$Cond[ds$stimulus %in% c("1","2","3","4","5","6","7","8","9","0")] <- "number"
+ds$Cond[ds$stimulus %in% c("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday")] <- "weekday"
+ds$Cond[ds$stimulus %in% c("January", "February", "March", "April", "May","June","July","August","September","October","November","December")] <- "month"
+
+# Add stimulus repetition number
+ds <- ds %>%
+  group_by(ID, stimulus) %>%
+  arrange(ID, stimulus, .by_group = TRUE) %>%
+  mutate(repetition = row_number()) %>%
+  ungroup()
+
+# few trials that have more than 3 repetitions somehow:
+ds <- ds %>% filter(repetition <= 3)
+
+# Factorialize group variable to avoid confusions:
+ds$group   <- as.factor(ds$group)
+ds_Q$group <- as.factor(ds_Q$group)
+```
+
+```{r, FilterTrials}
+# This is potentially a critical part for the results. Need to decide:
+# (1) how to treat same coordinate responses, i.e. when ID clicks on the same position (see also Rothen and Ward)
+# (2) how to treat missing data (i.e. NA & NaN)
+
+# For (1), since z-score might fail (i.e. if all same coordinates) -->  turn same coordinates to NaN
+# For (2), since sf does not accept missing data -->  we exclude those responses.
+# This leads to some stimuli having only 2 repetitions (i.e. ID %in% 4_JB) AND some ID having to few pairs.
+# Since polygons need at least 4 coordinate pairs. --> check enough data per repetition
+
+# Important. To reproduce Rothen, the X = -1 and Y = -1 need to be interpreted as missing data (NaN):
+ds$x[ds$x == -1] <- NaN
+ds$y[ds$y == -1] <- NaN
+
+# Detect ID has the same coordinates across Conditions:
+ds <- ds %>%
+    group_by(ID, Cond) %>% 
+    mutate(SameCoord_x = length(unique(x[!is.na(x)])) == 1,SameCoord_y = length(unique(y[!is.na(y)])) == 1)
+
+# NaNification:
+ds$x[ds$SameCoord_x] <- NaN
+ds$y[ds$SameCoord_y] <- NaN
+ds$x[is.na(ds$x)]    <- NaN  # In VanPeters, some NA data all as NaN
+ds$y[is.na(ds$y)]    <- NaN 
+
+N1 <- length(unique(ds$ID)) # Track if ID loss
+
+# Remove NaN from the dataset:
+All_n <- length(ds$x) # Track trial loss
+ds <- ds %>%
+  filter(!is.na(x))
+ds <- ds %>%
+  filter(!is.na(y))
+All_n2 <- length(ds$x)
+
+N2 <- length(unique(ds$ID))  # Track if ID loss
+
+# Check that each stimulus has 3 repetitions (3+2+1 = 6).
+ds <- ds %>%
+    ungroup() %>%
+    group_by(ID, stimulus) %>%
+    mutate(SumRep = sum(repetition)== 6)
+
+ds <- ds[ds$SumRep,]
+All_n3<- length(ds$x)
+
+# Counts how many full conditions each ID has (should be 3):
+tmp2 <- ds %>%
+  ungroup() %>%
+  group_by(ID, Cond, repetition) %>%
+  filter(row_number() == 1) %>%
+  reframe(ntrials = length(x)) %>%
+  ungroup() %>%
+  group_by(ID) %>%
+  reframe(nCond = sum(ntrials)/3)
+
+# Later on, we make polygons. These need at least 4 points. Hence we exclude ID's with less than 4 responses per condition:
+tmp <- ds %>%
+  ungroup() %>%
+  group_by(ID, Cond, repetition) %>%
+  reframe(ntrials = length(x))
+
+ds <- ds %>%
+  filter(!ID %in% tmp$ID[tmp$ntrials < 4])
+
+N3 <- length(unique(ds$ID))
+
+# Match ID to ds_Q:
+IDlist <- unique(ds$ID)
+ds_Q <- ds_Q %>%
+  filter(ID %in% IDlist)
+```
+
+```{r Add_zs}
+## Standardize/scale coordinates
+ds <- ds %>%
+  group_by(ID) %>% 
+  mutate(x_zs = scale(x)) %>%
+  mutate(y_zs = scale(y))
+```
+
+```{r ManualAdjust}
+
+# Manually adjust pixels of invalid screen size
+# Note: 29 since 29 stimuli
+ds$height[ds$ID == 29324] <- 1080
+ds$width[ds$ID == 32190 ] <- 1440
+
+# This ID has unexpected changing screen settings, consider exclusion:
+ds$width[ds$ID == 33168 ]  <- 308
+ds$height[ds$ID == 33168 ] <- 149
+
+ds$width[ds$ID == 35556 ]  <- 1439
+ds$height[ds$ID == 35556 ] <- 734
+
+ds$width[ds$ID == 48114 ]  <- 1593
+ds$height[ds$ID == 48114 ] <- 671
+
+ds$width[ds$ID == 59854]  <- 1366
+ds$height[ds$ID == 59854] <- 663
+
+ds$width[ds$ID == 63127]  <- 1920
+ds$height[ds$ID == 63127] <- 880
+
+ds$height[ds$ID == 69253] <- 655
+
+ds$Screen_area <- ds$width*ds$height
+```
+
+```{r}
+#| label: fig-01
+#| apa-note: The example is based on one participant’s weekday form. (A) Within-stimulus variability across three repetitions. (B) Ordered sequence paths constructed separately for each repetition. (C) Closed polygons for the same paths. (D) Polygons constructed by permuting the repetition labels across stimuli.
+#| dpi: 300
+#| fig-cap: Novel consistency methods, from within-stimulus variability to segments and polygons formed by the spatial forms.
+#| fig-format: png
+#| fig-pos: "H"
+#| fig-width: 6
+#| fig-height: 2
+
+gp1 <- ds %>%
+  filter(ID %in%  "1025_MaJo") %>%
+  filter(Cond %in% "weekday")  %>%
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% 
+  arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>% # Start ggplot
+  ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus, colour = stimulus)) +
+  geom_polygon(alpha = 0.4) +
+  geom_point(size = 0.05, alpha = 0.5) +
+  geom_text(aes(x = x_zs, y = y_zs), size = 2, alpha = 0.5, position = position_dodge2(width = 0.2)) +
+  scale_fill_discrete(guide="none") +
+  coord_equal() +
+  theme_void() + 
+  labs(title = "A) Within stimulus") +
+  theme(plot.title = element_text(hjust = 0.5, size = 8, family = "serif"))  + 
+  theme(aspect.ratio = NULL) + 
+  theme(legend.position="none") +
+  scale_colour_manual(values = pals::cols25(12)) +
+  scale_fill_manual(values = pals::cols25(12))
+
+gp2 <- ggplot() +
+  annotate("segment",
+           x = 0, xend = 0.2, y = 0, yend = 0,
+           linewidth = 1,
+           arrow = grid::arrow(type = "closed")) +
+  theme_void() + theme(aspect.ratio = NULL)
+
+gp3 <- ds %>%
+  filter(ID %in%  "1025_MaJo") %>%
+  filter(Cond %in% "weekday")  %>%
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% 
+  arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>% # Start ggplot
+  ggplot(aes(x = x_zs, y = y_zs, group = as.factor(repetition), label = stimulus, colour = as.factor(repetition))) +
+  geom_path(alpha = 0.4) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_text(aes(x = x_zs, y = y_zs), size = 2, alpha = 0.5, position = position_dodge2(width = 0.2)) +
+  scale_fill_discrete(guide="none") +
+  coord_equal() +
+   labs(title = "B) Segments") +
+  theme_void() + 
+  theme(plot.title = element_text(hjust = 0.5, size = 8, family = "serif")) + 
+  theme(aspect.ratio = NULL) + 
+  theme(legend.position="none") +
+  scale_colour_manual(values = pals::cols25(3)) +
+  scale_fill_manual(values = pals::cols25(3))
+
+
+
+gp4 <- ggplot() +
+  annotate("segment",
+           x = 0, xend = 0.2, y = 0, yend = 0,
+           linewidth = 1,
+           arrow = grid::arrow(type = "closed")) +
+    theme_void() + theme(aspect.ratio = NULL)
+
+gp5 <- ds %>%
+  filter(ID %in%  "1025_MaJo") %>%
+  filter(Cond %in% "weekday")  %>%
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% 
+  arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>% # Start ggplot
+  ggplot(aes(x = x_zs, y = y_zs, group = as.factor(repetition), label = stimulus, fill = as.factor(repetition),  colour = as.factor(repetition))) +
+  geom_polygon(alpha = 0.4) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_text(aes(x = x_zs, y = y_zs), size = 2, alpha = 0.5, position = position_dodge2(width = 0.2)) +
+  scale_fill_discrete(guide="none") +
+  coord_equal() +
+  theme_void() + 
+  labs(title = "C) Polygon") +
+  theme(plot.title = element_text(hjust = 0.5, size = 8, family = "serif")) +  
+  theme(aspect.ratio = NULL)  + 
+  theme(legend.position="none") +
+  scale_colour_manual(values = pals::cols25(3)) +
+  scale_fill_manual(values = pals::cols25(3))
+
+gp6 <- ggplot() +
+  annotate("segment",
+           x = 0, xend = 0.2, y = 0, yend = 0,
+           linewidth = 1,
+           arrow = grid::arrow(type = "closed")) +
+    theme_void() + theme(aspect.ratio = NULL)
+
+set.seed(42) # reproducible permuted example
+gp7 <- ds %>%
+  filter(ID %in%  "1025_MaJo") %>%
+  filter(Cond %in% "weekday")  %>%
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% 
+  arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>% # Start ggplot
+  mutate(repetition = sample(repetition)) %>%
+  ggplot(aes(x = x_zs, y = y_zs, group = as.factor(repetition), label = stimulus, fill = as.factor(repetition),  colour = as.factor(repetition))) +
+  geom_polygon(alpha = 0.4) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_text(aes(x = x_zs, y = y_zs), size = 2, alpha = 0.5, position = position_dodge2(width = 0.2)) +
+  scale_fill_discrete(guide="none") +
+  coord_equal() +
+  theme_void() + 
+  labs(title = "D) Permuted polygon") +
+  theme(plot.title = element_text(hjust = 0.5, size = 8, family = "serif")) + 
+  theme(aspect.ratio = NULL)  + 
+  theme(legend.position="none") +
+  scale_colour_manual(values = pals::cols25(3)) +
+  scale_fill_manual(values = pals::cols25(3))
+
+plot_grid(gp1,gp2,gp3,gp4,gp5,gp6,gp7,
+          nrow = 1, rel_widths = c(1, 0.3, 1, 0.3, 1, 0.3, 1),rel_heights = 0.8)
+```
+
+# Methods - Phase I
+
+The code and data required to reproduce analyses and the present
+manuscript are available at
+<https://github.com/remLach/SpaceSequenceSynDiagnostic>. All the
+analyses were conducted in R, using the following packages:
+`r pakret::pkrt_list("tidyr", "dplyr")` for data wrangling,
+`r pakret::pkrt_list("sf")` for geographical feature extractions,
+`r pakret::pkrt_list("pROC")` for ROC analyses and
+`r pakret::pkrt_list("ggplot2", "ggVennDiagram", "ggridges", "ggforce", "cowplot", "corrplot")`
+for figures.
+
+## Datasets and Participants
+
+We searched for accessible datasets that administered the same
+consistency tasks to self-reported synaesthetes and controls. Four
+datasets met this criterion. Two datasets were collected in laboratory:
+@rothen2016 (see also
+[https://osf.io/6hq94](https://osf.io/6hq94/files/osfstorage)) and
+@vanpetersen2020 (see also
+<https://data.ru.nl/collections/di/dcc/DSC_2018.00019_653>). The two
+others were collected online: @ward2022a (see also
+<https://osf.io/nu5v4>) and an additional unpublished dataset was
+provided by Jamie Ward (private communication, October 2025).
+
+Before merging the datasets, the stimuli of @vanpetersen2020 were
+translated from Dutch to English. For the number category we excluded
+digits different from 0-9; i.e. the stimuli 50 and 100 from
+@vanpetersen2020. After merging the datasets, we applied minimal
+pre-processing, resulting in a final sample of `r N3` from the initial
+`r N1` participants. Empty, skipped trials and trials flagged for having
+the same x or y coordinates across categories and repetitions were
+excluded, representing `r round(100 * (All_n - All_n2)/All_n, 2)`% of
+all trials. This resulted in the exclusion of `r N1 - N2` participants.
+A further `r All_n2 - All_n3` trials were removed because the stimulus
+no longer had all three repetitions. Then `r N2 - N3` additional
+participants were excluded for having fewer than four responses in a
+category and repetition, the minimum required to construct polygons.
+Among the retained participants, `r sum(tmp2$nCond < 3)` were missing at
+least one category by repetition form. The final sample consisted of
+`r sum(ds_Q$group == "Syn")` self-reported synaesthetes and
+`r sum(ds_Q$group == "Ctl")` self-reported controls, see @tbl-02.
+
+::: {#tbl-02}
+|  |  |  |  |  |
+|:-------------:|:-------------:|:-------------:|:-------------:|:-------------:|
+|  | SSS |  | Controls |  |
+|  | N | Age | N | Age |
+| [@rothen2016] | `r sum(ds_Q$dataSource == "Rothen" & ds_Q$group == "Syn")` | 23.1 | `r sum(ds_Q$dataSource == "Rothen" & ds_Q$group == "Ctl")` | 28.2 |
+| [@ward2022a] | `r sum(ds_Q$dataSource == "Ward" & ds_Q$group == "Syn")` | 37.3 | `r sum(ds_Q$dataSource == "Ward" & ds_Q$group == "Ctl")` | 19.9 |
+| [@vanpetersen2020] | `r sum(ds_Q$dataSource == "PeterCor" & ds_Q$group == "Syn")` | 23.2 | `r sum(ds_Q$dataSource == "PeterCor" & ds_Q$group == "Ctl")` | 21.6 |
+| Ward, unpublished | `r sum(ds_Q$dataSource == "Ward2" & ds_Q$group == "Syn")` | NA | `r sum(ds_Q$dataSource == "Ward2" & ds_Q$group == "Ctl")` | NA |
+| **Total** | **`r sum(ds_Q$group == "Syn")`** |  | **`r sum(ds_Q$group == "Ctl")`** |  |
+
+: Descriptives of each dataset.
+:::
+
+Detailed questionnaire data were available only for the two datasets
+provided by Jamie Ward, which together included
+`r sum(ds_Q$dataSource %in% c("Ward","Ward2"))` participants. @fig-apx00
+summarises self-reported SSS for the stimulus categories used in the
+consistency test (i.e. number, weekdays and month) of Ward datasets .
+
+## Procedure
+
+For the consistency task, on each trial, a stimulus appeared centrally
+on the screen. Participants clicked the location at which they
+visualised that stimulus. Stimuli were presented sequentially in random
+order. Participants in the @vanpetersen2020 and @rothen2016 datasets
+could skip trials.
+
+Stimuli included seven weekdays (Monday - Sunday), 12 months (January -
+December) and 10 numbers (0 - 9). Each stimulus was presented three
+times (i.e. three repetitions). In the two Ward datasets, presentation
+order was randomised with the constraint that all 29 unique stimuli
+appeared once before any stimulus was repeated. Across participants, the
+median display resolution was `r median(ds$width)` X
+`r median(ds$height)` (minimum of `r min(ds$width)` X
+`r min(ds$height)`, and a maximum of `r max(ds$width)` X
+`r max(ds$height)`).
+
+## Consistency Methods and Analyses
+
+The analysis on the merged dataset proceeded in five steps. First, we
+reproduced stimulus-level area and perimeter metrics. Second, we ordered
+coordinates by sequence category and repetition to construct paths and
+polygons. Third, we calculated geometric and topological form-level
+metrics. Fourth, for selected form-level metrics, we permuted repetition
+labels across stimuli to assess stability across repetitions. Fifth, we
+compared the discrimination of all metrics with ROC analyses and
+examined robustness across datasets and questionnaire-score subsamples.
+
+### Reproduced Consistency Metrics
+
+We reproduced two existing consistency methods of the spatial
+variability of responses to the same stimulus: triangle area and
+perimeter [@rothen2016; @ward2022a; @vanpetersen2020]. A participant
+with a stable inducer-concurrent mapping should place the three
+responses to a stimulus close together. Smaller areas and perimeters
+therefore indicate greater within-stimulus consistency (@fig-01 A).
+
+For each stimulus, the three response coordinates, one per repetition,
+*(x1, y1), (x2, y2)* and *(x3, y3)*, defined a triangle. Area and
+perimeter were calculated using [@eq-area] and [@eq-perim],
+respectively. We averaged each stimulus-level score per participant.
+Triangle area was expressed as a percentage of screen area to permit
+comparison across display sizes. To account for screen size and spread
+variability, we also calculated triangle area and perimeter after
+standardising (*z-score*) each participant’s x and y coordinates.
+Standardisation was applied within each participant’s trials, separately
+for the x and the y axis. Area and perimeter computed from standardised
+coordinates are therefore expressed in units of standardised
+coordinates, not as z-scores of the metric.
+
+$$Area = \frac{|x1y2  +  x2y3  +  x3y1 \mathbin{-} x1y3 \mathbin{-}  x2y1 \mathbin{-} x3y2|}{2}$$ {#eq-area}
+
+$$\begin{split}
+Perimeter = \sqrt{(x2 \mathbin{-} x1)^2 + (y2 \mathbin{-} y1)^2} + \\ \sqrt{(x3 \mathbin{-} x2)^2 + (y3 \mathbin{-} y2)^2} + \\ \sqrt{(x1 \mathbin{-}  x3)^2 + (y1 \mathbin{-} y3)^2}
+\end{split}$$ {#eq-perim}
+
+For example, three close responses to Monday will result in a small
+triangle area and perimeter. A recognised limitation of this method is
+that clicking the same position for every stimulus also produces
+near-zero values, therefore resulting in artificially high consistency
+(see for example the first four rows of @fig-03).
+
+![Examples of extreme scores on each consistency
+metric](fig-03.png){#fig-03
+apa-note="Each row represents one metric. For each sequence category, the left panels show the participant with the most control-like score and the right panels show the participant with the most SSS-like score. The direction of the classification differs across metrics."
+width="600"}
+
+### Form-Level and Topological Metrics
+
+For each sequence category, we ordered stimuli according to their
+ordinal position (e.g. 0 `→`1`→`2`→`3`→` ... `→`9) and connected the
+corresponding coordinates within each repetition. Each participant
+therefore contributed up to three forms per category and nine forms in
+total. A metric for each form was then extracted using different methods
+that will be described later.
+
+Each form was represented by the ordered responses as an open segment or
+closed polygon. For polygon-based metrics, we closed the path by
+connecting the final stimulus to the first. Hence the form was
+represented as segments or polygons in a two-dimensional Cartesian
+plane, see @fig-01. This was done using `r pakret::pkrt("sf")` to
+construct segments (i.e. line strings) and polygons from participants’
+coordinates. The same package was used to compute geometric and
+topological features.
+
+For example, @fig-01 illustrates the procedure for weekday forms. Three
+polygons are created by connecting the responses of Monday-Sunday as a
+closed path within each repetition. Polygon-based metrics and properties
+are then calculated. In the permutation analysis, the response assigned
+to each weekday is randomly drawn from the repetitions.
+
+#### Segment Self-intersections
+
+The self-intersection metric counted self-crossings of each segment
+separately. We expected less organised responses from controls to lead
+to more self-intersection than SSS responses. When the segments include
+the same coordinates, this is counted as one intersection. More
+intersections push towards control classification, hence solving the
+problem of participants clicking the same points.
+
+For each category and repetition, we counted the number of times the
+segment path of consecutive stimuli intersected itself. Counts were
+calculated for all available category-by-repetition forms and then
+averaged within participant.
+
+For example, @fig-04 illustrates the self-intersection count for one
+participant across three sequence categories (columns) and three
+repetitions (rows). This participant’s mean self-intersection score was
+$((4+1+2)+(2+1+0)+(3+0+0))/9 = 1.44$.
+
+```{r}
+#| label: fig-04
+#| fig-cap: Example self-intersections test
+#| out-width: "60%"
+#| apa-note: "Average of the total number of self-intersections across repetitions and categories. In this example participant, the score is 1.44"
+#| fig-align: center
+
+knitr::include_graphics("Fig04.pdf")
+```
+
+#### Topological Simplicity and Validity
+
+Topological properties characterise a geometry’s conformity to
+predefined rules of spatial structure and relationships. We expected SSS
+forms to follow topological rules. We reasoned and used a cartographic
+analogy: as a map representation of a territory is constrained by its
+geographical physical reality which follows topological rules, SSS
+spatial forms could be constrained by similar topological rules.
+
+Topological simplicity evaluates whether a geometric object has a simple
+structure without self-intersections or self-tangencies. According to
+the Open Geospatial Consortium (OGC) Simple Features Specification
+[@herring2010], a polygon boundary is simple if it does not pass through
+the same point more than once [@postgis].
+
+Topological validity indicates if a polygon is well-formed and valid
+according to the OGC Simple Features Specification [@herring2010].
+Requirements include: (1) polygon rings are simple (i.e., they do not
+touch or self-intersect), (2) boundary rings do not cross, (3) boundary
+rings only touch points tangentially, (4) rings that define holes are
+contained within the exterior ring, and (5) the polygon rings must not
+split the polygon [@herring2010]. Note that simplicity is a condition
+for validity: a polygon may be simple yet invalid.
+
+Each form received a binary score for simplicity and validity (1 =
+simple or valid, 0 = complex or invalid). Scores were averaged across
+the available forms (up to three categories × three repetitions),
+resulting in scores ranging from 0 to 1, with higher values expected for
+synaesthetes. A score of 1 indicates that all available forms were
+valid; a score of 0 indicates that none were valid. For example, if all
+three weekday polygons were valid (i.e. 1,1,1), all month polygons
+invalid (i.e. 0,0,0), and one of the three number polygons valid
+(0,1,0), the participant’s score would be 4/9 ≈ 0.44.
+
+#### Compactness Score
+
+We evaluated polygon compactness with the Polsby-Popper score
+[@polsby1991], which was developed to quantify the compactness of
+electoral districts, e.g., to detect gerrymandering. Gerrymandering is a
+politically motivated strategy of redefining electoral districts’
+borders to advantage a political party. Hence gerrymandered districts
+should be less compact than districts that follow geomorphological
+properties. Analogously, SSS forms originating from perceptual
+experience may have topological properties that lead to more compact
+forms compared to controls' responses.
+
+The compactness score is calculated as the ratio of the polygon's area
+to the area of a circle with the same perimeter. The score compares the
+area enclosed by a polygon with its boundary length. Hence values near 1
+indicate a compact, circle-like polygon, whereas values near 0 indicate
+an elongated or irregular polygon. Formally, the Polsby-Popper score is
+calculated from the polygon’s area and perimeter [@eq-PP]. For forms
+with a perimeter of 0 (i.e. clicking on the same position), we
+attributed a Polsby-Popper score of 0.
+
+$$Polsby - Popper\ score = \frac{4\pi \cdot Area}{Perimeter^2}$$ {#eq-PP}
+
+For example, a Polsby-Popper score of 1 represents maximal compactness,
+i.e. overlapping to a perfect circle (see @fig-03 for an example of very
+circular forms). Again, scores were averaged across the three categories
+and three repetitions per participant, resulting in scores between 0 and
+1, with higher values expected for synaesthetes.
+
+### Permutation-based Feature Extraction {#sec-permutation-based-feature-extraction}
+
+When constructing the segments and polygons, each form's ordinal
+position is determined by the coordinates within each repetition (i.e. 0
+(rep. 1) `→` 1 (rep. 1) `→` … `→` 9 (rep. 1); vs. 0 (rep. 2) `→` 1 (rep.
+2) `→` … `→` 9 (rep. 2)). Hence, we also recalculated selected metrics
+on forms re-created by permuting repetition labels across stimuli within
+a category. This second analysis assessed whether form-level properties
+were preserved when a form combined coordinates from different
+repetitions. The rationale is that consistent spatial forms should have
+the same geometrical properties independently from the repetition order.
+
+We permuted the repetition labels assigned to each stimulus to create
+permuted forms (@fig-01 D). For each permutation, the repetition label
+was randomly shuffled across stimulus per participants, for example
+Monday (repetition 2) `→` Tuesday (repetition 3) `→` Wednesday
+(repetition 1) and so on. We then recalculated the form-level metrics.
+
+We applied this procedure to the two form-level metrics with the
+strongest initial discrimination: topological validity and Polsby-Popper
+compactness. This procedure was repeated 500 times for each participant,
+and the permuted values were then averaged to obtain a single
+permutation score per participant.
+
+### Receiver Operating Characteristic Analyses {#sec-receiver-operating-characteristic-analyses}
+
+Each metric was evaluated against self-reported synaesthetes and
+controls. The hypothesised direction of each metric was fixed before the
+ROC analyses: smaller triangle areas and perimeters, smaller polygon
+perimeters and fewer self-intersections were expected for synaesthetes,
+as were larger polygon areas and higher simplicity, validity and
+Polsby-Popper scores. ROC curves summarise discrimination across all
+possible metrics' cutoffs. Classification performance was quantified
+using the AUC with DeLong 95% confidence intervals [@delong1988],
+cutoffs were selected with Youden’s index [@youden1950] from which the
+corresponding sensitivity and specificity were calculated.
+Discrimination power (DP; @eq-DP) provided an additional summary at the
+selected cutoff; values below 1 indicate poor discrimination. DP could
+not be computed when sensitivity or specificity was 100%.
+
+$$ 
+DP = \frac{\sqrt{3}}{\pi} (\log(\frac{sensitivity}{1−sensitivity}) + \log(\frac{specificity}{1−specificity}))  $$ {#eq-DP}
+
+We compared paired AUCs using a bootstrapping method with 1000
+re-samples, since this method allows comparing metrics with different
+directions. *D* is the difference between the two AUCs divided by the
+standard deviation of the bootstrap differences (@eq-D).
+
+$$D = \frac{AUC_1-AUC_2}{SD}$$ {#eq-D}
+
+Each metric was compared with the metric that led to the highest AUC.
+*p*-values were adjusted using the false discovery rate (FDR) procedure
+[@benjamini1995] over all paired comparisons.
+
+```{r, triangleArea_fun}
+# Define area calculation function
+triangle_area <- function(x, y) {
+  if(length(x) != 3 | length(y) != 3) return(NA)
+  area <- abs(
+    x[1]*y[2] + x[2]*y[3] + x[3]*y[1] -
+    x[1]*y[3] - x[2]*y[1] - x[3]*y[2]
+  ) / 2
+  return(area)
+}
+```
+
+```{r, area_Consitency}
+## Triangle area per stimulus:
+ds <- ds %>%  
+  group_by(ID, stimulus) %>%
+  mutate(rep_area = triangle_area(x, y)) %>%
+  ungroup()
+
+## Merge
+tmp_perID2 <- ds %>% 
+    ungroup() %>% 
+    group_by(ID) %>% 
+    reframe(Area_perc = sum(rep_area, na.rm = TRUE)/(sum(!is.na(rep_area)))*100, Screen_area = unique(Screen_area))  %>%
+  select(ID, Area_perc,Screen_area)
+
+tmp_perID2$Area_perc <- tmp_perID2$Area_perc/tmp_perID2$Screen_area
+tmp_perID2 <- tmp_perID2 %>% select(ID, Area_perc)
+ds_Q <- merge(ds_Q,tmp_perID2,by = "ID")
+
+feature_direction <- c("moreCtl")
+rm(tmp_perID2)
+```
+
+```{r, area_zsConsitency}
+## Same with z-scores:
+ds <- ds %>%  
+  group_by(ID, stimulus) %>%
+  mutate(rep_area_zs = triangle_area(x_zs, y_zs)) %>%
+  ungroup()
+
+## Merge
+tmp_perID2 <- ds %>% ungroup() %>% 
+  group_by(ID) %>% 
+  reframe(Area_zs = mean(rep_area_zs, na.rm = TRUE))  %>%
+  select(ID, Area_zs)
+
+ds_Q <- merge(ds_Q,tmp_perID2,by = "ID")
+rm(tmp_perID2)
+
+feature_direction <- c(feature_direction,"moreCtl")
+```
+
+```{r, perimFun}
+### Perimeter function: 
+triangle_perimeter <- function(x, y) {
+  if(length(x) != 3 | length(y) != 3) return(NA)
+  # Side lengths
+  a <- sqrt((x[2] - x[1])^2 + (y[2] - y[1])^2)
+  b <- sqrt((x[3] - x[2])^2 + (y[3] - y[2])^2)
+  c <- sqrt((x[1] - x[3])^2 + (y[1] - y[3])^2)
+  perimeter <- a + b + c
+  return(perimeter)
+}
+```
+
+```{r, perim}
+## Compute triangle perimeter by group:
+ds <- ds %>%
+  group_by(ID, stimulus) %>%
+  mutate(triangle_perim = triangle_perimeter(x, y)*100/Screen_area) %>%
+  ungroup()
+
+## Summarize By ID:
+tmp_ID <- ds %>%
+  ungroup() %>% group_by(ID,group) %>%
+  reframe(Perimeter_perc = mean(triangle_perim, na.rm = TRUE)) %>%
+  select(ID, Perimeter_perc)
+
+## Merge
+ds_Q <- merge(ds_Q,tmp_ID,by = "ID")
+feature_direction <- c(feature_direction,"moreCtl")
+```
+
+```{r, perim_zs}
+## Compute triangle perimeter by group:
+ds <- ds %>%  
+  group_by(ID, stimulus) %>%
+  mutate(triangle_perim_zs = triangle_perimeter(x_zs, y_zs)) %>%
+  ungroup()
+
+## Summarize By ID:
+tmp_ID <- ds %>%
+  ungroup() %>% group_by(ID,group) %>%
+  reframe(Perimeter_zs = mean(triangle_perim_zs, na.rm = TRUE)) %>%
+  select(ID, Perimeter_zs)
+
+## Merge
+ds_Q <- merge(ds_Q,tmp_ID,by = "ID")
+feature_direction <- c(feature_direction,"moreCtl")
+```
+
+```{r, selfInter_fun}
+
+# Define function:
+count_self_intersections <- function(x, y, verbose = TRUE) {
+  n <- length(x)
+  if (n < 4) {
+    if (verbose) cat("Need at least 4 points to check for self-intersection.\n")
+    return(0)
+  }
+
+  # Orientation function
+  orientation <- function(p, q, r) {
+    val <- (q[2] - p[2]) * (r[1] - q[1]) - (q[1] - p[1]) * (r[2] - q[2])
+    if (is.na(val)) return(NA)
+    if (val == 0) return(0)
+    if (val > 0) return(1) else return(2)
+  }
+
+  # Check if q lies on segment pr
+  on_segment <- function(p, q, r) {
+    if (any(is.na(c(p, q, r)))) return(FALSE)
+    q[1] <= max(p[1], r[1]) && q[1] >= min(p[1], r[1]) &&
+      q[2] <= max(p[2], r[2]) && q[2] >= min(p[2], r[2])
+  }
+
+  # Main intersection check
+  segments_intersect <- function(p1, p2, p3, p4) {
+    o1 <- orientation(p1, p2, p3)
+    o2 <- orientation(p1, p2, p4)
+    o3 <- orientation(p3, p4, p1)
+    o4 <- orientation(p3, p4, p2)
+
+    if (any(is.na(c(o1, o2, o3, o4)))) return(FALSE)
+
+    # General case
+    if (o1 != o2 && o3 != o4) return(TRUE)
+
+    # Special colinear cases
+    if (o1 == 0 && on_segment(p1, p3, p2)) return(TRUE)
+    if (o2 == 0 && on_segment(p1, p4, p2)) return(TRUE)
+    if (o3 == 0 && on_segment(p3, p1, p4)) return(TRUE)
+    if (o4 == 0 && on_segment(p3, p2, p4)) return(TRUE)
+
+    return(FALSE)
+  }
+
+  count <- 0
+  for (i in 1:(n - 2)) {
+    for (j in (i + 2):(n - 1)) {
+      if (j == i + 1) next  # skip adjacent segments
+
+      p1 <- c(x[i], y[i])
+      p2 <- c(x[i + 1], y[i + 1])
+      p3 <- c(x[j], y[j])
+      p4 <- c(x[j + 1], y[j + 1])
+
+      if (segments_intersect(p1, p2, p3, p4)) {
+        count <- count + 1
+        if (verbose) {
+          cat(sprintf("Intersection #%d: segments (%d-%d) and (%d-%d)\n", count, i, i+1, j, j+1))
+        }
+      }
+    }
+  }
+
+  if (verbose) cat("Total crossings:", count, "\n")
+  return(count)
+}
+
+```
+
+```{r, Self_Intersections}
+# Number of intersections for each ID X Cond X repetition
+# Important! The dataset must be correctly informed about stimulus order.
+ds <- ds %>% 
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% 
+  arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
+  ungroup() %>%
+  group_by(ID, Cond,repetition) %>%
+  mutate(nLineCross = (count_self_intersections(x,y, verbose = FALSE))) %>%
+  arrange(ID) # ensure ds remains ordered by ID
+```
+
+```{r}
+#| include: false
+
+ds %>%
+  filter(ID %in% "30103") %>%
+  ggplot(aes(x = x_zs, y = y_zs, group = stimulus, fill = stimulus, label = stimulus)) +
+  geom_path(aes(group = repetition), alpha = 0.1) +
+  geom_point(size = 1) +
+  geom_text(aes(x = x_zs+0.1, y = y_zs-0.2), size = 2, aplha = 0.8) +
+  geom_text(aes(label = nLineCross, x = 0, y = 1.6, size = 12)) +
+  facet_grid(repetition ~ Cond) +
+  ggtitle("") +
+  theme_void() +
+  theme(legend.position="none")
+
+ggsave("Fig04.pdf")
+```
+
+```{r, selfIntertodsQ}
+## Average self-intersections per ID by Cond X repetition
+tmp <- ds %>%
+    group_by(ID,Cond,repetition) %>%
+    filter(row_number() == 1) %>% # keep only 1 row per IDXCondXrep
+    ungroup() %>% group_by(ID) %>% # Average per ID
+    summarise(SelfInter = mean(nLineCross)) %>%
+    select(ID, SelfInter) 
+
+## Merge
+ds <- merge(ds, tmp,by = "ID")
+
+ds_Q <- right_join(ds_Q, 
+           (ds %>% 
+                ungroup() %>% 
+                group_by(ID) %>% 
+                filter(row_number() == 1) %>%
+                select(ID, SelfInter)), by = "ID")
+
+
+feature_direction <- c(feature_direction,"moreCtl")
+```
+
+```{r, ds_segm}
+
+# Turn off spherical geometry:
+sf::sf_use_s2(FALSE)
+
+# Explicitly enforce item order (i.e. ordinality):
+ds_segm <- ds %>%
+  group_by(ID, stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% 
+  arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>%
+  ungroup() %>%
+  arrange(ID) %>%
+  filter(!is.nan(x_zs), !is.nan(y_zs)) %>% # sf hates NaN! Not needed anymore,
+  mutate(
+    group = as.character(group),
+    ID     = as.character(ID),
+    Cond      = as.character(Cond),
+    repetition     = as.integer(repetition),
+    dataSource = as.character(dataSource)
+  ) %>%
+  group_by(ID, Cond, repetition,group) %>%
+  summarise(
+    geometry = st_sfc(st_linestring(as.matrix(cbind(x_zs, y_zs)))), # preserves order
+    .groups = "drop"
+  ) %>%
+  st_as_sf(crs = NA)
+```
+
+```{r, poly area}
+## Pass from segment to polygon
+ds_poly          <- st_cast(ds_segm, "POLYGON")
+ds_poly$area     <- st_area(ds_poly)
+
+## Poly area
+ds_poly <- ds_poly %>%
+  group_by(ID) %>%
+  mutate(areaPoly_GA = mean(area, na.rm = TRUE))
+
+## Merge
+ds_Q <- right_join(ds_Q, 
+                   ds_poly %>% st_drop_geometry() %>% ungroup() %>% group_by(ID) %>% filter(row_number() == 1) %>% select(ID, areaPoly_GA),
+                   by = "ID")
+
+feature_direction <- c(feature_direction,"moreSyn")
+```
+
+```{r, polyPeri}
+ds_poly$perimeter    <- st_perimeter(ds_poly)
+
+ds_poly <- ds_poly %>%
+  group_by(ID) %>%
+  mutate(perimPoly = mean(perimeter, na.rm = TRUE))
+
+ds_Q <- right_join(ds_Q, 
+                   ds_poly %>% st_drop_geometry() %>% ungroup() %>% group_by(ID) %>% filter(row_number() == 1) %>% select(ID, perimPoly),
+                   by = "ID")
+
+feature_direction <- c(feature_direction,"moreCtl")
+```
+
+```{r, polyisSimple}
+ds_poly$isSimple <- st_is_simple(ds_poly)
+
+ds_poly <- ds_poly %>%
+  group_by(ID) %>%
+  mutate(isSimple_GA = mean(isSimple, na.rm = TRUE))
+
+ds_Q <- right_join(ds_Q, 
+                   ds_poly %>% st_drop_geometry() %>% ungroup() %>% group_by(ID) %>% filter(row_number() == 1) %>% select(ID, isSimple_GA),
+                   by = "ID")
+
+feature_direction <- c(feature_direction,"moreSyn")
+```
+
+```{r, topoValid}
+ds_poly$isValidStruct <- st_is_valid(ds_poly, geos_method = "valid_structure")
+
+ds_poly <- ds_poly %>%
+  group_by(ID) %>%
+  mutate(isValidStruct_M = mean(isValidStruct))
+
+ds_Q <- right_join(ds_Q,
+                   ds_poly %>% st_drop_geometry() %>% ungroup() %>% group_by(ID) %>% filter(row_number() == 1) %>% select(ID, isValidStruct_M),
+                   by = "ID")
+
+feature_direction <- c(feature_direction,"moreSyn")
+```
+
+```{r permuteAcrossRep}
+#| include: false
+
+# Permutation of the repetition labels across stimuli (see Methods, Permutation-based Feature Extraction).
+# For each participant and stimulus, the three repetition labels are shuffled. Permuted forms are rebuilt
+# as polygons; topological validity and the Polsby-Popper score are averaged over ALL forms (up to 9:
+# 3 categories x 3 repetitions) of the participant. This is repeated n_perms times.
+# Vectorised re-implementation of the MS7 loop: with the identity permutation it reproduces
+# isValidStruct_M and pp_M exactly. Results are saved and only recomputed if the files are missing (~2 min).
+
+perm_file_valid <- "Data/permuted_isValid_MS8.csv"
+perm_file_pp    <- "Data/permuted_pp_MS8.csv"
+n_perms         <- 500
+
+if(!file.exists(perm_file_valid) | !file.exists(perm_file_pp)){
+  sf::sf_use_s2(FALSE)
+  stim_levels <- c(as.character(0:9),
+                   "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday",
+                   "January", "February", "March", "April", "May", "June", "July", "August",
+                   "September", "October", "November", "December")
+
+  d_perm <- ds %>%
+    ungroup() %>%
+    select(ID, Cond, stimulus, repetition, x_zs, y_zs) %>%
+    mutate(ID = as.character(ID), x_zs = as.numeric(x_zs), y_zs = as.numeric(y_zs),
+           StimOrder = match(stimulus, stim_levels)) %>%
+    arrange(ID, Cond, StimOrder, repetition)
+
+  # One element per ID x Cond with [n stimuli x 3 repetitions] coordinate matrices (ordinal order kept)
+  forms <- lapply(split(d_perm, list(d_perm$ID, d_perm$Cond), drop = TRUE), function(g){
+    stopifnot(nrow(g) %% 3 == 0) # each stimulus has exactly 3 repetitions (see FilterTrials)
+    n_stim <- nrow(g)/3
+    list(ID = g$ID[1],
+         X  = matrix(g$x_zs, n_stim, 3, byrow = TRUE),
+         Y  = matrix(g$y_zs, n_stim, 3, byrow = TRUE))
+  })
+
+  # Build all permuted polygons of one permutation and compute validity and Polsby-Popper score
+  permute_once <- function(forms){
+    geoms <- vector("list", length(forms)*3)
+    ids   <- character(length(forms)*3)
+    k <- 0
+    for(f in forms){
+      n_stim <- nrow(f$X)
+      P <- t(replicate(n_stim, sample(3))) # new repetition label of each stimulus
+      for(r in 1:3){
+        k <- k + 1
+        idx <- cbind(1:n_stim, P[, r])
+        geoms[[k]] <- st_linestring(cbind(f$X[idx], f$Y[idx]))
+        ids[k] <- f$ID
+      }
+    }
+    polys <- st_cast(st_sfc(geoms), "POLYGON")
+    area  <- as.numeric(st_area(polys))
+    perim <- as.numeric(st_length(st_boundary(polys)))
+    pp    <- (4 * pi * area) / (perim^2)
+    pp[is.na(pp)] <- 0 # perimeter of 0: pp = 0, as for the non-permuted pp_M
+    data.frame(ID = ids,
+               valid = st_is_valid(polys, geos_method = "valid_structure"),
+               pp = pp) %>%
+      group_by(ID) %>%
+      summarise(valid = mean(valid, na.rm = TRUE), pp = mean(pp, na.rm = TRUE))
+  }
+
+  set.seed(42)
+  ID_list    <- unique(d_perm$ID)
+  perm_names <- paste0("n_perm", sprintf("%03d", 1:n_perms))
+  M_valid <- matrix(NA_real_, length(ID_list), n_perms, dimnames = list(ID_list, perm_names))
+  M_pp    <- M_valid
+  for(Perm_n in 1:n_perms){
+    res <- permute_once(forms)
+    M_valid[res$ID, Perm_n] <- res$valid
+    M_pp[res$ID, Perm_n]    <- res$pp
+  }
+
+  write.csv2(data.frame(M_valid, ID = ID_list), perm_file_valid, row.names = FALSE)
+  write.csv2(data.frame(M_pp,    ID = ID_list), perm_file_pp,    row.names = FALSE)
+  rm(d_perm, forms, permute_once, M_valid, M_pp, res, ID_list, perm_names, stim_levels)
+}
+```
+
+```{r, AveragePermute}
+ds_perm <- read.csv2(perm_file_valid)
+ds_perm$ID <- as.character(ds_perm$ID)
+
+# The permutation file must contain exactly the participants of the final sample (no silent filtering):
+stopifnot(setequal(ds_perm$ID, as.character(ds_Q$ID)))
+
+ds_Perm_perID <- ds_perm %>%
+  rowwise() %>%
+  mutate(isValid_perm_M = mean(c_across(starts_with("n_perm")))) %>% # all n_perms permutations
+  ungroup() %>%
+  select(ID, isValid_perm_M)
+
+ds_Q$ID <- as.character(ds_Q$ID)
+ds_Q <- left_join(ds_Q, ds_Perm_perID, by = "ID")
+feature_direction <- c(feature_direction,rep("moreSyn",1))
+```
+
+```{r, pp_test}
+## Polsby-Popper test / Iso-Perimetric Quotient
+ds_poly <- ds_poly %>%
+    mutate(
+    area = st_area(geometry),
+    perim = st_length(st_boundary(geometry)),
+    pp = as.numeric((4 * pi * area) / (perim^2))
+  )
+
+ds_poly$pp[is.na(ds_poly$pp)] <- 0
+
+ds_Q <- right_join(ds_Q,
+                   ds_poly %>% st_drop_geometry() %>% ungroup() %>% group_by(ID) %>% reframe(pp_M = mean(pp, na.rm = TRUE)) %>% select(ID, pp_M),
+                   by = "ID")
+
+feature_direction <- c(feature_direction,"moreSyn")
+```
+
+```{r, AveragePermutepp}
+ds_perm_pp <- read.csv2(perm_file_pp)
+ds_perm_pp$ID <- as.character(ds_perm_pp$ID)
+stopifnot(setequal(ds_perm_pp$ID, as.character(ds_Q$ID)))
+
+ds_Perm_perID <- ds_perm_pp %>%
+  rowwise() %>%
+  mutate(pp_perm_M = mean(c_across(starts_with("n_perm")), na.rm = TRUE)) %>% # all n_perms permutations
+  ungroup() %>%
+  select(ID, pp_perm_M)
+
+ds_Q <- left_join(ds_Q, ds_Perm_perID, by = "ID")
+feature_direction <- c(feature_direction,rep("moreSyn",1))
+```
+
+```{r GLM}
+#| eval: false
+#| include: false
+
+## Remov the GLM because it is tricky to compare with other features. Also the difference betwen datasets seems to be a biggest problem now. I also don't know how I would discuss it.
+
+# Here was the text:
+# Finally, we used General Linear Model (GLM) on the two features with the best AUC and add the prediction as an additional feature. A GLM could provide a formula where multiple features could be combined in order to optimize AUC.
+
+Model <- glm(group ~  Area_zs + isValid_perm_M, data = ds_Q, family = binomial)
+pred = predict(Model)
+ds_Q$GLM_Valid_areazs <- pred
+
+feature_direction <- c(feature_direction,rep("moreSyn",1))
+
+Model1 <- glm(group ~  perimPoly + pp_perm_M, data = ds_Q, family = binomial)
+pred1 = predict(Model1)
+ds_Q$GLM_perimPoly_ppPerm <- pred1
+
+feature_direction <- c(feature_direction,rep("moreSyn",1))
+```
+
+```{r, cleanupVar}
+rm(ds_perm, ds_Perm_perID, tmp, All_n, All_n2, All_n3)
+```
+
+# Results - Phase I {#sec-results}
+
+```{r, defineDPfun}
+DP <- function(sensitivity, specificity){
+  # Discrimination power (eq-DP)
+  sensitivity = sensitivity/100
+  specificity = specificity/100
+  dp <- (sqrt(3)/pi)*(log(sensitivity/(1-sensitivity)) + log(specificity/(1-specificity)))
+  # DP is not computable when sensitivity or specificity is 0% or 100%:
+  dp[!is.finite(dp)] <- NA
+  return(dp)
+}
+```
+
+```{r, InitializeROC_fun}
+## Define function to compute ROC:
+Comp_ROC <- function(data, group_col, feature, ID, Ord){
+  # Ord: must be: moreSyn or moreCtl. Whether feature values are higher in Syn or Ctl.
+  if(!setequal(levels(data[[group_col]]), c("Syn","Ctl"))){
+    return(warning("group name must include: Syn Ctl"))
+  }
+  
+  if (Ord == "moreSyn") {
+    Dirhere <- "<"
+  } else if (Ord == "moreCtl") {
+    Dirhere <- ">"
+  } else {
+    return(warning("Ord must be moreSyn or moreCtl"))  
+  }
+  
+  ################ ROC analyses ################ 
+  ROC_here <- pROC::roc(data[[group_col]] ~ data[[feature]], data,
+                  direction= Dirhere,
+                  percent=TRUE,
+                  ci=TRUE # AUC 95% CI with the DeLong method (pROC default)
+                  )
+  
+  # Best threshold using Youden's J
+  best_coords <- pROC::coords(ROC_here, "best", 
+                              ret = c("accuracy","threshold", "sensitivity","specificity","ppv","npv"), 
+                              best.method = "youden")
+  
+
+  auc_val <- as.numeric(pROC::auc(ROC_here))
+  ci_auc  <- ci.auc(ROC_here)
+  ciobj   <- pROC::ci.se(ROC_here, # CI of sensitivity
+               specificities=seq(0, 100, 5)) # over a select set of specificities
+
+  new_row <- data.frame(
+    Feature   = feature,
+    AUC        = round(auc_val, 4),
+    DP         = DP(as.numeric(best_coords[["sensitivity"]]),as.numeric(best_coords[["specificity"]])),
+    threshold  = as.numeric(best_coords[["threshold"]]),
+    sensitivity= as.numeric(best_coords[["sensitivity"]]),
+    specificity= as.numeric(best_coords[["specificity"]]),
+    ci_low     = as.numeric(ci_auc[1]),
+    ci_high    = as.numeric(ci_auc[3]),
+    stringsAsFactors = FALSE
+  )
+  
+  ################ Contingency table ################ 
+    if (Ord == "moreSyn") {
+    data$diagnosis <- ifelse(data[[feature]] >= best_coords$threshold,  "Test : Syn", "Test : Ctl")
+  } else if (Ord == "moreCtl") {
+    data$diagnosis <- ifelse(data[[feature]] >= best_coords$threshold,  "Test : Ctl","Test : Syn")
+  } else {
+    warning("Ord must be moreSyn or moreCtl")  
+  }
+  
+  tab_counts <- table(data[[group_col]], data$diagnosis)
+  
+  tab_percent <- prop.table(tab_counts, margin = 1) * 100
+  
+  result <- matrix(
+    paste0(tab_counts, " (", round(tab_percent, 1), "%)"),
+    nrow = nrow(tab_counts),
+    dimnames = dimnames(tab_counts)
+  )
+  
+  ################ General description ################ 
+  # Attention, na removed  
+  Descr_table <- data %>%
+    group_by(!!sym(group_col)) %>%
+    reframe(n = length(unique(!!sym(ID))), Mean = mean(!!sym(feature), na.rm = TRUE), SD = sd(!!sym(feature), na.rm = TRUE))
+
+  ################ Return outputs ################ 
+  return(list(ROC_properties = new_row, Coningency_table =result, Descr_table = Descr_table, ROC_curve = ROC_here, CI = ciobj))
+}
+```
+
+```{r compROCallFeat}
+#| message: false
+#| warning: false
+
+# Features and their hypothesised direction are matched by NAME, not by column position.
+# moreSyn = higher values expected for synaesthetes; moreCtl = higher values expected for controls.
+feature_direction_named <- c(Area_perc       = "moreCtl",
+                             Area_zs         = "moreCtl",
+                             Perimeter_perc  = "moreCtl",
+                             Perimeter_zs    = "moreCtl",
+                             SelfInter       = "moreCtl",
+                             areaPoly_GA     = "moreSyn",
+                             perimPoly       = "moreCtl",
+                             isSimple_GA     = "moreSyn",
+                             isValidStruct_M = "moreSyn",
+                             isValid_perm_M  = "moreSyn",
+                             pp_M            = "moreSyn",
+                             pp_perm_M       = "moreSyn")
+
+# Sanity checks: every feature exists, and the directions appended chunk-by-chunk above agree.
+stopifnot(all(names(feature_direction_named) %in% colnames(ds_Q)))
+stopifnot(identical(unname(feature_direction_named), feature_direction))
+
+feature_list      <- names(feature_direction_named)
+feature_direction <- unname(feature_direction_named)
+Feats <- as.matrix(t(rbind(feature_list,feature_direction)))
+
+# Now we will loop through features: INITIALIZE ROC_curves
+ROC_curves <- list()
+
+# Initialize dataframe to collect relevant ROC values:
+All_ROC <- data.frame(Feature=character(),
+                      AUC         = character(),
+                      threshold   = integer(),
+                      sensitivity = integer(),
+                      specificity = integer(),
+                      ppv         = integer(),
+                      npv         = integer(),
+                      high_ci     = integer(),
+                      low_ci      = integer(),
+                      stringsAsFactors=FALSE)
+
+# Loop by features:
+for(fit_n in 1:length(Feats[,1])){
+  ROC_here <- Comp_ROC(ds_Q, "group", Feats[[fit_n,1]],"ID", Feats[[fit_n,2]])
+  
+  ROC_curves      <- c(ROC_curves,list(ROC_here$ROC_curve,ROC_here$ROC_properties$Feature))
+  All_ROC         <- rbind(All_ROC, ROC_here$ROC_properties)
+}
+```
+
+```{r, AUCtest}
+# Since random sampling is involved in bootstrapping, to make it reproducible:
+set.seed(42)
+
+# Compare ALL the features and adjust, but leads to the same results.
+nFeat    <- length(ROC_curves)
+Odd_idx  <- seq(1,nFeat,by=2)
+Pair_idx <- seq(2,nFeat,by=2)
+
+ROC_listed <- list()
+Feattype <- c()
+for(i in 1:nFeat){
+  ROC_listed[[i]] <- ROC_curves[[Odd_idx[i]]]
+  Feattype <- c(Feattype,ROC_curves[[Pair_idx[i]]])
+}
+
+allAUC  <- sapply(ROC_listed, auc)
+sel_auc <- which(allAUC == sort(allAUC, decreasing = TRUE)[1])
+toCompare_roc <- ROC_listed[[sel_auc]] 
+
+# Run roc.test() once per pair, so that D and p come from the same bootstrap:
+ROC_tests <- lapply(seq_along(ROC_listed), function(i) {
+  if (i == sel_auc) return(NULL)
+  roc.test(toCompare_roc, ROC_listed[[i]],  boot.n=1000,method = "bootstrap", paired = TRUE)
+})
+statistic <- sapply(ROC_tests, function(t) if (is.null(t)) NA else unname(t$statistic))
+pvals     <- sapply(ROC_tests, function(t) if (is.null(t)) NA else t$p.value)
+
+# Adjust for multiple comparison: the order is Feattype
+pvals_adj <- p.adjust(pvals, method = "fdr")
+
+Results_ROCcomp <- data.frame(
+  Feature = Feattype,
+  D = statistic,
+  pvals = pvals_adj,
+  isSign = (pvals_adj <.05)
+)
+```
+
+```{r, AUCdiffCI}
+# AUC difference (best metric minus each other metric) with a 95% percentile bootstrap CI
+# (1000 stratified resamples of participants). Non-significance does not show equivalence; the CI
+# shows which differences remain compatible with the data.
+set.seed(42)
+n_boot   <- 1000
+best_feat <- Feattype[sel_auc]
+idx_syn  <- which(ds_Q$group == "Syn")
+idx_ctl  <- which(ds_Q$group == "Ctl")
+auc_fast <- function(data, f){
+  as.numeric(pROC::auc(pROC::roc(data$group, data[[f]], levels = c("Ctl","Syn"),
+                                 direction = ifelse(feature_direction_named[[f]] == "moreSyn", "<", ">"),
+                                 percent = TRUE, quiet = TRUE)))
+}
+boot_diff <- replicate(n_boot, {
+  b <- ds_Q[c(sample(idx_syn, replace = TRUE), sample(idx_ctl, replace = TRUE)), ]
+  a_best <- auc_fast(b, best_feat)
+  sapply(feature_list, function(f) a_best - auc_fast(b, f))
+})
+AUC_diff <- data.frame(
+  Feature = feature_list,
+  diff    = sapply(feature_list, function(f) auc_fast(ds_Q, best_feat) - auc_fast(ds_Q, f)),
+  ci_low  = apply(boot_diff, 1, quantile, 0.025),
+  ci_high = apply(boot_diff, 1, quantile, 0.975)
+)
+rm(boot_diff)
+```
+
+```{r, OperatingPointTests}
+# Exploratory comparisons at fixed operating points (not pre-specified):
+# Polsby-Popper compactness vs standardised perimeter, sensitivity at 80% specificity and
+# specificity at 80% sensitivity (paired bootstrap, 1000 resamples), FDR-adjusted within this family.
+set.seed(42)
+roc_pp    <- ROC_listed[[which(Feattype == "pp_M")]]
+roc_perim <- ROC_listed[[which(Feattype == "Perimeter_zs")]]
+OP_tests <- list(
+  sens_at_spec80 = roc.test(roc_pp, roc_perim, method = "specificity", specificity = 80,
+                            boot.n = 1000, paired = TRUE),
+  spec_at_sens80 = roc.test(roc_pp, roc_perim, method = "sensitivity", sensitivity = 80,
+                            boot.n = 1000, paired = TRUE)
+)
+OP_res <- data.frame(
+  test  = names(OP_tests),
+  D     = sapply(OP_tests, function(t) unname(t$statistic)),
+  p     = sapply(OP_tests, function(t) t$p.value)
+)
+OP_res$p_adj <- p.adjust(OP_res$p, method = "fdr")
+# Sensitivity (at 80% specificity) and specificity (at 80% sensitivity) of each metric:
+OP_values <- data.frame(
+  metric         = c("pp_M", "Perimeter_zs"),
+  sens_at_spec80 = c(as.numeric(coords(roc_pp, 80, input = "specificity", ret = "sensitivity")),
+                     as.numeric(coords(roc_perim, 80, input = "specificity", ret = "sensitivity"))),
+  spec_at_sens80 = c(as.numeric(coords(roc_pp, 80, input = "sensitivity", ret = "specificity")),
+                     as.numeric(coords(roc_perim, 80, input = "sensitivity", ret = "specificity")))
+)
+
+# Inline-reporting helpers
+fmt_p <- function(p) ifelse(p < .001, "< .001", paste0("= ", sub("^0", "", formatC(p, format = "f", digits = 3))))
+fmt_D <- function(f) formatC(Results_ROCcomp$D[Results_ROCcomp$Feature == f], format = "f", digits = 2)
+fmt_pD <- function(f) fmt_p(Results_ROCcomp$pvals[Results_ROCcomp$Feature == f])
+fmt_auc <- function(f) formatC(All_ROC$AUC[All_ROC$Feature == f], format = "f", digits = 2)
+fmt_ci  <- function(f) paste0("[", formatC(All_ROC$ci_low[All_ROC$Feature == f], format = "f", digits = 2), "%, ",
+                             formatC(All_ROC$ci_high[All_ROC$Feature == f], format = "f", digits = 2), "%]")
+fmt_diff <- function(f) {r <- AUC_diff[AUC_diff$Feature == f, ]
+  paste0(formatC(r$diff, format = "f", digits = 2), " percentage points, 95% CI [",
+         formatC(r$ci_low, format = "f", digits = 2), ", ", formatC(r$ci_high, format = "f", digits = 2), "]")}
+```
+
+```{r}
+#| label: fig-03
+#| eval: false
+#| apa-note: Plotted are spatial forms from the participants that are the extreme of the consistency test's value
+#| dpi: 600
+#| fig-cap: Example of extremes at the consistency tests
+#| fig-format: png
+#| include: false
+
+# Figure is exported and reimported to better position in text
+
+# Not included because chunck order does not match in text figure numbering.
+ID_test_ds <- ds_Q %>%
+  select(ID,Area_perc:pp_perm_M) %>%
+  select(!c())
+
+Test_names <- colnames(ds_Q %>% select(Area_perc:pp_perm_M))
+
+header <- plot_grid(
+  ggdraw() + draw_label("Method", fontfamily = "serif", fontface = "bold"),
+  # ggdraw() + draw_label("Illustration", fontface = "bold"),
+  ggdraw() + draw_label("Classified as most control", fontface = "bold",fontfamily = "serif", hjust = 0.2),
+  ggdraw() + draw_label("Classified as most SSS", fontface = "bold", fontfamily = "serif",hjust = 0),
+  ncol = 4, rel_widths = c(0.5,1,1)
+)
+
+subheader <- plot_grid(
+  ggdraw() + draw_label(" "), # placeholder
+  ggdraw() + draw_label("Month     Weekday      Number", fontfamily = "serif", size = 10, hjust = 0.25),
+  ggdraw() + draw_label("Month     Weekday      Number",fontfamily = "serif", size = 10, hjust = -0.25),
+  ncol = 4, rel_widths = c(0.5,1,1)
+)
+
+row_fig <- vector("list", length(Test_names)+1)
+row_fig[[1]] <- header
+row_fig[[2]] <- subheader
+
+# plot_grid(plotlist = row_fig, ncol = 1,rel_widths = c(0.5,1,1))
+
+# List ID's with data for all 3 conds:
+ID3Cond <- ds %>% 
+  group_by(ID) %>% 
+  reframe(nCond = length(unique(Cond))) %>% 
+  filter(nCond == 3) %>%
+  pull(ID)
+
+# To present by AUC informed ranking of the methods:
+Methods_byAUC <- c("isValid_perm_M", "pp_M",  "Perimeter_zs",  "isValidStruct_M", "pp_perm_M", "SelfInter","areaPoly_GA","isSimple_GA","Area_zs", "perimPoly", "Perimeter_perc",  "Area_perc")
+
+# We (rendomly) sample the participants, otherwise would have a diferent figure each time.
+set.seed(42)
+for(test_i in 1:length(Methods_byAUC)){ # keep Test_names for another oreder
+  test_here <- Methods_byAUC[test_i]
+  
+  # Nice labels:
+  test_here <- recode(test_here, 
+                      "Area_perc" = "Area [screen size %]",
+                      "Area_zs" = "Area [z-score]", 
+                      "Perimeter_perc" = "Perimeter [screen size %]",
+                      "Perimeter_zs" = "Perimeter [z-score]",
+                      "areaPoly_GA" = "Area of the polygon [z-score]",
+                      "perimPoly" = "Perimeter of the polygon [z-score]" ,
+                      "isSimple_GA" = "Simple topology [boolean/9]",
+                      "SelfInter" = "Segment self-intersections [n/9]",
+                      "isValidStruct_M" = "Valid structure [boolean/9]",
+                      "isValid_perm_M" =  "Permuted valid structure [boolean/9]",
+                      "pp_M" = "Polsby-Popper [score/9]",
+                      "pp_perm_M" = "Permuted P-P [score/9]"
+  )
+  
+  col1 <- ggdraw() + draw_label(test_here, angle = 20, size = 8)
+  
+  ### Worst example
+  ID_test <- ID_test_ds %>%
+    filter(ID %in% ID3Cond) %>%  
+    select(ID, Methods_byAUC[test_i]) 
+  ID_min <- ID_test$ID[order(ID_test[,2],decreasing = TRUE)][1] # some tests have several ID's as minimum
+  
+  col3 <- ds %>% 
+    filter(ID %in% ID_min) %>%
+    group_by(stimulus) %>%
+    arrange(stimulus) %>%
+    arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% 
+    arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>% # Start ggplot
+    ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+    geom_polygon(aes(group = interaction(Cond,repetition)),alpha = 0.1, fill = "grey") +
+    geom_path(aes(group = repetition),alpha = 0.2, fill = "black") +
+    geom_polygon(alpha = 0.5) +
+    geom_point(size = 0.05, alpha = 0.5) +
+    # geom_text(aes(x = x_zs, y = y_zs), size = 0.2, alpha = 0.3) +
+    scale_fill_discrete(guide="none") +
+    coord_equal() +
+    facet_grid(~Cond) +
+    theme_void() +
+    theme(strip.text = element_blank(),strip.background = element_blank()) 
+  
+  ### Best example
+  ID_max <- ID_test$ID[order(ID_test[,2],decreasing = FALSE)][1] 
+  
+  col4 <- ds %>% filter(ID %in% ID_max) %>%
+    group_by(stimulus) %>%
+    arrange(stimulus) %>%
+    arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% 
+    arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>% # Start ggplot
+    ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+    geom_polygon(aes(group = interaction(Cond,repetition)),alpha = 0.1, fill = "grey") +
+    geom_path(aes(group = repetition),alpha = 0.2, fill = "black") +
+    geom_polygon(alpha = 0.4) +
+    geom_point(size = 0.05, alpha = 0.5) +
+    #geom_text(aes(x = x_zs, y = y_zs), size = 1.5, alpha = 0.3) +
+    scale_fill_discrete(guide="none") +
+    coord_equal() +
+    facet_grid(~Cond) +
+    theme_void() +
+    theme(strip.text = element_blank(),strip.background = element_blank()) 
+  
+  if(Feats[Feats[,1] == Methods_byAUC[test_i],2] == "moreCtl"){
+    row_fig[[test_i+2]] <- plot_grid(col1,col3,col4, ncol = 3,rel_widths = c(0.5,1,1))
+  } else {
+    row_fig[[test_i+2]] <- plot_grid(col1,col4,col3, ncol = 3,rel_widths = c(0.5,1,1))
+  }
+  
+  
+}
+
+row_fig[[test_i+3]] <- plot_grid(
+  ggdraw() + draw_label(" "), # placeholder
+  ggdraw() + draw_label(" "), # placeholder
+  ggdraw() + draw_label(" "), # placeholder
+  ncol = 4, rel_widths = c(0.5,1,1)
+)
+
+plot_grid(plotlist = row_fig, ncol = 1,rel_widths = c(0.5,1,1))
+# ggsave("fig-03.png", width = 20, height = 30, units = "cm")
+# Create figure for methods. Needs to be here since I need the ROC results of each test. The design is to have a figure with 4 columns, n_test rows. col1: method name, col2: method illustration, col3: most control, col4 most SSS.
+
+ggsave("fig-03.png", width = 20, height = 30, units = "cm")
+# Create figure for methods. Needs to be here since I need the ROC results of each test. The design is to have a figure with 4 columns, n_test rows. col1: method name, col2: method illustration, col3: most control, col4 most SSS.
+```
+
+## Descriptive Results of Reproduced Metrics
+
+Among self-reported SSS participants, mean triangle area of the
+aggregated datasets was
+`r round(mean(ds_Q$Area_perc[ds_Q$group == "Syn"]),2)`% of the screen
+area (*SD* = `r round(sd(ds_Q$Area_perc[ds_Q$group == "Syn"]),2)`%),
+compared with 0.14% (*SD* = 0.13%) in @rothen2016 and 0.14% (*SD* =
+0.17%) in @ward2018. The value in @rothen2016 is reproduced when only
+that dataset is used (see @apx-SM2byds). Per-dataset descriptives
+suggest that the largest dataset, @ward2022a, contributed substantially
+to the larger area (*M* =
+`r round(mean(ds_Q$Area_perc[ds_Q$group == "Syn" & ds_Q$dataSource == "Ward"]),2)`%;
+@tbl-apx02).
+
+```{r}
+#| label: tbl-04
+#| eval: false
+#| include: false
+#| tbl-cap: Descriptive values of each metric per group
+
+# Because the metrics have different units, their raw results
+# cannot be compared directly. Hence the two rightmost columns of @tbl-04
+# report standardised values.
+
+# Rows are sorted by AUC, so this table needs the ROC results.
+feat_cols <- feature_list # by name, not by column position
+
+fmt_ms <- function(x, digits = 2) {
+  m    <- mean(x, na.rm = TRUE)
+  sd   <- stats::sd(x, na.rm = TRUE)
+  paste0(
+         formatC(m,  format = "f", digits = digits),
+         " (",
+         formatC(sd, format = "f", digits = digits),
+         ")"
+  )
+}
+
+tmp <- ds_Q %>%
+    select(c(group, feat_cols)) %>%
+    pivot_longer(cols = all_of(feat_cols),
+                 names_to = "Feature",
+                 values_to = "Value") %>%
+    group_by(group,  Feature) %>%
+    summarise(`M *(SD)*` = fmt_ms(Value), .groups = "drop") %>%
+    pivot_wider(names_from = c(group),
+                values_from = c(`M *(SD)*`)) 
+
+tmp <- tmp[match(All_ROC$Feature, tmp$Feature), ]
+tmp <- tmp[sort(All_ROC$AUC,  decreasing = TRUE, index.return = TRUE)$ix,]
+
+Descr_table <- tmp %>% mutate(Feature = recode(Feature, 
+                             "Area_perc" = "Area [screen size %]",
+                          "Area_zs" = "Area [z-score]", 
+                          "Perimeter_perc" = "Perimeter [screen size %]",
+                          "Perimeter_zs" = "Perimeter [z-score]",
+                          "areaPoly_GA" = "Area of the polygon [z-score]",
+                          "perimPoly" = "Perimeter of the polygon [z-score]" ,
+                          "isSimple_GA" = "Simple topology [boolean/9]",
+                          "SelfInter" = "Segment self-intersections [n/9]",
+                          "isValidStruct_M" = "Valid structure [boolean/9]",
+                          "isValid_perm_M" =  "Permuted valid structure [boolean/9]",
+                          "pp_M" = "Polsby-Popper [score/9]",
+                          "pp_perm_M" = "Permuted P-P [score/9]"
+  ))
+
+
+
+# Standardise each metric, then multiply "moreCtl" metrics by -1 so that higher values are expected
+# for synaesthetes. A metric going in the unexpected direction therefore stays visible.
+sign_dir <- ifelse(feature_direction_named[feature_list] == "moreCtl", -1, 1)
+Descr_table_zs <- ds_Q %>%
+  select(all_of(feature_list), group,ID) %>%
+  mutate(across(all_of(feature_list), ~ as.numeric(scale(.x)) * sign_dir[[cur_column()]])) %>%
+  pivot_longer(cols = all_of(feat_cols),
+               names_to = "Feature",
+               values_to = "Value") %>%
+  group_by(group,  Feature) %>%
+  summarise(`M *(SD)*` = fmt_ms(Value), .groups = "drop") %>%
+  pivot_wider(names_from = c(group),
+              values_from = c(`M *(SD)*`))
+
+Descr_table_zs <- Descr_table_zs[match(All_ROC$Feature, Descr_table_zs$Feature),] %>%
+  rename("Control [zs]" = "Ctl", "SSS [zs]" = "Syn") 
+
+Descr_table_zs <- Descr_table_zs %>% mutate(Feature = recode(Feature, 
+                         "Area_perc" = "Area [screen size %]",
+                          "Area_zs" = "Area [z-score]", 
+                          "Perimeter_perc" = "Perimeter [screen size %]",
+                          "Perimeter_zs" = "Perimeter [z-score]",
+                          "areaPoly_GA" = "Area of the polygon [z-score]",
+                          "perimPoly" = "Perimeter of the polygon [z-score]" ,
+                          "isSimple_GA" = "Simple topology [boolean/9]",
+                          "SelfInter" = "Segment self-intersections [n/9]",
+                          "isValidStruct_M" = "Valid structure [boolean/9]",
+                          "isValid_perm_M" =  "Permuted valid structure [boolean/9]",
+                          "pp_M" = "Polsby-Popper [score/9]",
+                          "pp_perm_M" = "Permuted P-P [score/9]"
+  ))
+
+
+
+# left_join keeps the AUC order of Descr_table (merge(sort = FALSE) does not guarantee it)
+tbl_out <- left_join(Descr_table, Descr_table_zs, by = "Feature") %>%
+  rename("Control" = "Ctl", "SSS" = "Syn")
+
+# I will not lie, it was painful to build this table:
+# Correction: increasing pain did not improve the table. Got a latex error.  
+# flextable(tbl_out) %>%
+#   separate_header() |>
+#   border_remove() |>
+#   add_header_row(values = c("","Raw", "Standardized [zs]"), colwidths = c(1,2, 2)) %>%
+#   hline(i = 1, part = "header",j = 2:5) %>%
+#   flextable::theme_apa() |>
+#   autofit() 
+gt(tbl_out) |>
+  cols_align_decimal(
+    columns = where(is.numeric)
+  ) %>%
+  tab_footnote(
+    footnote = "Note: Values are mean (standard deviation) of each consistency metric. The two rightmost columns show standardised scores (z-scores), calculated across all participants, separately for each metric. Standardised scores of metrics expected to be higher in controls (triangle area and perimeter, polygon perimeter, self-intersections) were multiplied by -1, so that positive values indicate the direction expected for synaesthetes.") 
+
+rm(tmp)
+```
+
+Overall, synaesthetes' mean triangle area in the pooled data was about
+`r round(mean(ds_Q$Area_perc[ds_Q$group == "Syn"])/0.14, 1)` times that
+reported before. Part of this difference reflects differences between
+datasets.
+
+## ROC Analyses
+
+Permuted topological validity had the highest AUC
+(`r fmt_auc("isValid_perm_M")`%, 95% CI `r fmt_ci("isValid_perm_M")`),
+followed by Polsby-Popper compactness (`r fmt_auc("pp_M")`%, 95% CI
+`r fmt_ci("pp_M")`) and standardised within-stimulus perimeter
+(`r fmt_auc("Perimeter_zs")`%, 95% CI `r fmt_ci("Perimeter_zs")`). After
+FDR correction, neither Polsby-Popper compactness (*D* =
+`r fmt_D("pp_M")`, *p* `r fmt_pD("pp_M")`) nor standardised perimeter
+(*D* = `r fmt_D("Perimeter_zs")`, *p* `r fmt_pD("Perimeter_zs")`)
+differed significantly from permuted validity. All other metrics had
+significantly lower AUCs. @tbl-03 and @fig-05 summarise the ROC results
+by descending AUC. @fig-apx01 shows the group distributions for all
+metrics. Discrimination power was limited for all metrics (DP ≤
+`r formatC(max(All_ROC$DP, na.rm = TRUE), format = "f", digits = 2)`).
+
+```{r}
+#| label: fig-05
+#| fig-cap: "Receiver Operating Characteristic (ROC) curves of all consistency metrics"
+#| apa-note: "The diagonal grey line represents chance-level discrimination. Curves are oriented so that movement toward the upper-left corner indicates better performance."
+
+nFeat <- length(ROC_curves)
+Odd_idx  <- seq(1,nFeat,by=2)
+Pair_idx <- seq(2,nFeat,by=2)
+
+ROC_listed <- list()
+Feattype <- c()
+for(i in 1:nFeat){
+  ROC_listed[[i]] <- ROC_curves[[Odd_idx[i]]]
+  Feattype <- c(Feattype,ROC_curves[[Pair_idx[i]]])
+}
+
+Feattype <- recode(Feattype, 
+                   "Area_perc" = "Area [screen size %]",
+                   "Area_zs" =  "Area [z-score]", 
+                   "Perimeter_perc" = "Perimeter [screen size %]",
+                   "Perimeter_zs" = "Perimeter [z-score]",
+                   "SelfInter" = "Segment self-intersections [n/9]",
+                   "areaPoly_GA" = "Area of the polygon [z-score]",
+                   "perimPoly" = "Perimeter of the polygon [z-score]" ,   
+                   "isSimple_GA" = "Simple topology [boolean/9]",
+                   "isValidStruct_M" = "Valid structure [boolean/9]",
+                   "isValid_perm_M" = "Permuted valid structure [boolean/9]",
+                   "pp_M" = "Polsby-Popper [score/9]",
+                   "pp_perm_M" = "Permuted P-P [score/9]"
+                  )
+
+# Arrows point at the Youden cutoff of each metric (x = specificity, y = sensitivity):
+op_pt <- function(f) c(All_ROC$specificity[All_ROC$Feature == f], All_ROC$sensitivity[All_ROC$Feature == f])
+
+ggroc(ROC_listed) +
+  geom_segment(aes(x = 0, xend = 100, y = 100, yend = 0),
+               color="grey", size = 0.01) +
+  scale_color_manual(labels = Feattype,values =pals::cols25(nFeat/2)) + # pals::brewer.pastel1(nFeat)
+  papaja::theme_apa()+
+  theme(legend.title = element_blank()) +
+  coord_equal() +
+  theme(legend.position="bottom",legend.text=ggplot2::element_text(size=7)) + 
+  
+  annotate(geom = "curve", x = op_pt("isValid_perm_M")[1], y = op_pt("isValid_perm_M")[2], xend = 24, yend = 69, 
+           curvature = .3, arrow = arrow(length = unit(2, "mm")), color = "#b2df8a", alpha = 0.5) +
+  annotate(geom = "text", x = 24, y = 69, label = expression(atop("Permuted Valid","structure")), 
+           hjust = "left", color = "#b2df8a", size = 3) +
+  
+  annotate(geom = "curve", x = op_pt("pp_M")[1], y = op_pt("pp_M")[2], xend = 33, yend = 60, 
+           curvature = .3, arrow = arrow(length = unit(2, "mm")), color = "#CAB2D6", alpha = 0.5) +
+  annotate(geom = "text", x = 33, y = 60, label = "Polsby-Popper", 
+           hjust = "left", color = "#CAB2D6", size = 3) +
+  
+  
+  annotate(geom = "curve", x = op_pt("Perimeter_zs")[1], y = op_pt("Perimeter_zs")[2], xend = 42, yend = 51, 
+           curvature = -.3, arrow = arrow(length = unit(2, "mm")), color = "#6A33C2" , alpha = 0.5) +
+  annotate(geom = "text", x = 42, y = 51, label = "Perimeter", 
+           hjust = "left", color = "#6A33C2" , size = 3) 
+
+
+```
+
+```{r}
+#| label: PrepRocRable
+# For tables, use gt() you will save the time I wasted. 
+# Avoid gt() and kableExtra(), my issue was that the caption was in the middle of the first line.
+# I tried all papaja::apa_table, lost much time (cross-referencing becomes a nightmare)
+# Apa quarto is lacking a way to handle column spanning 
+
+All_ROC_round <- All_ROC %>% 
+    mutate_if(is.numeric, round,2)
+All_ROC_round <- All_ROC_round[order(All_ROC_round$AUC, decreasing = TRUE), ]
+
+All_ROC_round <- All_ROC_round %>% 
+  mutate(Feature = recode(Feature, 
+                          "Area_perc" = "Area [screen size %]",
+                          "Area_zs" =  "Area [z-score]", 
+                          "Perimeter_perc" = "Perimeter [screen size %]",
+                          "Perimeter_zs" = "Perimeter [z-score]",
+                          "SelfInter" = "Segment self-intersections [n/9]",
+                          "areaPoly_GA" = "Area of the polygon [z-score]",
+                          "perimPoly" = "Perimeter of the polygon [z-score]" ,   
+                          "isSimple_GA" = "Simple topology [boolean/9]",
+                          "isValidStruct_M" = "Valid structure [boolean/9]",
+                          "isValid_perm_M" = "Permuted valid structure [boolean/9]",
+                          "pp_M" = "Polsby-Popper [score/9]",
+                          "pp_perm_M" = "Permuted P-P [score/9]"
+  ))
+
+SortFeat <- All_ROC_round$Feature # Pass further the AUC sorted features
+```
+
+```{r}
+#| label: tbl-03 
+#| tbl-cap: "Receiver Operating Characteristic Results for Each Consistency Metric"
+#| ft.align: left
+#| fig-pos: "H"
+
+# library(flextable)
+# All_ROC_round |>
+# flextable(All_ROC_round) %>%
+#   flextable::theme_apa() |>
+#   autofit()
+   # kableExtra::kbl(booktabs = TRUE) 
+   # gt()
+# "AUC = Area Under the Curve. DP = Discrimination Power."
+# papaja::apa_table(All_ROC_round, 
+#                  caption = NULL,
+#                   label = NA)
+# knitr::kable(All_ROC_round)
+All_ROC_round %>%
+  mutate(`AUC 95% CI` = paste0("[", formatC(ci_low, format = "f", digits = 2), ", ",
+                               formatC(ci_high, format = "f", digits = 2), "]")) %>%
+  select(Feature, AUC, `AUC 95% CI`, DP, Cutoff = threshold, Sensitivity = sensitivity, Specificity = specificity) %>%
+  gt() %>%
+  sub_missing(columns = DP, missing_text = "n.c.") %>%
+  tab_footnote(footnote = "Note: AUC = area under the curve; CI = DeLong confidence interval; DP = discrimination power (n.c. = not computable because sensitivity or specificity was 100%). AUC, sensitivity and specificity are percentages. Cutoffs were selected with Youden’s index.") %>%
+    tab_options( footnotes.multiline = TRUE)
+```
+
+Youden’s index identified a cutoff of
+`r formatC(All_ROC[All_ROC$Feature == "isValid_perm_M",]$threshold, format = "f", digits = 2)`
+for permuted validity, which corresponds to an average of
+`r round(All_ROC[All_ROC$Feature == "isValid_perm_M",]$threshold*9, 1)`
+valid forms out of 9. For standardised perimeter, scores below
+`r round(All_ROC[All_ROC$Feature == "Perimeter_zs",]$threshold,2)` were
+classified as SSS-like. For Polsby-Popper compactness, scores above
+`r round(All_ROC[All_ROC$Feature == "pp_M",]$threshold,2)` were
+classified as SSS-like.
+
+To further test the stability of these results, we conducted additional
+analyses across the different datasets and with different
+questionnaire-based grouping. Several metrics had comparably high AUCs,
+but their ranking order differed across datasets (see @fig-apx02).
+
+```{r, AdditionalInline}
+# Values reported in the Additional Analyses text, computed here so that the text is not hard-coded.
+# Same rules as the appendix chunks (full-sample cutoffs,
+# hypothesised direction of each metric).
+top5 <- All_ROC$Feature[order(All_ROC$AUC, decreasing = TRUE)][1:5]
+
+class_syn <- sapply(top5, function(f){
+  th <- All_ROC$threshold[All_ROC$Feature == f]
+  if (feature_direction_named[[f]] == "moreSyn") ds_Q[[f]] >= th else ds_Q[[f]] <= th
+})
+keep_alluvial <- ds_Q$ID != "69253" # as in the alluvial appendix figure
+n_consFN <- sum(ds_Q$group == "Syn" & rowSums(class_syn) == 0 & keep_alluvial)
+n_consFP <- sum(ds_Q$group == "Ctl" & rowSums(class_syn) == 5 & keep_alluvial)
+pct_N    <- function(n) formatC(100 * n / nrow(ds_Q), format = "f", digits = 0)
+
+# Correlations with the questionnaire score (Ward datasets only).
+# Higher questionnaire scores indicate weaker self-reported SSS.
+ds_Qw <- ds_Q %>% filter(!is.na(`questionnaire score`))
+cor_q <- lapply(top5, function(f) cor.test(ds_Qw$`questionnaire score`, ds_Qw[[f]]))
+names(cor_q) <- top5
+fmt_r <- function(f) paste0("*r* = ", sub("0\\.", ".", formatC(cor_q[[f]]$estimate, format = "f", digits = 2)),
+                            ", *p* ", fmt_p(cor_q[[f]]$p.value))
+```
+
+## Additional Analyses
+
+Additional analyses addressed four questions. First, we examined whether
+the metrics led to stable results across datasets and questionnaire
+scores. Second, we examined the correlations between consistency metrics
+and questionnaire scores. Third, we examined which spatial forms led to
+false negatives (self-reported synaesthetes' forms classified as
+controls) and false positives (self-reported controls' forms classified
+as synaesthetes) for each metric. Fourth, we checked for participants
+who were consistently classified as the other group across metrics.
+
+First, for the metrics with an AUC of at least 75%, we recalculated AUC,
+sensitivity, and specificity for each dataset. Both the rank ordering
+and the performance estimates varied across data sources (@fig-apx02).
+For example, standardised perimeter had the highest AUC in the
+@ward2022a dataset but the lowest of the five leading metrics in the
+@vanpetersen2020 dataset. @fig-apx03 shows substantial overlap between
+the groups' distributions within several datasets. Using the data from
+the Ward datasets, which also contain the individual questionnaire
+responses, we compared progressively broader score groups depending on
+questionnaire responses: the lowest and highest 10%, then the lowest and
+highest 20%, and so forth, up to the whole Ward sample (lowest and
+highest 50%). Absolute performance was strongest for the most extreme
+questionnaire-based groups and declined as the sampled groups became
+less distinct, although the relative ordering of the leading metrics was
+generally stable (@fig-apx04).
+
+Second, we examined correlations between questionnaire scores and the
+five leading metrics in the Ward datasets. A concern is criterion
+circularity when consistency scores contribute to the original group
+labels [@root2025]. The strongest correlations were observed for
+standardised perimeter (`r fmt_r("Perimeter_zs")`) and permuted validity
+(`r fmt_r("isValid_perm_M")`; @fig-apx05). In both cases, more
+consistent responses went with stronger self-reported SSS.
+
+Third, we visually inspected false negatives (@fig-apx10) and positives
+(@fig-apx11) across permuted validity, standardised perimeter and
+Polsby-Popper scores. Among false negatives, several curved forms by
+self-reported synaesthetes were incorrectly classified as controls with
+the standardised perimeter metric; linear forms with the Polsby-Popper
+metric. Among false positives, the permuted validity metric
+misclassified controls' forms arranged approximately horizontally, and
+the Polsby-Popper metric misclassified irregular, zigzag forms. The
+perimeter metric misclassified highly linear forms, or forms in which
+the participant clicked in approximately the same position repeatedly,
+as synaesthetic.
+
+Fourth, some participants may have been misclassified in the
+self-report, and some may represent consistent controls or inconsistent
+synaesthetes [@root2025; @eagleman2007]. Across the five leading
+metrics, `r n_consFN` self-reported SSS participants (approximately
+`r pct_N(n_consFN)`% of the full sample) were consistently classified as
+controls (i.e. consistent false negatives; @fig-apx08), whereas
+`r n_consFP` controls (approximately `r pct_N(n_consFP)`%) were
+consistently classified as SSS (i.e. consistent false positives;
+@fig-apx09).
+
+In sum, metrics' classification performance varied across datasets and
+decreased as questionnaire-based groups became less extreme. Visual
+inspections suggested that while stimulus-level metrics such as
+perimeter tend to classify synaesthetic curved forms as control,
+form-level metrics such as topological validity and Polsby-Popper score
+tend to classify horizontally arranged forms from controls as
+synaesthetes. In total, `r n_consFN + n_consFP` participants (about
+`r pct_N(n_consFN + n_consFP)`%) were misclassified by all five leading
+metrics.
+
+# Methods - Phase II {#sec-phase-ii-methods}
+
+Phase II will test whether the five metrics with an AUC of at least 75%
+lead to comparable AUC scores and cutoffs in an independent dataset. The
+five selected metrics are: permuted validity, Polsby-Popper compactness,
+standardised perimeter, topological validity and permuted Polsby-Popper.
+This independent dataset will be collected as part of @sachdeva2024,
+which received Stage 1 in-principle acceptance. The task will follow the
+same methodology, besides that there will be four repetitions of each
+stimuli instead of three. The confirmatory analysis will apply
+prespecified metric definitions, classification directions, and cutoffs
+from Phase I without re-optimisation. The Phase II protocol will also
+specify how four response coordinates are combined for the
+stimulus-level area and perimeter metrics. Sample size, recruitment, and
+the full analysis plan are preregistered at <https://osf.io/6wn4m>.
+
+# Discussion - Phase I
+
+Across four datasets, form-level permuted topological validity,
+Polsby-Popper compactness and stimulus-level standardised perimeter
+provided the strongest discrimination between self-reported SSS
+participants and controls. Their AUCs did not differ significantly. This
+suggests that our form-level descriptor performs comparably to an
+established stimulus-level consistency metric. Performance, however,
+varied across datasets. This heterogeneity may explain why triangle
+area, the strongest metric in @rothen2016, performed worse in the
+aggregated sample than expected. In the Ward datasets, the relative
+ranking of the metrics with AUCs of at least 75% remained similar across
+questionnaire-score subsamples, although absolute performance decreased
+as less extreme groups were included. Standardised perimeter also
+correlated slightly more strongly with questionnaire scores than
+permuted validity.
+
+In sum, the novel form-level permuted validity performed comparably to
+the stimulus-level perimeter method. The two metrics capture different
+aspects of the response pattern and may help identify different failure
+modes. These results need validation in an independent sample (Phase
+II).
+
+## Limitations {#sec-limitations}
+
+First, as shown in @fig-apx02, we found that the optimal criteria can
+vary across datasets. These differences might be explained by different
+sampling methods. For example, @vanpetersen2020 recruited SSS from over
+one hundred candidates to maximise participant reporting synaesthetic
+experiences.
+
+Second, consistency tests contain only a limited set of sequential
+stimuli (weekdays, months, and the digits 0-9). Some individuals may
+experience SSS for other ordinal categories such as clock time,
+temperature, or musical keys. The restricted number range may also miss
+transitions at decades or hundreds that are prominent in some number
+forms [@galton1880].
+
+Third, diagnostic cutoffs assume categorical distinctions between
+groups, but SSS may vary continuously [@price2013]. This limitation is
+related to the circularity mentioned previously: diagnostic cutoffs as
+calculated here depend on how SSS and controls are classified in the
+first place [@simner2012]. External validity of the consistency test of
+synaesthesia should therefore be examined, for example automaticity or
+visual Gabor detection might be necessary to establish external validity
+[@ward2018]. Indeed, definitional choices contribute to the wide range
+of reported prevalence 4.4% [@brang2013], 8.1% [@ward2018], and 14%
+[@seron1992].
+
+## Interpretation of Topological Validity
+
+Permuted topological validity led to comparable results to perimeter,
+suggesting that SSS spatial forms may follow topological rules. This
+result might in itself be informative about how SSS forms are mapped in
+space. Indeed, spatial forms may follow topological rules analogous to
+geographical and geometry-based space structures. Analogies between maps
+and neuroscience have a long history (e.g., retinotopy, tonotopy or
+somatotopy, see @eagleman2009). Therefore spatial forms might originate
+from the mapping of ordinal or sequential stimuli onto idiosyncratic
+visuo-spatial abilities following topological rules.
+
+## Intermediary Conclusion {#sec-conclusions}
+
+Phase I compared established stimulus-level consistency metrics with
+novel form-level geometric tests. Permuted topological validity,
+Polsby-Popper compactness and standardised within-stimulus perimeter led
+to the best classification performance. Permuted topological validity
+classified as well as conventional metrics. Its added value is mainly
+theoretical. Self-reported synaesthetes seem to produce more compact and
+topologically valid structures than controls. Standardised perimeter, by
+contrast, quantifies the distance between repeated responses to each
+inducer.
+
+Phase II will test external validity of these metrics on a yet to be
+acquired dataset.
+
+# References
+
+::: {#refs}
+:::
+
+{{< pagebreak >}}
+
+### Appendix
+
+The additional analyses in this appendix address several concerns.
+@apx-featDensity shows whether score distributions are bimodal.
+@apx-SM2byds shows whether AUC, DP, sensitivity and specificity vary
+across datasets.
+
+To address circularity concerns that we might find methods that best
+classify synaesthetes and controls only from the self-reported groups,
+we used two additional approaches. First, we tested sub-samples based on
+percentiles of the questionnaire score distribution (see
+@apx-byquestperc). The rationale is that a good consistency test should
+keep its relative ranking among metrics from strong to weaker SSS. To do
+this, we re-sampled the SSS and controls based on their questionnaire
+distribution by percentiles (i.e., comparing 10% highest questionnaire
+scores vs. 10% lowest, then 20% vs. 20%, etc.). In addition, we
+correlated the questionnaire scores with the different consistency
+metrics, see @apx-correlation-with-self-report.
+
+We also wanted to visually characterise whether certain patterns occur
+more frequently for some categories than others (e.g. circular patterns
+for months and linear for numbers). We wanted to visualise how each
+participant is classified by each metric.
+
+From this we found a group of synaesthetes who were consistently
+classified as controls by different methods, as well as a group of
+controls who were consistently classified as synaesthetes, see
+@apx-alluvial.
+
+Finally, we visualise false positives and negatives of the consistency
+methods (see @apx-false-positive-and-negative-analysis).
+
+The following R packages were used for the data visualisation in the
+appendix:
+`r pakret::pkrt_list("ggridges","cowplot","ggalluvial","corrplot")`
+
+# Self-Reported Phenomenological Descriptives of the Ward Datasets
+
+```{r}
+#| label: fig-apx00
+#| fig-cap: "Venn diagram of the types of self-reported SSS in the Ward datasets"
+#| apa-note: "The diagram includes only participants in the two Ward datasets for whom questionnaire data were available. SSS = sequence-space synaesthesia"
+
+na.rm <- function(x){x <- x[!is.na(x)]}
+ds_Q_W <- ds_Q %>% filter(dataSource %in% c("Ward","Ward2"))
+
+ID_group  <- na.rm(ds_Q_W$ID[ds_Q_W$group =="Syn"])
+ID_number <- na.rm(ds_Q_W$ID[ds_Q_W$`Q2_numbers (1=present, 0=absent)` == 1] )
+ID_days   <- na.rm(ds_Q_W$ID[ds_Q_W$`Q2_days  (1=present, 0=absent)` == 1] )
+ID_month  <- na.rm(ds_Q_W$ID[ds_Q_W$`Q2_months  (1=present, 0=absent)`== 1] )
+
+x <- list(SSS = ID_group, Number = ID_number, Day = ID_days, Month =ID_month)
+# An euler diagram would be best, but there are no good solutions in r for now
+ggVennDiagram(x, label = "count", set_color = c("black","orange","orange","orange")) +
+    scale_fill_gradient(low = "white", high = "firebrick")
+```
+
+```{r, cleanup3}
+# Clean up :
+rm(ID_number,ID_days,ID_month, x, colNWard2 ,N1,N2,N3)
+```
+
+# Metric Distributions {#apx-featDensity}
+
+@fig-apx01 compares the density plots of each standardised metric for
+SSS and controls (standardisation makes the metrics comparable).
+
+```{r}
+#| label: fig-apx01
+#| apa-note: 
+#|    - Blue = self-reported synaesthetes, red = self-reported controls. 
+#|    - All metrics were standardised (*z-scores*). The x axis is trimmed between -3 and 3 z-scores. Vertical lines represent the 20th, 50th (median) and 80th percentiles of each group's distribution.
+#| fig-cap: Density plots of all the consistency metrics comparing SSS and controls
+
+
+ds_Q_zs <- ds_Q %>%
+  select(feature_list, group,ID) %>%
+  mutate_at(feature_list,scale) 
+
+ds_Q_zs <- ds_Q_zs %>% 
+  pivot_longer(cols = !c(group,ID),
+               names_to = "Feature",
+               values_to = "zs")
+
+
+ds_Q_zs <- ds_Q_zs %>% 
+  mutate(Feature = recode(Feature,
+                          "Area_perc" = "Area [screen size %]",
+                          "Area_zs" = "Area [z-score]", 
+                          "Perimeter_perc" = "Perimeter [screen size %]",
+                          "Perimeter_zs" = "Perimeter [z-score]",
+                          "areaPoly_GA" = "Area of the polygon [z-score]",
+                          "perimPoly" = "Perimeter of the polygon [z-score]" ,
+                          "isSimple_GA" = "Simple topology [boolean/9]",
+                          "SelfInter" = "Segment self-intersections [n/9]",
+                          "isValidStruct_M" = "Valid structure [boolean/9]",
+                          "isValid_perm_M" =  "Permuted valid structure [boolean/9]",
+                          "pp_M" = "Polsby-Popper [score/9]",
+                          "pp_perm_M" = "Permuted P-P [score/9]"
+                          ))
+
+ds_Q_zs <- ds_Q_zs %>% mutate(group = recode(group,
+                                            "Syn" = "Sequence-Space Synaesthetes",
+                                             "Ctl" = "Controls"))
+
+# So the features are sorted by AUC ;)
+ds_Q_zs$Feature <- factor(ds_Q_zs$Feature, levels = rev(All_ROC_round$Feature))
+
+ggplot(ds_Q_zs, aes(x = zs, y = Feature, fill = group, color  = group, point_color = group)) + 
+  geom_density_ridges(alpha = 0.5, 
+                      jittered_points = FALSE, 
+                      position = position_points_jitter(width = 0.05, height = 0), 
+                      scale = 1,
+                      quantile_lines = TRUE, quantiles = c(0.2,0.5,0.8)) +
+  xlim(-3, 3) +
+  papaja::theme_apa() +
+  scale_fill_manual(values = c("Sequence-Space Synaesthetes" = "steelblue",
+                               "Controls" = "firebrick")) +
+  scale_colour_manual(values = c("Sequence-Space Synaesthetes" = "steelblue",
+                               "Controls" = "firebrick")) +
+  labs(y = "Method", x = "z-score") +
+    theme(legend.position = "none")
+```
+
+# ROC Analysis by Dataset {#apx-SM2byds}
+
+Here we compare the ROC results of the five metrics with the highest AUC
+for each dataset, see @fig-apx02 and @tbl-apx02. Descriptively, we also
+looked at the distributions of each metric across SSS and controls
+(@fig-apx03). Note that the unpublished Ward dataset has more
+synaesthetes than controls (5:1 ratio). Note that some of the metrics
+led to 100% specificity in the @vanpetersen2020 dataset.
+
+```{r}
+#| label: prep table apx02
+
+feat_cols <- All_ROC$Feature[order(All_ROC$AUC, decreasing = TRUE)]
+
+tbl_out <- ds_Q %>%
+    group_by(group) %>%
+    select(c(group, dataSource, feat_cols)) %>%
+    pivot_longer(cols = all_of(feat_cols),
+                 names_to = "Feature",
+                 values_to = "Value") %>%
+    group_by(group, dataSource, Feature) %>%
+    mutate(group = recode(group, "Ctl" = "Control", "Syn" = "SSS"))  %>%
+    summarise(Mean = mean(Value), .groups = "drop") %>%
+    pivot_wider(names_from = c(group, dataSource),
+                values_from = Mean) %>%
+    arrange(match(Feature, feat_cols))
+
+tbl_out <- tbl_out %>% mutate(Feature = recode(Feature,
+                          "Area_perc" = "Area [screen size %]",
+                          "Area_zs" = "Area [z-score]", 
+                          "Perimeter_perc" = "Perimeter [screen size %]",
+                          "Perimeter_zs" = "Perimeter [z-score]",
+                          "areaPoly_GA" = "Area of the polygon [z-score]",
+                          "perimPoly" = "Perimeter of the polygon [z-score]" ,
+                          "isSimple_GA" = "Simple topology [boolean/9]",
+                          "SelfInter" = "Segment self-intersections [n/9]",
+                          "isValidStruct_M" = "Valid structure [boolean/9]",
+                          "isValid_perm_M" =  "Permuted valid structure [boolean/9]",
+                           "pp_M" = "Polsby-Popper [score/9]",
+                          "pp_perm_M" = "Permuted P-P [score/9]"))
+
+
+```
+
+```{r}
+#| label: tbl-apx02
+#| tbl-cap: Mean of each metric by group and dataset
+
+
+# Change the "apacaption.lua", add:
+#  if FORMAT == "latex" then
+#   return{figuretitlediv,pandoc.RawBlock("latex","\\vspace{0.5em}"),figurecationdiv}
+# end
+# Will solve the issue 
+
+
+
+gt(tbl_out) %>%
+  fmt_number(
+    columns = where(is.numeric),
+    decimals = 2
+  ) |>
+  cols_width(
+    Feature ~ px(150)
+  ) %>%
+  tab_options(
+    heading.padding = px(12),  
+  ) |>
+  tab_spanner_delim(delim = "_") |>
+  cols_align_decimal(
+    columns = where(is.numeric)
+  )
+
+
+```
+
+```{r}
+#| label: prep table apx02b
+feat_cols <- All_ROC$Feature[order(All_ROC$AUC, decreasing = TRUE)]
+
+tbl_out <- ds_Q %>%
+   select(c(ID,group, dataSource, feat_cols)) %>%
+  mutate_at(feat_cols,scale)  %>%
+  pivot_longer(cols = all_of(feat_cols),
+               names_to = "Feature",
+               values_to = "Value") %>%
+  group_by(group, dataSource, Feature) %>%
+  mutate(group = recode(group, "Ctl" = "Control", "Syn" = "SSS"))  %>%
+  summarise(Mean = mean(Value), .groups = "drop") %>%
+  pivot_wider(names_from = c(group, dataSource),
+              values_from = Mean) %>%
+  arrange(match(Feature, feat_cols))
+
+tbl_out <- tbl_out %>% mutate(Feature = recode(Feature,
+                          "Area_perc" = "Area [screen size %]",
+                          "Area_zs" = "Area [z-score]", 
+                          "Perimeter_perc" = "Perimeter [screen size %]",
+                          "Perimeter_zs" = "Perimeter [z-score]",
+                          "areaPoly_GA" = "Area of the polygon [z-score]",
+                          "perimPoly" = "Perimeter of the polygon [z-score]" ,
+                          "isSimple_GA" = "Simple topology [boolean/9]",
+                          "SelfInter" = "Segment self-intersections [n/9]",
+                          "isValidStruct_M" = "Valid structure [boolean/9]",
+                          "isValid_perm_M" =  "Permuted valid structure [boolean/9]",
+                           "pp_M" = "Polsby-Popper [score/9]",
+                          "pp_perm_M" = "Permuted P-P [score/9]"))
+```
+
+```{r}
+#| label: tbl-apx02b
+#| tbl-cap: Mean standardised score of each metric by group and dataset
+
+
+# Change the "apacaption.lua", add:
+#  if FORMAT == "latex" then
+#   return{figuretitlediv,pandoc.RawBlock("latex","\\vspace{0.5em}"),figurecationdiv}
+# end
+# Will solve the issue 
+
+
+gt(tbl_out) %>%
+  fmt_number(
+    columns = where(is.numeric),
+    decimals = 2
+  ) |>
+  cols_width(
+    Feature ~ px(150)
+  ) %>%
+  tab_options(
+    heading.padding = px(12),  
+  ) |>
+  tab_spanner_delim(delim = "_") |>
+  cols_align_decimal(
+    columns = where(is.numeric)
+  )
+```
+
+```{r AUCbyDataSource}
+
+dataSources <- unique(ds$dataSource)
+AUC_ds <- vector("list", length(dataSources))
+
+
+for(i in 1:length(dataSources)){
+  
+  ds_here <- ds_Q %>% filter(dataSource %in% dataSources[i])
+  
+  # INITIALIZE ROC_curves
+  ROC_curves <- list()
+  
+  # Initialize dataframe to collect relevant ROC values:
+  Per_ds_ROC <- data.frame(Feature=character(),
+                        AUC = character(),
+                        threshold=integer(),
+                        sensitivity=integer(),
+                        specificity=integer(),
+                        ppv = integer(),
+                        npv = integer(),
+                        high_ci = integer(),
+                        low_ci = integer(),
+                        stringsAsFactors=FALSE)
+  
+  # Loop by features:
+  for(fit_n in 1:length(Feats[,1])){
+    ROC_here <- Comp_ROC(ds_here, "group", Feats[[fit_n,1]],"ID", Feats[[fit_n,2]])
+    
+    ROC_curves      <- c(ROC_curves,list(ROC_here$ROC_curve,ROC_here$ROC_properties$Feature))
+    Per_ds_ROC      <- rbind(Per_ds_ROC, ROC_here$ROC_properties)
+  }
+  
+  Per_ds_round <- Per_ds_ROC %>% 
+    mutate_if(is.numeric, round,2)
+  
+  Per_ds_round <- Per_ds_round[order(Per_ds_round$AUC, decreasing = TRUE), ]
+  
+  
+   AUC_ds[[i]] <- data.frame(
+    Feature = Per_ds_round$Feature,
+    AUC = Per_ds_round$AUC,
+    DP =  Per_ds_round$DP,
+    Sensitivity = Per_ds_round$sensitivity,
+    Specificity = Per_ds_round$specificity,
+    dataSource = dataSources[i],
+    N = length(ds_here$ID)
+  )
+}
+
+AUC_ds <- do.call(rbind, AUC_ds)
+
+# Comment the following if you want to see all features. I thought the figure were a bit overwhelming for my tiny cognitive capacities
+AUC_ds <- AUC_ds %>% 
+  #filter(dataSource != "Ward2") %>%
+  mutate(Feature = recode(Feature,
+                          "Area_perc" = "Area [screen size %]",
+                          "Area_zs" = "Area [z-score]", 
+                          "Perimeter_perc" = "Perimeter [screen size %]",
+                          "Perimeter_zs" = "Perimeter [z-score]",
+                          "areaPoly_GA" = "Area of the polygon [z-score]",
+                          "perimPoly" = "Perimeter of the polygon [z-score]" ,
+                          "isSimple_GA" = "Simple topology [boolean/9]",
+                          "SelfInter" = "Segment self-intersections [n/9]",
+                          "isValidStruct_M" = "Valid structure [boolean/9]",
+                          "isValid_perm_M" =  "Permuted valid structure [boolean/9]",
+                           "pp_M" = "Polsby-Popper [score/9]",
+                          "pp_perm_M" = "Permuted P-P [score/9]")) %>%
+  
+  filter(Feature %in%  All_ROC_round$Feature[1:5]) %>%
+  mutate(dataSource = recode(dataSource,"PeterCor" = "vanPetersen")) 
+
+```
+
+```{r}
+#| label: fig-apx02
+#| apa-note: "AUC = area under the curve; DP = discrimination power (missing where sensitivity or specificity was 100%). The unpublished Ward dataset is not shown because of its 5:1 ratio of synaesthetes to controls."
+#| fig-cap: "Line plots of AUC, DP, sensitivity and specificity by data source"
+
+AUC_ds$dataSource <- as.factor(AUC_ds$dataSource)
+AUC_ds <- AUC_ds %>% 
+  filter(dataSource != "Ward2") %>%
+   mutate(dataSource = factor(dataSource, levels=c("Rothen", "Ward", "vanPetersen")))
+
+gp_AUC <- ggplot(AUC_ds, aes(x = dataSource, y = AUC, group = Feature, colour = Feature)) +
+  geom_point() +
+  geom_line() +
+  scale_color_manual(values =pals::cols25(nFeat)) + 
+  papaja::theme_apa() +
+   xlab('') +
+  ylim(50,100) +
+  geom_hline(yintercept = 75) +
+  theme(legend.position="none",axis.text.x = element_blank())
+
+gp_DP <- ggplot(AUC_ds, aes(x = dataSource, y = DP, group = Feature, colour = Feature)) +
+  geom_point() +
+  geom_line() +
+  scale_color_manual(values =pals::cols25(nFeat)) +
+  papaja::theme_apa() +
+  xlab(' ') +
+  ylim(0, NA) +
+  theme(legend.position="none",axis.text.x = element_blank())
+
+gp_Sensitivity <- ggplot(AUC_ds, aes(x = dataSource, y = Sensitivity, group = Feature, colour = Feature)) +
+  geom_point() +
+  geom_line() +
+  scale_color_manual(values =pals::cols25(nFeat)) + 
+  papaja::theme_apa() +
+  xlab(' ') +
+  ylim(50,100) +
+  theme(legend.position="none",axis.text.x = element_text(angle = 90))
+
+gp_Specificity <- ggplot(AUC_ds, aes(x = dataSource, y = Specificity, group = Feature, colour = Feature)) +
+  geom_point() +
+  geom_line() +
+  scale_color_manual(values =pals::cols25(nFeat)) + 
+  papaja::theme_apa() +
+  xlab(' ') +
+  ylim(50,100) +
+  theme(legend.position="none",axis.text.x = element_text(angle = 90))
+
+
+legend <- get_legend(
+  ggplot(AUC_ds, aes(x = dataSource, y = Specificity, group = Feature, colour = Feature)) +
+    geom_point() +
+    papaja::theme_apa() +
+    scale_color_manual(values =pals::cols25(nFeat)) +
+    guides(color = guide_legend(nrow = 2)) +
+    theme( legend.justification = c(0.2,1), legend.position = "bottom",
+           legend.text=ggplot2::element_text(size=10))
+)
+
+
+plot_grid(gp_AUC, gp_DP,gp_Sensitivity,gp_Specificity, 
+          labels = c("A","B","C","D"),legend = legend, ncol=2,
+          rel_heights = c(1, 1.3, 0.4)) # height of each row. 3rd row is legend, 10% of the others.
+```
+
+```{r}
+#| label: fig-apx03
+#| apa-note: 
+#|    - Blue = self-reported synaesthetes, red = self-reported controls. 
+#|    - All metrics were standardised (*z-scores*). The x axis is trimmed between -3 and 3 z-scores. Vertical lines indicate the 20th, 50th (median) and 80th percentiles of each distribution.
+#| fig-cap: Density plots of all the consistency metrics comparing SSS and controls by dataset
+
+
+ds_Q_zs <- ds_Q %>%
+  select(feature_list, group,ID, dataSource) %>%
+  mutate_at(feature_list,scale) 
+
+ds_Q_zs <- ds_Q_zs %>% 
+  pivot_longer(cols = !c(group,ID, dataSource),
+               names_to = "Feature",
+               values_to = "zs")
+
+
+ds_Q_zs <- ds_Q_zs %>% 
+  mutate(Feature = recode(Feature,
+                          "Area_perc" = "Area [screen size %]",
+                          "Area_zs" = "Area [z-score]", 
+                          "Perimeter_perc" = "Perimeter [screen size %]",
+                          "Perimeter_zs" = "Perimeter [z-score]",
+                          "areaPoly_GA" = "Area of the polygon [z-score]",
+                          "perimPoly" = "Perimeter of the polygon [z-score]" ,
+                          "isSimple_GA" = "Simple topology [boolean/9]",
+                          "SelfInter" = "Segment self-intersections [n/9]",
+                          "isValidStruct_M" = "Valid structure [boolean/9]",
+                          "isValid_perm_M" =  "Permuted valid structure [boolean/9]",
+                          "pp_M" = "Polsby-Popper [score/9]",
+                          "pp_perm_M" = "Permuted P-P [score/9]"
+                          ))
+
+ds_Q_zs <- ds_Q_zs %>% mutate(group = recode(group,
+                                            "Syn" = "Sequence-Space Synaesthetes",
+                                             "Ctl" = "Controls"))
+
+# So the features are sorted by AUC ;)
+ds_Q_zs$Feature <- factor(ds_Q_zs$Feature, levels = rev(All_ROC_round$Feature))
+
+ggplot(ds_Q_zs, aes(x = zs, y = Feature, fill = group, color  = group, point_color = group)) + 
+  geom_density_ridges(alpha = 0.5, 
+                      jittered_points = FALSE, 
+                      position = position_points_jitter(width = 0.05, height = 0), 
+                      scale = 1,
+                      quantile_lines = TRUE, quantiles = c(0.2, 0.5, 0.8)) +
+  xlim(-3, 3) +
+  papaja::theme_apa() +
+  scale_fill_manual(values = c("Sequence-Space Synaesthetes" = "steelblue",
+                               "Controls" = "firebrick")) +
+  scale_colour_manual(values = c("Sequence-Space Synaesthetes" = "steelblue",
+                               "Controls" = "firebrick")) +
+  labs(y = "Method", x = "z-score") +
+  facet_grid(~ dataSource) +
+    theme(legend.position = "none",axis.text=element_text(size=9))
+```
+
+# ROC Analysis Sub-sampled Data by Questionnaire Quantiles (10% steps) {#apx-byquestperc}
+
+We sub-sampled the Ward datasets by questionnaire score. We first
+selected participants with the lowest 10% and the highest 10% of scores,
+then the lowest and highest 20%, and so on up to 50% and 50% (i.e. the
+whole sample with questionnaire data). Absolute AUC, sensitivity and
+specificity are expected to decrease as less extreme groups are
+included. A valid metric should, however, keep its ranking relative to
+the other metrics across sub-samples, see @fig-apx04.
+
+```{r}
+#| label: PrepROCperQuant
+ds_Q2 <- ds_Q %>% filter(dataSource %in% c("Ward","Ward2")) %>% filter(!is.na(`questionnaire score`))
+
+p <- seq(0,1,0.10)
+quant <- quantile(ds_Q2$`questionnaire score`, probs = p)
+quant <- as.numeric(quant)
+
+n_steps <- floor(length(quant)/2) # 5 steps: 10/90, 20/80, 30/70, 40/60, 50/50 (= all Ward participants)
+AUC_perctils <- vector("list", n_steps)
+
+# Separate object names inside the loop, so that the full-sample All_ROC / All_ROC_round are NOT
+# overwritten by the last sub-sample.
+for(quant_n in 1:n_steps){
+  
+  All_ROC_q <- data.frame()
+  
+  # Lowest (quant_n x 10)% vs highest (quant_n x 10)% questionnaire scores.
+  # quant[1] is the 0% quantile, so the lower bound is quant[quant_n + 1].
+  q_low  <- quant[quant_n + 1]
+  q_high <- quant[length(quant) - quant_n]
+  ds_Q2_quant_n <- ds_Q2 %>% 
+  filter(`questionnaire score` <= q_low | `questionnaire score` >= q_high)
+  
+  # Loop by features:
+  for(fit_n in 1:length(Feats[,1])){
+    ROC_here  <- Comp_ROC(ds_Q2_quant_n, "group", Feats[[fit_n,1]],"ID",Feats[[fit_n,2]])
+    All_ROC_q <- rbind(All_ROC_q, ROC_here$ROC_properties)
+  }
+  
+  All_ROC_q_round <- All_ROC_q %>% 
+    mutate_if(is.numeric, round,2)
+  All_ROC_q_round <- All_ROC_q_round[order(All_ROC_q_round$AUC, decreasing = TRUE), ]
+  
+  AUC_perctils[[quant_n]] <- data.frame(
+    Feature = All_ROC_q_round$Feature,
+    AUC = All_ROC_q_round$AUC,
+    DP = All_ROC_q_round$DP,
+    Sensitivity = All_ROC_q_round$sensitivity,
+    Specificity = All_ROC_q_round$specificity,
+    Quant_min = q_low,
+    Quant_max = q_high,
+    N = nrow(ds_Q2_quant_n),
+    quant_n = quant_n
+  )
+}
+
+AUC_perctils <- do.call(rbind, AUC_perctils)
+
+AUC_perctils$quant_n <- factor(AUC_perctils$quant_n, levels = 1:n_steps,
+                               labels = c("10 & 90%", "20 & 80%", "30 & 70%", "40 & 60%", "50 & 50% (all)"))
+rm(All_ROC_q, All_ROC_q_round)
+# Top 5 metrics of the FULL sample (All_ROC is no longer overwritten above):
+AUC_perctils <- AUC_perctils %>%
+  filter(Feature %in%  All_ROC$Feature[order(All_ROC$AUC, decreasing = TRUE)][1:5]) %>%
+  mutate(Feature = recode(Feature,
+                             "Area_perc" = "Area [screen size %]",
+                          "Area_zs" = "Area [z-score]", 
+                          "Perimeter_perc" = "Perimeter [screen size %]",
+                          "Perimeter_zs" = "Perimeter [z-score]",
+                          "areaPoly_GA" = "Area of the polygon [z-score]",
+                          "perimPoly" = "Perimeter of the polygon [z-score]" ,
+                          "isSimple_GA" = "Simple topology [boolean/9]",
+                          "SelfInter" = "Segment self-intersections [n/9]",
+                          "isValidStruct_M" = "Valid structure [boolean/9]",
+                          "isValid_perm_M" =  "Permuted valid structure [boolean/9]",
+                          "pp_M" = "Polsby-Popper [score/9]",
+                          "pp_perm_M" = "Permuted P-P [score/9]"))
+  
+```
+
+```{r}
+#| label: fig-apx04
+#| fig-cap: "Line plots of AUC, DP, sensitivity and specificity by questionnaire percentile"
+#| apa-note: "Each point is a sub-sample of the Ward datasets with the lowest and highest x% of questionnaire scores (50 & 50% = all participants with questionnaire data). AUC = area under the curve; DP = discrimination power."
+
+gp_AUC <- ggplot(AUC_perctils, aes(x = quant_n, y = AUC, group = Feature, colour = Feature)) +
+  geom_path() +
+  geom_point() +
+  scale_color_manual(values =pals::cols25(nFeat)) +
+  papaja::theme_apa() +
+  xlab(' ') +
+  ylim(50,100) +
+  theme(legend.position="none",axis.text.x = element_blank())
+
+gp_DP <- ggplot(AUC_perctils, aes(x = quant_n, y = DP, group = Feature, colour = Feature)) +
+  geom_path() +
+  geom_point() +
+  scale_color_manual(values =pals::cols25(nFeat)) +
+  papaja::theme_apa() +
+  xlab(' ') +
+  ylim(0, NA) +
+  theme(legend.position="none",axis.text.x = element_blank())
+
+gp_Sensitivity <- ggplot(AUC_perctils, aes(x = quant_n, y = Sensitivity, group = Feature, colour = Feature)) +
+  geom_path() +
+  geom_point() +
+  scale_color_manual(values =pals::cols25(nFeat)) +
+  papaja::theme_apa() +
+  xlab(' ') +
+  ylim(50,100) +
+  theme(legend.position="none",axis.text.x = element_text(angle = 90))
+
+gp_Specificity <- ggplot(AUC_perctils, aes(x = quant_n, y = Specificity, group = Feature, colour = Feature)) +
+  geom_path() +
+  geom_point() +
+  scale_color_manual(values =pals::cols25(nFeat)) +
+  papaja::theme_apa() +
+  xlab(' ') +
+  ylim(50,100) +
+  theme(legend.position="none",axis.text.x = element_text(angle = 90))
+
+
+legend <- get_legend(
+  ggplot(AUC_perctils, aes(x = quant_n, y = Specificity, group = Feature, colour = Feature)) +
+    geom_point() +
+    papaja::theme_apa() +
+    scale_color_manual(values =pals::cols25(nFeat)) +
+     guides(color = guide_legend(nrow = 2)) +
+    theme( legend.justification = c(0.2,1), legend.position = "bottom",
+           legend.text=ggplot2::element_text(size=10))
+)
+
+
+plot_grid(gp_AUC, gp_DP,gp_Sensitivity,gp_Specificity, 
+          labels = c("A","B","C","D"),legend = legend, ncol=2,
+          rel_heights = c(1, 1.3, 0.4)) # height of each row. 3rd row is legend, 10% of the others.
+```
+
+# Correlation with Self-Report {#apx-correlation-with-self-report}
+
+The best criterion should also correlate with questionnaire scores. This
+was possible only for the Ward datasets, see @fig-apx05. Higher
+questionnaire scores indicate weaker self-reported SSS.
+
+```{r}
+#| label: fig-apx05
+#| message: false
+#| warning: false
+#| apa-note: Only data from the two Ward datasets are included. Values are signed Pearson correlations; non-significant correlations (p ≥ .05) are left blank. Higher questionnaire scores indicate weaker self-reported SSS.
+#| fig-cap: Correlation with self-reported questionnaire
+#| fig-height: 9
+#| fig-width: 9
+
+sel_dsQ <- ds_Q %>%
+  select(c(`questionnaire score`,feature_list)) %>%
+  filter(!is.na(`questionnaire score`))  %>%
+  select_if(~ !any(is.na(.)))
+
+sel_dsQ <- sel_dsQ %>% 
+  select(c("questionnaire score", all_of(top5))) %>% # full-sample top 5
+  rename("Perimeter [standardised coordinates]" = "Perimeter_zs",
+         "Valid structure [proportion of forms]" = "isValidStruct_M",
+         "Permuted valid structure [proportion of forms]" = "isValid_perm_M",
+         "Polsby-Popper [mean across forms]" = "pp_M",
+          "Permuted Polsby-Popper [mean across forms]" = "pp_perm_M")
+
+sel_CorMat <- cor(sel_dsQ)
+sel_CorMat_test <- cor.mtest(sel_dsQ)
+  
+
+# Signed correlations. Higher questionnaire scores indicate weaker SSS self-report.
+corrplot(sel_CorMat, method = 'number', diag=FALSE, type = "lower",tl.col = 'black', cl.pos = 'n',col = c('black', 'black'),
+         p.mat = sel_CorMat_test$p, sig.level = .05, insig = "blank")
+```
+
+# False Positive and Negative Analysis {#apx-false-positive-and-negative-analysis}
+
+To inspect patterns in false negatives (synaesthetes classified as
+controls) and false positives (controls classified as synaesthetes), we
+plotted false positives and negatives for permuted validity,
+standardised perimeter and Polsby-Popper score, after applying the
+respective cutoff. For each metric we only represent participants that
+are uniquely flagged as false negatives or positives. For example, if a
+participant is flagged as a false negative by permuted validity and
+standardised perimeter, they are not shown here.
+
+```{r}
+#| label: PassorNot
+
+ds_Q$pass_SynGroup <- ds_Q$group == "Syn" # True if self-report as syn
+
+All_ROC_round <- All_ROC %>% 
+  mutate_if(is.numeric, round,2)
+All_ROC_round <- All_ROC_round[order(All_ROC_round$AUC, decreasing = TRUE), ]
+
+for(feat_i in 1:length(All_ROC_round$Feature) ){
+  feat_here <- All_ROC_round$Feature[feat_i] 
+  # True if class as Syn. False if as Ctl.
+  # Direction from the hypothesised direction of each metric, not from its AUC rank:
+  if(feature_direction_named[[feat_here]] == "moreSyn"){ 
+    
+    ds_Q[[paste0("pass_",feat_here)]]  <- ds_Q[[feat_here]] >= All_ROC_round$threshold[feat_i]
+    
+  } else {
+    
+    ds_Q[[paste0("pass_",feat_here)]]  <- ds_Q[[feat_here]] <= All_ROC_round$threshold[feat_i]
+  }
+}
+
+```
+
+## False Negatives
+
+```{r}
+
+ID_FN_validperm    <- ds_Q$ID[ds_Q$group == "Syn" & ds_Q$pass_isValid_perm_M == "FALSE"]
+
+ID_FN_Perimeter_zs <- ds_Q$ID[ds_Q$group == "Syn" & ds_Q$pass_Perimeter_zs== "FALSE"]
+
+ID_FN_PP_M <- ds_Q$ID[ds_Q$group == "Syn" & ds_Q$pass_pp_M== "FALSE"]
+
+all_FN <- unique(c(ID_FN_validperm, ID_FN_Perimeter_zs, ID_FN_PP_M))
+
+# FN unique to validperm
+FN_unique_valid <- all_FN[! all_FN %in% ID_FN_PP_M & ! all_FN %in% ID_FN_Perimeter_zs]
+
+# FN unique to perimeter
+FN_unique_perim <- all_FN[! all_FN %in% ID_FN_validperm & ! all_FN %in% ID_FN_PP_M]
+
+# FN unique to pp score
+FN_unique_pp <-all_FN[! all_FN %in% ID_FN_validperm & ! all_FN %in% ID_FN_Perimeter_zs]
+```
+
+```{r}
+#| label: fig-apx10
+#| fig-cap: "Unique False Negative examples"
+#| apa-note: "Spatial forms of self-reported synaesthetes who are uniquely misclassified as controls, given the cutoff of permuted validity (red), standardised perimeter (green) or Polsby-Popper score (orange). Only false negatives that are not also flagged by the other two metrics are shown. If there are too many false negatives, six participants are randomly sampled."
+
+set.seed(42) # reproducible random selection of examples
+# Up to 6 IDs; sample() on a vector of length 1 would sample from 1:x, so guard it:
+sample_ids <- function(x, n = 6) if (length(x) <= n) x else sample(x, n)
+
+gp1 <- ds %>% 
+  filter(ID  %in% FN_unique_valid) %>%
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>% # Start ggplot
+  ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+  geom_path(aes(x = x_zs, y = y_zs, group = repetition)) +
+  geom_text(aes(x = x_zs+0.1, y = y_zs+0.1), size = 0.5, alpha = 0.5) +
+  facet_wrap(ID ~ Cond, ncol = 6) +
+  theme_void()  +
+  theme(strip.text = element_text(size = 4)) + 
+  theme(plot.background = element_rect(fill = alpha("firebrick",0.5), color = NA))
+
+gp2 <- ds %>% 
+  filter(ID  %in% sample_ids(FN_unique_perim)) %>%
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>% # Start ggplot
+  ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+  geom_path(aes(x = x_zs, y = y_zs, group = repetition)) +
+  geom_text(aes(x = x_zs+0.1, y = y_zs+0.1), size = 0.5, alpha = 0.5) +
+  facet_wrap(ID ~ Cond, ncol = 6) +
+  theme_void()  +
+  theme(strip.text = element_text(size = 4)) + 
+  theme(plot.background = element_rect(fill = alpha("forestgreen", 0.5), color = NA))
+
+
+gp3 <- ds %>% 
+  filter(ID  %in% sample_ids(FN_unique_pp)) %>%
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>% # Start ggplot
+  ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+  geom_path(aes(x = x_zs, y = y_zs, group = repetition)) +
+  geom_text(aes(x = x_zs+0.1, y = y_zs+0.1), size = 0.5, alpha = 0.5) +
+  facet_wrap(ID ~ Cond, ncol = 6) +
+  theme_void()  +
+  theme(strip.text = element_text(size = 4))+
+  theme(plot.background = element_rect(fill = alpha("orange",0.5), color = NA,)) 
+
+
+plot_grid(gp1, gp2, gp3, ncol = 1, rel_heights = c(1,1,1))
+```
+
+## False Positives
+
+```{r}
+
+ID_FP_validperm    <- ds_Q$ID[ds_Q$group == "Ctl" & ds_Q$pass_isValid_perm_M == "TRUE"]
+
+ID_FP_Perimeter_zs <- ds_Q$ID[ds_Q$group == "Ctl" & ds_Q$pass_Perimeter_zs == "TRUE"]
+
+ID_FP_PP_M <- ds_Q$ID[ds_Q$group == "Ctl" & ds_Q$pass_pp_M == "TRUE"]
+
+all_FP <- unique(c(ID_FP_validperm, ID_FP_Perimeter_zs, ID_FP_PP_M))
+
+# FP unique to validperm
+FP_unique_valid <- all_FP[! all_FP %in% ID_FP_PP_M & ! all_FP %in% ID_FP_Perimeter_zs]
+
+# FP unique to perimeter
+FP_unique_perim <- all_FP[! all_FP %in% ID_FP_validperm & ! all_FP %in% ID_FP_PP_M]
+
+# FP unique to pp score
+FP_unique_pp <-all_FP[! all_FP %in% ID_FP_validperm & ! all_FP %in% ID_FP_Perimeter_zs]
+```
+
+```{r}
+#| label: fig-apx11
+#| fig-cap: "Unique False Positive examples"
+#| apa-note: "Spatial forms of self-reported controls who are uniquely misclassified as synaesthetes, given the cutoff of permuted validity (red), standardised perimeter (green) or Polsby-Popper score (orange). Only false positives that are not also flagged by the other two metrics are shown. If there are too many false positives, six participants are randomly sampled."
+
+set.seed(42) # reproducible random selection of examples
+
+gp1 <- ds %>% 
+  filter(ID  %in% sample_ids(FP_unique_valid)) %>%
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>% # Start ggplot
+  ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+  geom_path(aes(x = x_zs, y = y_zs, group = repetition)) +
+  geom_text(aes(x = x_zs+0.1, y = y_zs+0.1), size = 0.5, alpha = 0.5) +
+  facet_wrap(ID ~ Cond, ncol = 6) +
+  theme_void()  +
+  theme(strip.text = element_text(size = 2)) + 
+  theme(plot.background = element_rect(fill = alpha("firebrick",0.5), color = NA))
+
+gp2 <- ds %>% 
+  filter(ID  %in% sample_ids(FP_unique_perim)) %>%
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>% # Start ggplot
+  ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+  geom_path(aes(x = x_zs, y = y_zs, group = repetition)) +
+  geom_text(aes(x = x_zs+0.1, y = y_zs+0.1), size = 0.5, alpha = 0.5) +
+  facet_wrap(ID ~ Cond, ncol = 6) +
+  theme_void()  +
+  theme(strip.text = element_text(size = 2)) + 
+  theme(plot.background = element_rect(fill = alpha("forestgreen", 0.5), color = NA))
+
+
+gp3 <- ds %>% 
+  filter(ID  %in% sample_ids(FP_unique_pp)) %>%
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>% # Start ggplot
+  ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+  geom_path(aes(x = x_zs, y = y_zs, group = repetition)) +
+  geom_text(aes(x = x_zs+0.1, y = y_zs+0.1), size = 0.5, alpha = 0.5) +
+  facet_wrap(ID ~ Cond, ncol = 6) +
+  theme_void()  +
+  theme(strip.text = element_text(size = 2))+
+  theme(plot.background = element_rect(fill = alpha("orange",0.5), color = NA,)) 
+
+
+plot_grid(gp1, gp2, gp3, ncol = 1, rel_heights = c(1,1,1))
+```
+
+# Consistent False Positives and False Negatives {#apx-alluvial}
+
+Do false positives and negatives share some characteristics? To answer
+this question qualitatively we identified a group of self-reported SSS
+participants who were consistently classified as controls by the five
+metrics with the highest AUC (i.e. consistent false negatives), see dark
+blue lines in @fig-apx07. On the other side we identified a group of
+controls who are consistently classified as SSS by the five metrics with
+the highest AUC, see dark red lines in @fig-apx07.
+
+```{r}
+#| label: fig-apx07
+#| fig-cap: "Alluvial plot of test passing"
+#| apa-note: "Blue = self-reported synaesthetes, red = controls. Each line represents a participant's classification as SSS or control by each metric at its cutoff. Dark blue highlights synaesthetes who are classified as controls by all five metrics. Dark red highlights controls who are classified as synaesthetes by all five metrics."
+#| fig-position: H
+
+
+df_long <- ds_Q %>%
+  filter(!ID %in%  "69253") %>%
+  select("ID", starts_with("pass")) %>%
+  mutate( ID = factor(ID),
+         Syngroup = factor(pass_SynGroup)) %>%
+  pivot_longer(
+    cols = starts_with("pass"),
+    names_to = "test",
+    values_to = "result"
+  )
+
+
+test_order <- c("pass_SynGroup", paste0("pass_",All_ROC_round$Feature))
+df_long$test <- factor(df_long$test, levels = test_order)
+
+df_long <- df_long %>% 
+  filter(test %in% levels(df_long$test)[1:6]) %>%
+  mutate(test = recode(test, "pass_SynGroup" = "Group",
+                       "pass_Perimeter_zs" = "Perimeter [standardised coordinates]",
+                       "pass_isValidStruct_M" = "Valid structure [proportion of forms]",
+                       "pass_Area_zs" = "Area [standardised coordinates]", 
+                       "pass_isValid_perm_M" =  "Permuted valid structure [proportion of forms]",
+                       "pass_SelfInter" = "Segment self-intersections [mean across forms]",
+                       "pass_perm_zs" = "Permuted Chance level [z-score]",
+                       "pass_pp_M" = "Polsby-Popper [mean across forms]",
+                       "pass_pp_perm_M" = "Permuted Polsby-Popper [mean across forms]"))
+
+
+## Synaesthetes classified as controls by all 5 tests
+df_long$test <- as.factor(df_long$test)
+
+ID_SynFail5Test <- df_long %>% 
+  filter(Syngroup %in% TRUE) %>% # Only synaesthetes (TRUE = Syn)
+  filter(test %in% levels(df_long$test)[2:6]) %>%  # select first 5 tests
+  group_by(ID) %>% 
+  mutate(totRes = sum(result)) %>%
+  filter(totRes == 0)
+
+ID_SynFail5Test <- unique(ID_SynFail5Test$ID)
+
+## ID Ctl pass all tests (except the group one) 
+ID_CtlPass5Test <- df_long %>% 
+  filter(Syngroup %in% FALSE) %>% # Only controls 
+  filter(test %in% levels(df_long$test)[2:6]) %>%  # select first 5 tests
+  group_by(ID) %>% 
+  mutate(totRes = sum(result)) %>%
+  filter(totRes == 5)
+
+ID_CtlPass5Test <- unique(ID_CtlPass5Test$ID)
+
+df_long$Syngroup <- as.character(df_long$Syngroup)
+df_long$Syngroup[df_long$ID %in% ID_SynFail5Test] <- "Highlight"
+df_long$Syngroup[df_long$ID %in% ID_CtlPass5Test] <- "Highlight2"
+
+df_long %>%
+  filter(test %in% levels(df_long$test)[1:6]) %>% # Group + top 5 metrics
+  ggplot(aes(x = test, stratum = factor(result),
+             alluvium = ID, # Keep the same color for the same ID across tests
+             fill = Syngroup, label = result)) +
+  geom_flow(stat = "alluvium",alpha = 1) +
+  geom_stratum(aes(fill = factor(result)), alpha = 0.6) +
+  scale_fill_manual(values = c("TRUE" = "steelblue",
+                               "FALSE" = "firebrick", 
+                               "Highlight" ="blue",
+                                "Highlight2" ="red")) +
+  theme_minimal() +
+  labs(x = "Test",
+       y = "Number of IDs") +
+  theme(axis.ticks.x=element_blank(),
+        panel.grid.major.x = element_blank(),
+        axis.text.x = element_text(angle = 90),
+        legend.position = "none")
+```
+
+On one side
+`r round(length(unique(ID_SynFail5Test))/length(ds_Q$ID)*100,2)`% of all
+participants, that is `r length(unique(ID_SynFail5Test))` synaesthetes,
+were consistently classified as controls by all five metrics, see
+@fig-apx08. On the other side,
+`r round(length(unique(ID_CtlPass5Test))/length(ds_Q$ID)*100,2)`% of all
+participants, `r length(unique(ID_CtlPass5Test))` controls, were
+consistently classified as SSS by all five metrics, see @fig-apx09.
+Given the different approaches of each metric, the identified
+participants might be, on one side, non-genuine synaesthetes and, on the
+other, controls who have SSS but are either not aware of it or did not
+identify it as such.
+
+```{r}
+#| label: fig-apx08
+#| fig-cap: Synaesthetes who consistently *fail* all five metrics (blue in the alluvial plot)
+
+ds %>% 
+  filter(ID  %in% ID_SynFail5Test) %>%
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>% # Start ggplot
+  ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+  geom_path(aes(x = x_zs, y = y_zs, group = repetition), alpha = 0.2) +
+  geom_text(aes(x = x_zs+0.1, y = y_zs+0.1), size = 0.5, alpha = 0.5) +
+  facet_wrap(ID ~ Cond) +
+  theme_void()  +
+  theme(strip.text = element_text(size = 5))
+
+```
+
+```{r}
+#| label: fig-apx09
+#| fig-cap: Controls who consistently *pass* all five metrics (red in the alluvial plot)
+ds %>% 
+  filter(ID  %in% ID_CtlPass5Test) %>%
+  group_by(stimulus) %>%
+  arrange(stimulus) %>%
+  arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>% # Start ggplot
+  ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+  geom_path(aes(x = x_zs, y = y_zs, group = repetition), alpha = 0.2) +
+  geom_text(aes(x = x_zs+0.1, y = y_zs+0.1), size = 0.5, alpha = 0.5) +
+  facet_wrap(ID ~ Cond) +
+  theme_void() +
+  theme(strip.text = element_text(size = 5))
+
+```
+
+# All Participants Spatial Forms {#apx-all-participants-spatial-forms}
+
+Here we report the code to plot each participant and categories in
+z-score x and y coordinates. At the top right corner, the first coloured
+dot indicates if the participant self-reports as SSS (green) or not
+(red). The following dots indicates if the participant passes (green) or
+fails (red) the given consistency test.
+
+```{r}
+#| eval: false
+#| include: false
+# Match ds and ds_Q criteria
+
+ds <- left_join(ds, 
+          ds_Q %>% select("ID",starts_with("pass")), 
+          by = "ID")
+
+# To add a form by the middle
+ds <- ds %>% group_by(ID,stimulus) %>% mutate(X_mean_zs = mean(x_zs), Y_mean_zs = mean(y_zs))
+
+ds$pass_Group <- ds$group == "Syn"
+```
+
+```{r}
+#| eval: false
+#| include: false
+# Multiple pages
+
+
+IDlist <- unique(ds$ID)
+
+# Set the number of rows & columns per pages
+N_rows = 5
+N_cols = 9
+
+for(i in 1:(round(length(IDlist)/(N_rows*N_cols)*3)+1)){
+  
+  ds %>% 
+    # filter(ID  %in% c(28779,29027,29043)) %>%
+    group_by(stimulus) %>%
+    arrange(stimulus) %>%
+    arrange(ordered(stimulus, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday","Sunday"))) %>% arrange(ordered(stimulus, levels = c("January", "February", "March", "April", "May","June","July","August","September","October","November","December"))) %>% # Start ggplot
+    ggplot(aes(x = x_zs, y = y_zs, group = stimulus, label = stimulus, fill = stimulus)) +
+    geom_text(aes(x = 4, y = 4.5, label = dataSource), size = 0.9) + 
+    geom_text(aes(x = 2.3, y = 5.5, label = c("Self-report                        ValidPerm  pp   Area_zs     valid")), size = 0.8) + 
+    geom_point(aes(x = 0, y = 5, color = pass_Group), size = 0.5) + 
+    geom_point(aes(x = 4 - 1, y = 5, color =pass_isValid_perm_M), size = 0.5) + 
+    geom_point(aes(x = 4 - 0, y = 5, color =pass_pp_M), size = 0.5) +
+    geom_point(aes(x = 4 + 1 , y = 5, color =pass_Area_zs), size = 0.5) +
+    geom_point(aes(x = 4 + 2, y = 5, color =pass_isValidStruct_M), size = 0.5) + # SynLine is developed later in the code.
+    geom_polygon(aes(group = as.factor(repetition),fill = as.factor(repetition)), alpha = 0.4, fill = "grey") +
+    geom_polygon(alpha = 0.4) +
+    geom_point(size = 0.2, alpha = 0.5) +
+    scale_fill_discrete(guide="none") +
+    coord_equal() +
+    theme_void() + 
+    scale_color_manual(values = c("red","green")) +
+    theme(plot.title = element_text(hjust = 0.5)) + 
+    theme(aspect.ratio = NULL)  + 
+    theme(legend.position="none") + 
+    # geom_path(aes(x = X_mean_zs, y = Y_mean_zs, group = 1)) +
+    # geom_path(aes(x = x_zs, y = y_zs, group = repetition), alpha = 0.2) +
+    # geom_text(aes(x = x_zs+0.1, y = y_zs+0.1), size = 0.5, alpha = 0.5) +
+    facet_wrap_paginate( ~ ID+ Cond, ncol = N_cols, nrow = N_rows, page = i)  
+  ggsave(paste0("Figures_SM/IDspaceForms",i,".pdf"),width = N_cols*2, height = N_ro*2)
+}
+```
